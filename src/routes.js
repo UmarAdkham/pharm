@@ -184,7 +184,7 @@ export const directorRoutes = [
     name: "Add new user",
     key: "director-add",
     icon: <Icon fontSize="small">add</Icon>,
-    route: "dashboard",
+    route: "add",
   },
   // Other routes relevant to the Director
 ];
