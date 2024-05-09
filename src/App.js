@@ -11,7 +11,6 @@ import ProtectedRoutes from "protected-routes";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import userRoles from "./constants/userRoles";
-import roleBasedRedirect from "./constants/roleBasedDashboards";
 
 // Import all dashboard components
 
@@ -20,9 +19,15 @@ import DashboardWrapper from "layouts/dashboard-wrapper";
 import DirectorDashboard from "layouts/dashboard-director";
 import DeputyDirectorDashboard from "layouts/dashboard-dd";
 import ProductManagerDashboard from "layouts/dashboard-pm";
-import FieldForceDashboard from "layouts/dashboard-ff";
 import RegionalManagerDashboard from "layouts/dashboard-rm";
 import MedRepresentativeDashboard from "layouts/dashboard-mr";
+import DirectorAdd from "layouts/dashboard-director/components/director-add";
+import DeputyDirectorAdd from "layouts/dashboard-dd/components/dd-add";
+import ProductManagerAdd from "layouts/dashboard-pm/components/pm-add";
+import FieldForceManagerAdd from "layouts/dashboard-ff/components/ff-add";
+import FieldForceManagerDashboard from "layouts/dashboard-ff";
+import RegionalManagerAdd from "layouts/dashboard-rm/components/rm-add";
+import MedicalRepresentativeDashboard from "layouts/dashboard-mr";
 
 export default function App() {
   // Access the global UI controller state
@@ -54,74 +59,49 @@ export default function App() {
 
         {/* Director Dashboard */}
         <Route element={<ProtectedRoutes allowedRoles={[userRoles.DIRECTOR]} />}>
-          <Route
-            path="/dashboard-director"
-            element={
-              <DashboardWrapper>
-                <DirectorDashboard />
-              </DashboardWrapper>
-            }
-          />
+          <Route path="/director" element={<DashboardWrapper />}>
+            <Route path="dashboard" element={<DirectorDashboard />} />
+            <Route path="add" element={<DirectorAdd />} />
+          </Route>
         </Route>
 
         {/* Deputy Director Dashboard */}
         <Route element={<ProtectedRoutes allowedRoles={[userRoles.DEPUTY_DIRECTOR]} />}>
-          <Route
-            path="/dashboard-dd"
-            element={
-              <DashboardWrapper>
-                <DeputyDirectorDashboard />
-              </DashboardWrapper>
-            }
-          />
+          <Route path="/dd" element={<DashboardWrapper />}>
+            <Route path="dashboard" element={<DeputyDirectorDashboard />} />
+            <Route path="add" element={<DeputyDirectorAdd />} />
+          </Route>
         </Route>
 
         {/* Product Manager Dashboard */}
         <Route element={<ProtectedRoutes allowedRoles={[userRoles.PRODUCT_MANAGER]} />}>
-          <Route
-            path="/dashboard-pm"
-            element={
-              <DashboardWrapper>
-                <ProductManagerDashboard />
-              </DashboardWrapper>
-            }
-          />
+          <Route path="/pm" element={<DashboardWrapper />}>
+            <Route path="dashboard" element={<ProductManagerDashboard />} />
+            <Route path="add" element={<ProductManagerAdd />} />
+          </Route>
         </Route>
 
         {/* Field Force Manager Dashboard */}
         <Route element={<ProtectedRoutes allowedRoles={[userRoles.FIELD_FORCE_MANAGER]} />}>
-          <Route
-            path="/dashboard-ff"
-            element={
-              <DashboardWrapper>
-                <FieldForceDashboard />
-              </DashboardWrapper>
-            }
-          />
+          <Route path="/ff" element={<DashboardWrapper />}>
+            <Route path="dashboard" element={<FieldForceManagerDashboard />} />
+            <Route path="add" element={<FieldForceManagerAdd />} />
+          </Route>
         </Route>
 
         {/* Regional Manager Dashboard */}
         <Route element={<ProtectedRoutes allowedRoles={[userRoles.REGIONAL_MANAGER]} />}>
-          <Route
-            path="/dashboard-rm"
-            element={
-              <DashboardWrapper>
-                <RegionalManagerDashboard />
-              </DashboardWrapper>
-            }
-          />
+          <Route path="/rm" element={<DashboardWrapper />}>
+            <Route path="dashboard" element={<RegionalManagerDashboard />} />
+            <Route path="add" element={<RegionalManagerAdd />} />
+          </Route>
         </Route>
 
         {/* Medical Representative Dashboard */}
         <Route element={<ProtectedRoutes allowedRoles={[userRoles.MEDICAL_REPRESENTATIVE]} />}>
-          <Route
-            path="/dashboard-mr"
-            element={
-              <DashboardWrapper>
-                <MedRepresentativeDashboard />
-              </DashboardWrapper>
-            }
-          />
+          <Route path="/mr" element={<DashboardWrapper />}>
+            <Route path="dashboard" element={<MedicalRepresentativeDashboard />} />
+          </Route>
         </Route>
 
         {/* Fallback route */}

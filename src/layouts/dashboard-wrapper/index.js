@@ -20,6 +20,7 @@ import {
 import userRoles from "constants/userRoles";
 import { useSelector } from "react-redux";
 
+// eslint-disable-next-line react/prop-types
 function DashboardWrapper() {
   const [controller, dispatch] = useMaterialUIController();
   const [onMouseEnter, setOnMouseEnter] = useState(false);
@@ -120,13 +121,11 @@ function DashboardWrapper() {
       <Sidenav
         color={sidenavColor}
         brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-        brandName="Pharm"
+        brandName={userRole.toUpperCase()}
         routes={routes}
         onMouseEnter={handleOnMouseEnter}
         onMouseLeave={handleOnMouseLeave}
       />
-      {/* <Configurator /> */}
-      {/* {configsButton} */}
       <Outlet />
     </>
   );

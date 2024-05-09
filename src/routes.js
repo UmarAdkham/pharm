@@ -174,10 +174,17 @@ const routes = [
 export const directorRoutes = [
   {
     type: "collapse",
-    name: "Director Dashboard",
+    name: "Dashboard",
     key: "dashboard-director",
-    icon: <Icon fontSize="small">Director</Icon>,
-    route: "/dashboard-director",
+    icon: <Icon fontSize="small">dashboard</Icon>,
+    route: "dashboard",
+  },
+  {
+    type: "collapse",
+    name: "Add new user",
+    key: "director-add",
+    icon: <Icon fontSize="small">add</Icon>,
+    route: "dashboard",
   },
   // Other routes relevant to the Director
 ];
@@ -186,10 +193,31 @@ export const directorRoutes = [
 export const deputyDirectorRoutes = [
   {
     type: "collapse",
-    name: "Deputy Director Dashboard",
-    key: "dashboard-dd",
-    icon: <Icon fontSize="small">Deputy</Icon>,
-    route: "/dashboard-dd",
+    name: "Dashboard",
+    key: "dashboard-director",
+    icon: <Icon fontSize="small">dashboard</Icon>,
+    route: "dashboard",
+  },
+  {
+    type: "collapse",
+    name: "Add new user",
+    key: "director-add",
+    icon: <Icon fontSize="small">add</Icon>,
+    route: "add",
+  },
+  {
+    type: "collapse",
+    name: "Pharmacy",
+    key: "director-add",
+    icon: <Icon fontSize="small">medication</Icon>,
+    route: "dashboard",
+  },
+  {
+    type: "collapse",
+    name: "Doctor plans",
+    key: "director-add",
+    icon: <Icon fontSize="small">vaccines</Icon>,
+    route: "dashboard",
   },
   // Additional routes for Deputy Director
 ];
@@ -198,10 +226,17 @@ export const deputyDirectorRoutes = [
 export const productManagerRoutes = [
   {
     type: "collapse",
-    name: "Product Manager Dashboard",
-    key: "dashboard-pm",
-    icon: <Icon fontSize="small">Product Manager</Icon>,
-    route: "/dashboard-pm",
+    name: "Dashboard",
+    key: "dashboard-director",
+    icon: <Icon fontSize="small">dashboard</Icon>,
+    route: "dashboard",
+  },
+  {
+    type: "collapse",
+    name: "Add new user",
+    key: "director-add",
+    icon: <Icon fontSize="small">add</Icon>,
+    route: "add",
   },
   // Add other Product Manager routes
 ];
@@ -210,10 +245,17 @@ export const productManagerRoutes = [
 export const fieldForceManagerRoutes = [
   {
     type: "collapse",
-    name: "Field Force Manager Dashboard",
-    key: "dashboard-pm",
-    icon: <Icon fontSize="small">Field Force Manager</Icon>,
-    route: "/dashboard-pm",
+    name: "Dashboard",
+    key: "dashboard-director",
+    icon: <Icon fontSize="small">dashboard</Icon>,
+    route: "dashboard",
+  },
+  {
+    type: "collapse",
+    name: "Add new user",
+    key: "director-add",
+    icon: <Icon fontSize="small">add</Icon>,
+    route: "add",
   },
   // Add other Field Force Manager routes
 ];
@@ -222,10 +264,24 @@ export const fieldForceManagerRoutes = [
 export const regionalManagerRoutes = [
   {
     type: "collapse",
-    name: "Regional Manager Dashboard",
-    key: "dashboard-pm",
-    icon: <Icon fontSize="small">Regional Manager</Icon>,
-    route: "/dashboard-rm",
+    name: "Dashboard",
+    key: "dashboard-director",
+    icon: <Icon fontSize="small">dashboard</Icon>,
+    route: "dashboard",
+  },
+  {
+    type: "collapse",
+    name: "Add new user",
+    key: "director-add",
+    icon: <Icon fontSize="small">add</Icon>,
+    route: "add",
+  },
+  {
+    type: "collapse",
+    name: "Notifications",
+    key: "director-add",
+    icon: <Icon fontSize="small">notifications</Icon>,
+    route: "dashboard",
   },
   // Add other Regional Manager routes
 ];
@@ -234,10 +290,38 @@ export const regionalManagerRoutes = [
 export const medicalRepresentativeRoutes = [
   {
     type: "collapse",
-    name: "Medical Representative Dashboard",
-    key: "dashboard-pm",
-    icon: <Icon fontSize="small">Medical Representative</Icon>,
-    route: "/dashboard-rm",
+    name: "Dashboard",
+    key: "dashboard-director",
+    icon: <Icon fontSize="small">dashboard</Icon>,
+    route: "dashboard",
+  },
+  {
+    type: "collapse",
+    name: "Pharmacy",
+    key: "director-add",
+    icon: <Icon fontSize="small">medication</Icon>,
+    route: "dashboard",
+  },
+  {
+    type: "collapse",
+    name: "Balance",
+    key: "director-add",
+    icon: <Icon fontSize="small">balance</Icon>,
+    route: "dashboard",
+  },
+  {
+    type: "collapse",
+    name: "Doctors",
+    key: "director-add",
+    icon: <Icon fontSize="small">vaccines</Icon>,
+    route: "dashboard",
+  },
+  {
+    type: "collapse",
+    name: "Wholesales",
+    key: "director-add",
+    icon: <Icon fontSize="small">receipt</Icon>,
+    route: "dashboard",
   },
   // Add other Medical Representative routes
 ];

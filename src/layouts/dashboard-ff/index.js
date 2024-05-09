@@ -1,12 +1,32 @@
-import React from "react";
+// @mui material components
+import Grid from "@mui/material/Grid";
 
-function FieldForceDashboard() {
+// Material Dashboard 2 React components
+import MDBox from "components/MDBox";
+
+// Material Dashboard 2 React example components
+import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
+
+import Users from "layouts/user-table";
+import { Outlet } from "react-router-dom";
+
+// eslint-disable-next-line react/prop-types
+function FieldForceManagerDashboard() {
   return (
-    <div>
-      <h1>Field Force Manager Dashboard</h1>
-      {/* Add specific components and functionality for the Deputy Director */}
-    </div>
+    <DashboardLayout>
+      {/* <DashboardNavbar /> */}
+      <MDBox py={3}>
+        <MDBox>
+          <Grid container spacing={3}>
+            <Grid item xs={12} lg={12}>
+              <Users />
+            </Grid>
+          </Grid>
+        </MDBox>
+      </MDBox>
+      <Outlet />
+    </DashboardLayout>
   );
 }
 
-export default FieldForceDashboard;
+export default FieldForceManagerDashboard;
