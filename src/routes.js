@@ -26,8 +26,6 @@ import Tables from "layouts/tables";
 import Billing from "layouts/billing";
 import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
-import SignIn from "layouts/authentication/sign-in";
-import SignUp from "layouts/authentication/sign-up";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -124,7 +122,7 @@ const routes = [
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard-ff",
     component: (
-      <ProtectedRoutes allowedRoles={[userRoles.FF_MANAGER]}>
+      <ProtectedRoutes allowedRoles={[userRoles.FIELD_FORCE_MANAGER]}>
         <FieldForceDashboard />
       </ProtectedRoutes>
     ),
@@ -170,5 +168,80 @@ const routes = [
   //   component: <SignUp />,
   // },
 ];
+
+// roleRoutes.js
+// Director-specific routes
+export const directorRoutes = [
+  {
+    type: "collapse",
+    name: "Director Dashboard",
+    key: "dashboard-director",
+    icon: <Icon fontSize="small">Director</Icon>,
+    route: "/dashboard-director",
+  },
+  // Other routes relevant to the Director
+];
+
+// Deputy Director-specific routes
+export const deputyDirectorRoutes = [
+  {
+    type: "collapse",
+    name: "Deputy Director Dashboard",
+    key: "dashboard-dd",
+    icon: <Icon fontSize="small">Deputy</Icon>,
+    route: "/dashboard-dd",
+  },
+  // Additional routes for Deputy Director
+];
+
+// Product Manager-specific routes
+export const productManagerRoutes = [
+  {
+    type: "collapse",
+    name: "Product Manager Dashboard",
+    key: "dashboard-pm",
+    icon: <Icon fontSize="small">Product Manager</Icon>,
+    route: "/dashboard-pm",
+  },
+  // Add other Product Manager routes
+];
+
+// Field Force Manager-specific routes
+export const fieldForceManagerRoutes = [
+  {
+    type: "collapse",
+    name: "Field Force Manager Dashboard",
+    key: "dashboard-pm",
+    icon: <Icon fontSize="small">Field Force Manager</Icon>,
+    route: "/dashboard-pm",
+  },
+  // Add other Field Force Manager routes
+];
+
+// Regional Manager-specific routes
+export const regionalManagerRoutes = [
+  {
+    type: "collapse",
+    name: "Regional Manager Dashboard",
+    key: "dashboard-pm",
+    icon: <Icon fontSize="small">Regional Manager</Icon>,
+    route: "/dashboard-rm",
+  },
+  // Add other Regional Manager routes
+];
+
+// Medical Representative-specific routes
+export const medicalRepresentativeRoutes = [
+  {
+    type: "collapse",
+    name: "Medical Representative Dashboard",
+    key: "dashboard-pm",
+    icon: <Icon fontSize="small">Medical Representative</Icon>,
+    route: "/dashboard-rm",
+  },
+  // Add other Medical Representative routes
+];
+
+// Additional route arrays for other roles...
 
 export default routes;

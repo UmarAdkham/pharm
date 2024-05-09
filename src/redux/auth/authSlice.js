@@ -21,7 +21,9 @@ export const authSlice = createSlice({
     logout: (state) => {
       state.accessToken = null;
       state.isAuthenticated = false;
+      state.userRole = null;
       localStorage.removeItem("accessToken"); // Clear token
+      localStorage.removeItem("userRole"); // Clear userRole
     },
   },
 });
