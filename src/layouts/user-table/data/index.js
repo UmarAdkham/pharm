@@ -48,7 +48,7 @@ export default function useUserData() {
 
         setData({ columns, rows, numOfUsers });
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error(error);
       }
     }
 

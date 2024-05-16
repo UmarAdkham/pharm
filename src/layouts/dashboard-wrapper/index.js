@@ -5,7 +5,6 @@ import { Outlet, useLocation } from "react-router-dom";
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
 import { Icon } from "@mui/material";
 import MDBox from "components/MDBox";
-import Configurator from "examples/Configurator";
 import brandWhite from "../../assets/images/logo-ct.png";
 
 // Import different role routes
