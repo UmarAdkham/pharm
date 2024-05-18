@@ -1,4 +1,4 @@
-// @mui icons
+// routes.js
 import Icon from "@mui/material/Icon";
 import DirectorDashboard from "layouts/dashboard-director";
 import DeputyDirectorDashboard from "layouts/dashboard-dd";
@@ -12,163 +12,7 @@ import FieldForceManagerAdd from "layouts/dashboard-ff/components/ff-add";
 import FieldForceManagerDashboard from "layouts/dashboard-ff";
 import RegionalManagerAdd from "layouts/dashboard-rm/components/rm-add";
 import MedicalRepresentativeDashboard from "layouts/dashboard-mr";
-
-// roleRoutes.js
-// Director-specific routes
-export const directorRoutes = [
-  {
-    type: "collapse",
-    name: "Dashboard",
-    key: "dashboard-director",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "dashboard",
-  },
-  {
-    type: "collapse",
-    name: "Add new user",
-    key: "director-add",
-    icon: <Icon fontSize="small">add</Icon>,
-    route: "add",
-  },
-  // Other routes relevant to the Director
-];
-
-// Deputy Director-specific routes
-export const deputyDirectorRoutes = [
-  {
-    type: "collapse",
-    name: "Dashboard",
-    key: "dashboard-director",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "dashboard",
-  },
-  {
-    type: "collapse",
-    name: "Add new user",
-    key: "director-add",
-    icon: <Icon fontSize="small">add</Icon>,
-    route: "add",
-  },
-  {
-    type: "collapse",
-    name: "Pharmacy",
-    key: "director-add",
-    icon: <Icon fontSize="small">medication</Icon>,
-    route: "dashboard",
-  },
-  {
-    type: "collapse",
-    name: "Doctor plans",
-    key: "director-add",
-    icon: <Icon fontSize="small">vaccines</Icon>,
-    route: "dashboard",
-  },
-  // Additional routes for Deputy Director
-];
-
-// Product Manager-specific routes
-export const productManagerRoutes = [
-  {
-    type: "collapse",
-    name: "Dashboard",
-    key: "dashboard-director",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "dashboard",
-  },
-  {
-    type: "collapse",
-    name: "Add new user",
-    key: "director-add",
-    icon: <Icon fontSize="small">add</Icon>,
-    route: "add",
-  },
-  // Add other Product Manager routes
-];
-
-// Field Force Manager-specific routes
-export const fieldForceManagerRoutes = [
-  {
-    type: "collapse",
-    name: "Dashboard",
-    key: "dashboard-director",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "dashboard",
-  },
-  {
-    type: "collapse",
-    name: "Add new user",
-    key: "director-add",
-    icon: <Icon fontSize="small">add</Icon>,
-    route: "add",
-  },
-  // Add other Field Force Manager routes
-];
-
-// Regional Manager-specific routes
-export const regionalManagerRoutes = [
-  {
-    type: "collapse",
-    name: "Dashboard",
-    key: "dashboard-director",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "dashboard",
-  },
-  {
-    type: "collapse",
-    name: "Add new user",
-    key: "director-add",
-    icon: <Icon fontSize="small">add</Icon>,
-    route: "add",
-  },
-  {
-    type: "collapse",
-    name: "Notifications",
-    key: "director-add",
-    icon: <Icon fontSize="small">notifications</Icon>,
-    route: "dashboard",
-  },
-  // Add other Regional Manager routes
-];
-
-// Medical Representative-specific routes
-export const medicalRepresentativeRoutes = [
-  {
-    type: "collapse",
-    name: "Dashboard",
-    key: "dashboard-director",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "dashboard",
-  },
-  {
-    type: "collapse",
-    name: "Pharmacy",
-    key: "director-add",
-    icon: <Icon fontSize="small">medication</Icon>,
-    route: "dashboard",
-  },
-  {
-    type: "collapse",
-    name: "Balance",
-    key: "director-add",
-    icon: <Icon fontSize="small">balance</Icon>,
-    route: "dashboard",
-  },
-  {
-    type: "collapse",
-    name: "Doctors",
-    key: "director-add",
-    icon: <Icon fontSize="small">vaccines</Icon>,
-    route: "dashboard",
-  },
-  {
-    type: "collapse",
-    name: "Wholesales",
-    key: "director-add",
-    icon: <Icon fontSize="small">receipt</Icon>,
-    route: "dashboard",
-  },
-  // Add other Medical Representative routes
-];
+import DeputyDirectorPms from "layouts/dashboard-dd/components/dd-pms";
 
 const roleBasedRoutes = [
   {
@@ -177,7 +21,22 @@ const roleBasedRoutes = [
     routes: [
       { path: "dashboard", component: <DirectorDashboard /> },
       { path: "add", component: <DirectorAdd /> },
-      // Add more routes for Director here
+    ],
+    sideNav: [
+      {
+        type: "collapse",
+        name: "Dashboard",
+        key: "dashboard-director",
+        icon: <Icon fontSize="small">dashboard</Icon>,
+        route: "dashboard",
+      },
+      {
+        type: "collapse",
+        name: "Add new user",
+        key: "director-add",
+        icon: <Icon fontSize="small">add</Icon>,
+        route: "add",
+      },
     ],
   },
   {
@@ -186,7 +45,37 @@ const roleBasedRoutes = [
     routes: [
       { path: "dashboard", component: <DeputyDirectorDashboard /> },
       { path: "add", component: <DeputyDirectorAdd /> },
-      // Add more routes for Deputy Director here
+      { path: "pms", component: <DeputyDirectorPms /> },
+    ],
+    sideNav: [
+      {
+        type: "collapse",
+        name: "Dashboard",
+        key: "dashboard-dd",
+        icon: <Icon fontSize="small">dashboard</Icon>,
+        route: "dashboard",
+      },
+      {
+        type: "collapse",
+        name: "Add new user",
+        key: "dd-add",
+        icon: <Icon fontSize="small">add</Icon>,
+        route: "add",
+      },
+      {
+        type: "collapse",
+        name: "Product Managers",
+        key: "dd-pms",
+        icon: <Icon fontSize="small">medication</Icon>,
+        route: "pms",
+      },
+      {
+        type: "collapse",
+        name: "Doctor plans",
+        key: "dd-doctor-plans",
+        icon: <Icon fontSize="small">vaccines</Icon>,
+        route: "doctor-plans",
+      },
     ],
   },
   {
@@ -195,7 +84,22 @@ const roleBasedRoutes = [
     routes: [
       { path: "dashboard", component: <ProductManagerDashboard /> },
       { path: "add", component: <ProductManagerAdd /> },
-      // Add more routes for Product Manager here
+    ],
+    sideNav: [
+      {
+        type: "collapse",
+        name: "Dashboard",
+        key: "dashboard-pm",
+        icon: <Icon fontSize="small">dashboard</Icon>,
+        route: "dashboard",
+      },
+      {
+        type: "collapse",
+        name: "Add new user",
+        key: "pm-add",
+        icon: <Icon fontSize="small">add</Icon>,
+        route: "add",
+      },
     ],
   },
   {
@@ -204,7 +108,22 @@ const roleBasedRoutes = [
     routes: [
       { path: "dashboard", component: <FieldForceManagerDashboard /> },
       { path: "add", component: <FieldForceManagerAdd /> },
-      // Add more routes for Field Force Manager here
+    ],
+    sideNav: [
+      {
+        type: "collapse",
+        name: "Dashboard",
+        key: "dashboard-ff",
+        icon: <Icon fontSize="small">dashboard</Icon>,
+        route: "dashboard",
+      },
+      {
+        type: "collapse",
+        name: "Add new user",
+        key: "ff-add",
+        icon: <Icon fontSize="small">add</Icon>,
+        route: "add",
+      },
     ],
   },
   {
@@ -213,15 +132,71 @@ const roleBasedRoutes = [
     routes: [
       { path: "dashboard", component: <RegionalManagerDashboard /> },
       { path: "add", component: <RegionalManagerAdd /> },
-      // Add more routes for Regional Manager here
+    ],
+    sideNav: [
+      {
+        type: "collapse",
+        name: "Dashboard",
+        key: "dashboard-rm",
+        icon: <Icon fontSize="small">dashboard</Icon>,
+        route: "dashboard",
+      },
+      {
+        type: "collapse",
+        name: "Add new user",
+        key: "rm-add",
+        icon: <Icon fontSize="small">add</Icon>,
+        route: "add",
+      },
+      {
+        type: "collapse",
+        name: "Notifications",
+        key: "rm-notifications",
+        icon: <Icon fontSize="small">notifications</Icon>,
+        route: "notifications",
+      },
     ],
   },
   {
     role: userRoles.MEDICAL_REPRESENTATIVE,
     path: "mr",
-    routes: [
-      { path: "dashboard", component: <MedicalRepresentativeDashboard /> },
-      // Add more routes for Medical Representative here
+    routes: [{ path: "dashboard", component: <MedicalRepresentativeDashboard /> }],
+    sideNav: [
+      {
+        type: "collapse",
+        name: "Dashboard",
+        key: "dashboard-mr",
+        icon: <Icon fontSize="small">dashboard</Icon>,
+        route: "dashboard",
+      },
+      {
+        type: "collapse",
+        name: "Pharmacy",
+        key: "mr-pharmacy",
+        icon: <Icon fontSize="small">medication</Icon>,
+        route: "pharmacy",
+      },
+      {
+        type: "collapse",
+        name: "Balance",
+        key: "mr-balance",
+        icon: <Icon fontSize="small">balance</Icon>,
+        route: "balance",
+      },
+      {
+        type: "collapse",
+        name: "Doctors",
+        key: "mr-doctors",
+        icon: <Icon fontSize="small">vaccines</Icon>,
+        route: "doctors",
+      },
+      {
+        type: "collapse",
+        name: "Wholesales",
+        key: "mr-wholesales",
+        icon: <Icon fontSize="small">receipt</Icon>,
+        route: "wholesales",
+      },
     ],
   },
 ];

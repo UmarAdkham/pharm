@@ -6,20 +6,9 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 import { Icon } from "@mui/material";
 import MDBox from "components/MDBox";
 import brandWhite from "../../assets/images/logo-ct.png";
-
-// Import different role routes
-import {
-  directorRoutes,
-  deputyDirectorRoutes,
-  productManagerRoutes,
-  fieldForceManagerRoutes,
-  regionalManagerRoutes,
-  medicalRepresentativeRoutes,
-} from "../../routes";
-import userRoles from "constants/userRoles";
+import roleBasedRoutes from "../../routes";
 import { useSelector } from "react-redux";
 
-// eslint-disable-next-line react/prop-types
 function DashboardWrapper() {
   const [controller, dispatch] = useMaterialUIController();
   const [onMouseEnter, setOnMouseEnter] = useState(false);
@@ -36,30 +25,7 @@ function DashboardWrapper() {
   const userRole = useSelector((state) => state.auth.userRole); // Get user role from Redux
 
   // Select appropriate routes based on user role
-  let routes = [];
-  switch (userRole) {
-    case userRoles.DIRECTOR:
-      routes = directorRoutes;
-      break;
-    case userRoles.DEPUTY_DIRECTOR:
-      routes = deputyDirectorRoutes;
-      break;
-    case userRoles.PRODUCT_MANAGER:
-      routes = productManagerRoutes;
-      break;
-    case userRoles.FIELD_FORCE_MANAGER:
-      routes = fieldForceManagerRoutes;
-      break;
-    case userRoles.REGIONAL_MANAGER:
-      routes = regionalManagerRoutes;
-      break;
-    case userRoles.MEDICAL_REPRESENTATIVE:
-      routes = medicalRepresentativeRoutes;
-      break;
-    default:
-      routes = []; // Empty if no role matches
-      break;
-  }
+  const roleRoutes = roleBasedRoutes.find((route) => route.role === userRole);
 
   // Open sidenav when mouse enter on mini sidenav
   const handleOnMouseEnter = () => {
@@ -120,8 +86,8 @@ function DashboardWrapper() {
       <Sidenav
         color={sidenavColor}
         brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-        brandName={userRole.toUpperCase()}
-        routes={routes}
+        brandName={userRole ? userRole.toUpperCase() : "USER"}
+        routes={roleRoutes ? roleRoutes.sideNav : []}
         onMouseEnter={handleOnMouseEnter}
         onMouseLeave={handleOnMouseLeave}
       />

@@ -1,6 +1,6 @@
 // App.js
 import { useEffect } from "react";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
@@ -11,32 +11,39 @@ import { useMaterialUIController, setOpenConfigurator } from "context";
 import ProtectedRoutes from "protected-routes";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
-// Import all dashboard components
-
-// Dashboard Wrapper
 import DashboardWrapper from "layouts/dashboard-wrapper";
 import roleBasedRoutes from "routes";
 import useAxiosInterceptor from "./hooks/useAxiosInterceptor";
+import { isTokenExpired } from "./utils/auth";
+import { useDispatch } from "react-redux";
+import { logout } from "./redux/auth/authSlice";
 
 export default function App() {
-  // Access the global UI controller state
   const [controller, dispatch] = useMaterialUIController();
   const { direction, layout, openConfigurator, darkMode } = controller;
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const reduxDispatch = useDispatch();
 
-  // Set up the Axios interceptor
   useAxiosInterceptor();
 
-  // Update the document direction
   useEffect(() => {
     document.body.setAttribute("dir", direction);
   }, [direction]);
 
-  // Reset page scroll position when changing routes
   useEffect(() => {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
+
+  // Check token expiry on load
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (isTokenExpired(token)) {
+      reduxDispatch(logout());
+      navigate("/");
+    }
+  }, [reduxDispatch, navigate]);
 
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>

@@ -16,7 +16,7 @@ const useAxiosInterceptor = () => {
       (error) => {
         if (error.response && error.response.status === 401) {
           const token = localStorage.getItem("accessToken");
-
+          console.log("INSIDE");
           if (isTokenExpired(token)) {
             dispatch(logout());
             navigate("/"); // Redirect to login page

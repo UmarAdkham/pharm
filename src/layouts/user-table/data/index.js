@@ -3,7 +3,7 @@ import MDTypography from "components/MDTypography";
 import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 
-export default function useUserData() {
+export default function useUserData(path) {
   const [data, setData] = useState({ columns: [], rows: [] });
 
   // Replace this with actual token retrieval logic
@@ -12,7 +12,7 @@ export default function useUserData() {
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const response = await axiosInstance.get("common/get-users", {
+        const response = await axiosInstance.get(path, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },

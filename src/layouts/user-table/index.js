@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -16,8 +17,8 @@ import DataTable from "examples/Tables/DataTable";
 // Data
 import data from "./data";
 
-function Users() {
-  const { columns, rows, numOfUsers } = data();
+function UsersTable({ path, role }) {
+  const { columns, rows, numOfUsers } = data(path);
   const [menu, setMenu] = useState(null);
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
@@ -49,22 +50,8 @@ function Users() {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            Users
+            {role}
           </MDTypography>
-          <MDBox display="flex" alignItems="center" lineHeight={0}>
-            <Icon
-              sx={{
-                fontWeight: "bold",
-                color: ({ palette: { info } }) => info.main,
-                mt: -0.5,
-              }}
-            >
-              done
-            </Icon>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              &nbsp;<strong>{numOfUsers}</strong> people under me
-            </MDTypography>
-          </MDBox>
         </MDBox>
         <MDBox color="text" px={2}>
           <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
@@ -86,4 +73,9 @@ function Users() {
   );
 }
 
-export default Users;
+UsersTable.propTypes = {
+  path: PropTypes.string.isRequired,
+  role: PropTypes.string.isRequired,
+};
+
+export default UsersTable;
