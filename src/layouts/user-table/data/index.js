@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import MDTypography from "components/MDTypography";
 import { useSelector } from "react-redux";
+import axiosInstance from "services/axiosInstance";
 
 export default function useUserData() {
   const [data, setData] = useState({ columns: [], rows: [] });
@@ -12,7 +12,7 @@ export default function useUserData() {
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const response = await axios.get("http://heartly1.uz/common/get-users", {
+        const response = await axiosInstance.get("common/get-users", {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },

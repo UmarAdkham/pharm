@@ -1,3 +1,4 @@
+// App.js
 import { useEffect } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
@@ -15,12 +16,16 @@ import SignUp from "layouts/authentication/sign-up";
 // Dashboard Wrapper
 import DashboardWrapper from "layouts/dashboard-wrapper";
 import roleBasedRoutes from "routes";
+import useAxiosInterceptor from "./hooks/useAxiosInterceptor";
 
 export default function App() {
   // Access the global UI controller state
   const [controller, dispatch] = useMaterialUIController();
   const { direction, layout, openConfigurator, darkMode } = controller;
   const { pathname } = useLocation();
+
+  // Set up the Axios interceptor
+  useAxiosInterceptor();
 
   // Update the document direction
   useEffect(() => {
