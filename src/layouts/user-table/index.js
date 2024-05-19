@@ -1,24 +1,16 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-
-// @mui material components
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-
-// Material Dashboard 2 React examples
 import DataTable from "examples/Tables/DataTable";
+import useUserData from "./data"; // Ensure correct path
 
-// Data
-import data from "./data";
-
-function UsersTable({ path, role }) {
-  const { columns, rows, numOfUsers } = data(path);
+function UsersTable({ path, role, navigatePath, onRowClick }) {
+  const { columns, rows } = useUserData(path, navigatePath, onRowClick);
   const [menu, setMenu] = useState(null);
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
@@ -62,7 +54,10 @@ function UsersTable({ path, role }) {
       </MDBox>
       <MDBox>
         <DataTable
-          table={{ columns, rows }}
+          table={{
+            columns,
+            rows,
+          }}
           showTotalEntries={false}
           isSorted={false}
           noEndBorder
@@ -76,6 +71,13 @@ function UsersTable({ path, role }) {
 UsersTable.propTypes = {
   path: PropTypes.string.isRequired,
   role: PropTypes.string.isRequired,
+  navigatePath: PropTypes.string.isRequired,
+  onRowClick: PropTypes.func, // Add the new prop type
+};
+
+UsersTable.defaultProps = {
+  navigatePath: "/dd/add",
+  onRowClick: () => {}, // Default to no-op function if not provided
 };
 
 export default UsersTable;

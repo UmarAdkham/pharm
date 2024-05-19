@@ -59,7 +59,6 @@ function DeputyDirectorAdd() {
       }, 2000);
     } catch (error) {
       // Handle errors gracefully
-      console.log(error);
       setMessage({
         color: "error",
         content:

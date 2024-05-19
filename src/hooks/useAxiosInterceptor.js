@@ -1,4 +1,3 @@
-// hooks/useAxiosInterceptor.js
 import { useEffect } from "react";
 import axiosInstance from "../services/axiosInstance";
 import { isTokenExpired } from "../utils/auth";
@@ -16,7 +15,6 @@ const useAxiosInterceptor = () => {
       (error) => {
         if (error.response && error.response.status === 401) {
           const token = localStorage.getItem("accessToken");
-          console.log("INSIDE");
           if (isTokenExpired(token)) {
             dispatch(logout());
             navigate("/"); // Redirect to login page

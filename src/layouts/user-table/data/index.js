@@ -1,18 +1,19 @@
+// data.js (useUserData function)
 import { useState, useEffect } from "react";
-import MDTypography from "components/MDTypography";
 import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
+import { useNavigate } from "react-router-dom";
+import MDTypography from "components/MDTypography";
 
-export default function useUserData(path) {
+export default function useUserData(apiPath, navigatePath, onRowClick) {
   const [data, setData] = useState({ columns: [], rows: [] });
-
-  // Replace this with actual token retrieval logic
   const accessToken = useSelector((state) => state.auth.accessToken);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const response = await axiosInstance.get(path, {
+        const response = await axiosInstance.get(apiPath, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -42,18 +43,19 @@ export default function useUserData(path) {
               {user.status}
             </MDTypography>
           ),
+          onClick: () => {
+            onRowClick(navigatePath, user);
+          }, // Use onRowClick handler
         }));
 
-        const numOfUsers = users.length;
-
-        setData({ columns, rows, numOfUsers });
+        setData({ columns, rows });
       } catch (error) {
         console.error(error);
       }
     }
 
     fetchUsers();
-  }, [accessToken]);
+  }, [accessToken, apiPath, navigatePath, onRowClick]);
 
   return data;
 }

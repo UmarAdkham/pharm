@@ -13,6 +13,7 @@ import FieldForceManagerDashboard from "layouts/dashboard-ff";
 import RegionalManagerAdd from "layouts/dashboard-rm/components/rm-add";
 import MedicalRepresentativeDashboard from "layouts/dashboard-mr";
 import DeputyDirectorPms from "layouts/dashboard-dd/components/dd-pms";
+import DDProductManager from "layouts/dashboard-dd/components/dd-single-pm";
 
 const roleBasedRoutes = [
   {
@@ -46,6 +47,7 @@ const roleBasedRoutes = [
       { path: "dashboard", component: <DeputyDirectorDashboard /> },
       { path: "add", component: <DeputyDirectorAdd /> },
       { path: "pms", component: <DeputyDirectorPms /> },
+      { path: "single-pm", component: <DDProductManager /> },
     ],
     sideNav: [
       {
