@@ -5,7 +5,7 @@ import axiosInstance from "services/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import MDTypography from "components/MDTypography";
 
-export default function useUserData(apiPath, navigatePath, onRowClick) {
+export default function useUserData(apiPath, status, navigatePath, onRowClick) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ export default function useUserData(apiPath, navigatePath, onRowClick) {
           },
         });
 
-        const users = response.data;
+        const users = response.data.filter((user) => user.status === status);
 
         const columns = [
           { Header: "Username", accessor: "username", align: "left" },

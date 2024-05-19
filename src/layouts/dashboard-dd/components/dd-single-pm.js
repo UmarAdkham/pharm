@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Card, CardContent, Avatar, Box, Typography, Button, Grid } from "@mui/material";
 import { Outlet, useLocation } from "react-router-dom";
 import UsersTable from "layouts/user-table";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import MDBox from "components/MDBox";
+import userRoles from "constants/userRoles";
 
 const DDProductManager = () => {
+  const [status, setStatus] = useState(userRoles.FIELD_FORCE_MANAGER);
   const location = useLocation();
   const user = location.state || {};
   return (
@@ -29,15 +31,35 @@ const DDProductManager = () => {
                     </Box>
                   </Box>
 
-                  {/* Buttons section */}
                   <Box display="flex" justifyContent="space-around" mb={3}>
-                    <Button variant="contained" color="primary">
+                    <Button
+                      variant="contained"
+                      color="dark"
+                      sx={{ color: "white" }}
+                      onClick={() => {
+                        setStatus(userRoles.FIELD_FORCE_MANAGER);
+                      }}
+                    >
                       Field Force Managers
                     </Button>
-                    <Button variant="contained" color="primary">
+                    <Button
+                      variant="contained"
+                      color="dark"
+                      sx={{ color: "white" }}
+                      onClick={() => {
+                        setStatus(userRoles.REGIONAL_MANAGER);
+                      }}
+                    >
                       Regional Managers
                     </Button>
-                    <Button variant="contained" color="primary">
+                    <Button
+                      variant="contained"
+                      color="dark"
+                      sx={{ color: "white" }}
+                      onClick={() => {
+                        setStatus(userRoles.MEDICAL_REPRESENTATIVE);
+                      }}
+                    >
                       Medical Representatives
                     </Button>
                   </Box>
@@ -45,7 +67,8 @@ const DDProductManager = () => {
                   {/* Table section */}
                   <UsersTable
                     path={`common/get-users-by-username?username=${user.username}`}
-                    role={"Product Manager"}
+                    status={status}
+                    title={"Product Manager"}
                     onRowClick={() => alert("Hello")}
                   />
                 </CardContent>

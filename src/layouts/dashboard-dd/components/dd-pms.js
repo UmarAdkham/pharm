@@ -3,6 +3,7 @@ import Grid from "@mui/material/Grid";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
+import userRoles from "constants/userRoles";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -22,7 +23,8 @@ function DeputyDirectorPms({ children }) {
             <Grid item xs={12} lg={12}>
               <UsersTable
                 path={"common/get-users"}
-                role={"Product Managers"}
+                status={userRoles.PRODUCT_MANAGER}
+                title={"Product Managers"}
                 navigatePath={"/dd/single-pm"}
                 onRowClick={(navigatePath, user) => {
                   navigate(navigatePath, { state: user });

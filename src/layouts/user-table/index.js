@@ -9,8 +9,8 @@ import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import useUserData from "./data"; // Ensure correct path
 
-function UsersTable({ path, role, navigatePath, onRowClick }) {
-  const { columns, rows } = useUserData(path, navigatePath, onRowClick);
+function UsersTable({ path, status, title, navigatePath, onRowClick }) {
+  const { columns, rows } = useUserData(path, status, navigatePath, onRowClick);
   const [menu, setMenu] = useState(null);
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
@@ -42,7 +42,7 @@ function UsersTable({ path, role, navigatePath, onRowClick }) {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            {role}
+            {title}
           </MDTypography>
         </MDBox>
         <MDBox color="text" px={2}>
@@ -70,8 +70,9 @@ function UsersTable({ path, role, navigatePath, onRowClick }) {
 
 UsersTable.propTypes = {
   path: PropTypes.string.isRequired,
-  role: PropTypes.string.isRequired,
-  navigatePath: PropTypes.string.isRequired,
+  status: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  navigatePath: PropTypes.string,
   onRowClick: PropTypes.func, // Add the new prop type
 };
 
