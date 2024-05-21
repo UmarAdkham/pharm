@@ -14,6 +14,10 @@ import RegionalManagerAdd from "layouts/dashboard-rm/components/rm-add";
 import MedicalRepresentativeDashboard from "layouts/dashboard-mr";
 import DeputyDirectorPms from "layouts/dashboard-dd/components/dd-pms";
 import DDProductManager from "layouts/dashboard-dd/components/dd-single-pm";
+import DeputyDirectorAddFieldForce from "layouts/dashboard-dd/components/dd-add-ff";
+import DeputyDirectorSinglePM from "layouts/dashboard-dd/components/dd-single-pm";
+import DeputyDirectorAddRegionalManager from "layouts/dashboard-dd/components/dd-add-rm";
+import DeputyDirectorAddMedicalRepresentative from "layouts/dashboard-dd/components/dd-add-mr";
 
 const roleBasedRoutes = [
   {
@@ -47,7 +51,10 @@ const roleBasedRoutes = [
       { path: "dashboard", component: <DeputyDirectorDashboard /> },
       { path: "add", component: <DeputyDirectorAdd /> },
       { path: "pms", component: <DeputyDirectorPms /> },
-      { path: "single-pm", component: <DDProductManager /> },
+      { path: "single-pm", component: <DeputyDirectorSinglePM /> },
+      { path: "add-ff", component: <DeputyDirectorAddFieldForce /> },
+      { path: "add-rm", component: <DeputyDirectorAddRegionalManager /> },
+      { path: "add-mr", component: <DeputyDirectorAddMedicalRepresentative /> },
     ],
     sideNav: [
       {

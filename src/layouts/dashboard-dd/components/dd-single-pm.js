@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Card, CardContent, Avatar, Box, Typography, Button, Grid } from "@mui/material";
 import { Outlet, useLocation } from "react-router-dom";
@@ -7,10 +8,24 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import MDBox from "components/MDBox";
 import userRoles from "constants/userRoles";
 
-const DDProductManager = () => {
+const DeputyDirectorSinglePM = () => {
   const [status, setStatus] = useState(userRoles.FIELD_FORCE_MANAGER);
   const location = useLocation();
+  const navigate = useNavigate();
   const user = location.state || {};
+
+  console.log(user);
+
+  const handleAddStatus = () => {
+    if (status === userRoles.FIELD_FORCE_MANAGER) {
+      navigate("/dd/add-ff", { state: user });
+    } else if (status === userRoles.REGIONAL_MANAGER) {
+      navigate("/dd/add-rm");
+    } else if (status === userRoles.MEDICAL_REPRESENTATIVE) {
+      navigate("/dd/add-mr");
+    }
+  };
+
   return (
     <DashboardLayout>
       <MDBox py={3}>
@@ -33,9 +48,11 @@ const DDProductManager = () => {
 
                   <Box display="flex" justifyContent="space-around" mb={3}>
                     <Button
-                      variant="contained"
+                      variant={status === userRoles.FIELD_FORCE_MANAGER ? "contained" : "outlined"}
                       color="dark"
-                      sx={{ color: "white" }}
+                      sx={{
+                        color: status === userRoles.FIELD_FORCE_MANAGER ? "white" : "inherit",
+                      }}
                       onClick={() => {
                         setStatus(userRoles.FIELD_FORCE_MANAGER);
                       }}
@@ -43,9 +60,11 @@ const DDProductManager = () => {
                       Field Force Managers
                     </Button>
                     <Button
-                      variant="contained"
+                      variant={status === userRoles.REGIONAL_MANAGER ? "contained" : "outlined"}
                       color="dark"
-                      sx={{ color: "white" }}
+                      sx={{
+                        color: status === userRoles.REGIONAL_MANAGER ? "white" : "inherit",
+                      }}
                       onClick={() => {
                         setStatus(userRoles.REGIONAL_MANAGER);
                       }}
@@ -53,14 +72,29 @@ const DDProductManager = () => {
                       Regional Managers
                     </Button>
                     <Button
-                      variant="contained"
+                      variant={
+                        status === userRoles.MEDICAL_REPRESENTATIVE ? "contained" : "outlined"
+                      }
                       color="dark"
-                      sx={{ color: "white" }}
+                      sx={{
+                        color: status === userRoles.MEDICAL_REPRESENTATIVE ? "white" : "inherit",
+                      }}
                       onClick={() => {
                         setStatus(userRoles.MEDICAL_REPRESENTATIVE);
                       }}
                     >
                       Medical Representatives
+                    </Button>
+                  </Box>
+
+                  <Box display="flex" justifyContent="flex-end" mb={3}>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      sx={{ color: "white" }}
+                      onClick={handleAddStatus}
+                    >
+                      Add
                     </Button>
                   </Box>
 
@@ -82,4 +116,4 @@ const DDProductManager = () => {
   );
 };
 
-export default DDProductManager;
+export default DeputyDirectorSinglePM;
