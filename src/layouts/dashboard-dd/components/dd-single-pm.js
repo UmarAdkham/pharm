@@ -14,16 +14,16 @@ const DeputyDirectorSinglePM = () => {
   const navigate = useNavigate();
   const user = location.state || {};
 
-  console.log(user);
-
   const handleAddStatus = () => {
+    let path;
     if (status === userRoles.FIELD_FORCE_MANAGER) {
-      navigate("/dd/add-ff", { state: user });
+      path = "/dd/add-ff";
     } else if (status === userRoles.REGIONAL_MANAGER) {
-      navigate("/dd/add-rm");
+      path = "/dd/add-rm";
     } else if (status === userRoles.MEDICAL_REPRESENTATIVE) {
-      navigate("/dd/add-mr");
+      path = "/dd/add-mr";
     }
+    navigate(path, { state: user });
   };
 
   return (
