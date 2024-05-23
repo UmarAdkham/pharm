@@ -225,7 +225,10 @@ const roleBasedRoutes = [
   {
     role: "sabrina",
     path: "sabrina",
-    routes: [{ path: "dashboard", component: <ProductManagerDashboard /> }],
+    routes: [
+      { path: "dashboard", component: <ProductManagerDashboard /> },
+      { path: "dashboard", component: <ProductManagerDashboard /> },
+    ],
     sideNav: [
       {
         type: "collapse",
