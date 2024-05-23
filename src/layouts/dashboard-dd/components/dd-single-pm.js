@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import PropTypes from "prop-types";
 import { Card, CardContent, Avatar, Box, Typography, Button, Grid } from "@mui/material";
 import { Outlet, useLocation } from "react-router-dom";
 import UsersTable from "layouts/user-table";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import MDBox from "components/MDBox";
 import userRoles from "constants/userRoles";
+import getFullStatusName from "../../../constants/getFullStatusName";
 
 const DeputyDirectorSinglePM = () => {
   const [status, setStatus] = useState(userRoles.FIELD_FORCE_MANAGER);
@@ -38,10 +38,10 @@ const DeputyDirectorSinglePM = () => {
                   <Box display="flex" alignItems="center" mb={3}>
                     <Avatar src={""} sx={{ width: 56, height: 56, mr: 2 }} />
                     <Box>
-                      <Typography variant="h6">{user.fullname}</Typography>
-                      <Typography variant="body2">{user.username}</Typography>
+                      <Typography variant="h6">{user.full_name}</Typography>
+                      <Typography variant="body2">{getFullStatusName(user.status)}</Typography>
                       <Typography variant="body2" color="textSecondary">
-                        {user.status}
+                        {user.username}
                       </Typography>
                     </Box>
                   </Box>
@@ -102,7 +102,7 @@ const DeputyDirectorSinglePM = () => {
                   <UsersTable
                     path={`common/get-users-by-username?username=${user.username}`}
                     status={status}
-                    title={"Product Manager"}
+                    title={`${getFullStatusName(status)}s`}
                     onRowClick={() => alert("Hello")}
                   />
                 </CardContent>
