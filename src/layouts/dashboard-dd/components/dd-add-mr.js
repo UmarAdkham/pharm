@@ -29,41 +29,64 @@ function DeputyDirectorAddMedicalRepresentative() {
   const [full_name, setFullname] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [ffm_id, setFieldForceManagerId] = useState("");
-  const [region_manager_id, setRegionalManagerId] = useState("");
-  const [fieldForceManagers, setFieldForceManagers] = useState([]);
-  const [regionalManagers, setRegionalManagers] = useState([]);
-  const [message, setMessage] = useState({ color: "", content: "" });
-  const user = location.state || {};
+  const [selectedFFM, setSelectedFFM] = useState(null); // State to track the selected Field Force Manager
+  const [region_manager_id, setRegionalManagerId] = useState(""); // State to track the selected Regional Manager
+  const [fieldForceManagers, setFieldForceManagers] = useState([]); // State to store the list of Field Force Managers
+  const [regionalManagers, setRegionalManagers] = useState([]); // State to store the list of Regional Managers
+  const [message, setMessage] = useState({ color: "", content: "" }); // State to store the message to be displayed
+  const user = location.state || {}; // Retrieve user information from the location state
 
+  // useEffect to fetch Field Force Managers when the component mounts or when accessToken changes
   useEffect(() => {
     const fetchFieldForceManagers = async () => {
-      console.log(user.username);
       try {
         const response = await axios.get(
           `https://heartly1.uz/common/get-users-by-username?username=${user.username}`,
           {
             headers: {
-              Authorization: `Bearer ${accessToken}`,
+              Authorization: `Bearer ${accessToken}`, // Set the authorization header with the access token
             },
           }
         );
         const fieldForceManagers = response.data.filter(
-          (user) => user.status === userRoles.FIELD_FORCE_MANAGER
+          (user) => user.status === userRoles.FIELD_FORCE_MANAGER // Filter users to get only Field Force Managers
         );
-        const regionalManagers = response.data.filter(
-          (user) => user.status === userRoles.REGIONAL_MANAGER
-        );
-        setFieldForceManagers(fieldForceManagers);
-        setRegionalManagers(regionalManagers);
+        setFieldForceManagers(fieldForceManagers); // Update the state with the fetched Field Force Managers
       } catch (error) {
-        console.error("Failed to fetch users:", error);
+        console.error("Failed to fetch users:", error); // Log any errors that occur during the fetch
       }
     };
 
-    fetchFieldForceManagers();
+    fetchFieldForceManagers(); // Call the fetch function
   }, [accessToken]);
 
+  // useEffect to fetch Regional Managers when the selectedFFM state changes
+  useEffect(() => {
+    const getRegionalManagers = async () => {
+      try {
+        const response = await axios.get(
+          `https://heartly1.uz/common/get-users-by-username?username=${selectedFFM.username}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`, // Set the authorization header with the access token
+            },
+          }
+        );
+        const regionalManagers = response.data.filter(
+          (user) => user.status === userRoles.REGIONAL_MANAGER // Filter users to get only Regional Managers
+        );
+        setRegionalManagers(regionalManagers); // Update the state with the fetched Regional Managers
+      } catch (error) {
+        console.error("Failed to fetch users:", error); // Log any errors that occur during the fetch
+      }
+    };
+
+    if (selectedFFM) {
+      getRegionalManagers(); // Call the fetch function if a Field Force Manager is selected
+    }
+  }, [selectedFFM]);
+
+  // Function to handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission
 
@@ -72,7 +95,7 @@ function DeputyDirectorAddMedicalRepresentative() {
       full_name,
       username,
       password,
-      ffm_id,
+      ffm_id: selectedFFM.id,
       product_manager_id: user.id,
       region_manager_id,
       region_id: user.region_id,
@@ -83,7 +106,7 @@ function DeputyDirectorAddMedicalRepresentative() {
       // Call the API with authorization header
       const response = await axios.post("https://heartly1.uz/dd/register-for-dd", userData, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}`, // Set the authorization header with the access token
         },
       });
 
@@ -101,7 +124,7 @@ function DeputyDirectorAddMedicalRepresentative() {
         color: "error",
         content:
           "Failed to register user. " +
-          (error.response?.data?.detail || "Please check your input and try again."),
+          (error.response?.data?.detail || "Please check your input and try again."), // Display an error message
       });
     }
   };
@@ -133,7 +156,7 @@ function DeputyDirectorAddMedicalRepresentative() {
                 label="Fullname"
                 fullWidth
                 value={full_name}
-                onChange={(e) => setFullname(e.target.value)}
+                onChange={(e) => setFullname(e.target.value)} // Update the fullname state
               />
             </MDBox>
             <MDBox mb={2}>
@@ -142,7 +165,7 @@ function DeputyDirectorAddMedicalRepresentative() {
                 label="Username"
                 fullWidth
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => setUsername(e.target.value)} // Update the username state
               />
             </MDBox>
             <MDBox mb={2}>
@@ -151,7 +174,7 @@ function DeputyDirectorAddMedicalRepresentative() {
                 label="Password"
                 fullWidth
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)} // Update the password state
               />
             </MDBox>
             <MDBox mb={2}>
@@ -159,13 +182,15 @@ function DeputyDirectorAddMedicalRepresentative() {
                 <InputLabel id="field-force-manager-label">Field Force Manager</InputLabel>
                 <Select
                   labelId="field-force-manager-label"
-                  value={ffm_id}
+                  value={selectedFFM || ""}
                   label="Field Force Manager"
-                  onChange={(e) => setFieldForceManagerId(e.target.value)}
+                  onChange={(e) => {
+                    setSelectedFFM(e.target.value); // Update the selected Field Force Manager state
+                  }}
                   sx={{ height: "45px" }}
                 >
                   {fieldForceManagers.map((ffm) => (
-                    <MenuItem key={ffm.id} value={ffm.id}>
+                    <MenuItem key={ffm.id} value={ffm}>
                       {ffm.full_name}
                     </MenuItem>
                   ))}
@@ -179,7 +204,7 @@ function DeputyDirectorAddMedicalRepresentative() {
                   labelId="regional-manager-label"
                   value={region_manager_id}
                   label="Regional Manager"
-                  onChange={(e) => setRegionalManagerId(e.target.value)}
+                  onChange={(e) => setRegionalManagerId(e.target.value)} // Update the selected Regional Manager state
                   sx={{ height: "45px" }}
                 >
                   {regionalManagers.map((rm) => (
