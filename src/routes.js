@@ -208,6 +208,34 @@ const roleBasedRoutes = [
       },
     ],
   },
+  {
+    role: "head_of_co",
+    path: "hoc",
+    routes: [{ path: "dashboard", component: <ProductManagerDashboard /> }],
+    sideNav: [
+      {
+        type: "collapse",
+        name: "Dashboard",
+        key: "dashboard-hoc",
+        icon: <Icon fontSize="small">dashboard</Icon>,
+        route: "dashboard",
+      },
+    ],
+  },
+  {
+    role: "sabrina",
+    path: "sabrina",
+    routes: [{ path: "dashboard", component: <ProductManagerDashboard /> }],
+    sideNav: [
+      {
+        type: "collapse",
+        name: "Dashboard",
+        key: "dashboard-sabrina",
+        icon: <Icon fontSize="small">dashboard</Icon>,
+        route: "dashboard",
+      },
+    ],
+  },
 ];
 
 export default roleBasedRoutes;
