@@ -7,13 +7,12 @@ import MDBox from "components/MDBox";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import MedicalRepresentativeTable from "layouts/mr-table";
 
 // Dashboard components
 import { Outlet, useNavigate } from "react-router-dom";
 import DeputyDirectorTable from "../table";
 
-function DeputyDirectorCategories() {
+function DeputyDirectorManufacturerCompanies() {
   const navigate = useNavigate();
   return (
     <DashboardLayout>
@@ -27,13 +26,17 @@ function DeputyDirectorCategories() {
                   color="success"
                   sx={{ color: "white" }}
                   onClick={() => {
-                    navigate("/dd/add-category");
+                    navigate("/dd/add-manufacturer-company");
                   }}
                 >
                   Add
                 </Button>
               </Box>
-              <DeputyDirectorTable path={"common/get-category"} tableType="categories" />
+              <DeputyDirectorTable
+                path={"common/get-manufactured-company"}
+                tableType="manufacturer-companies"
+                title={"Manufacturer Companies"}
+              />
             </Grid>
           </Grid>
         </MDBox>
@@ -43,4 +46,4 @@ function DeputyDirectorCategories() {
   );
 }
 
-export default DeputyDirectorCategories;
+export default DeputyDirectorManufacturerCompanies;

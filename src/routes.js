@@ -22,6 +22,8 @@ import DeputyDirectorMrs from "layouts/dashboard-dd/components/dd-mrs";
 import DeputyDirectorAddNotification from "layouts/dashboard-dd/components/dd-add-ntfc";
 import DeputyDirectorAddProductCategory from "layouts/dashboard-dd/components/dd-add-ctgr";
 import DeputyDirectorCategories from "layouts/dashboard-dd/components/dd-categories";
+import DeputyDirectorManufacturerCompanies from "layouts/dashboard-dd/components/dd-mnfcts";
+import DeputyDirectorAddManufacturerCompany from "layouts/dashboard-dd/components/dd-add-mnfct";
 
 const roleBasedRoutes = [
   {
@@ -63,6 +65,8 @@ const roleBasedRoutes = [
       { path: "add-notification", component: <DeputyDirectorAddNotification /> },
       { path: "categories", component: <DeputyDirectorCategories /> },
       { path: "add-category", component: <DeputyDirectorAddProductCategory /> },
+      { path: "manufacturer-companies", component: <DeputyDirectorManufacturerCompanies /> },
+      { path: "add-manufacturer-company", component: <DeputyDirectorAddManufacturerCompany /> },
     ],
     sideNav: [
       {
@@ -99,6 +103,13 @@ const roleBasedRoutes = [
         key: "dd-add-category",
         icon: <Icon fontSize="small">category</Icon>,
         route: "categories",
+      },
+      {
+        type: "collapse",
+        name: "Manufacturer Companies",
+        key: "dd-manufacturer-companies",
+        icon: <Icon fontSize="small">business</Icon>,
+        route: "manufacturer-companies",
       },
     ],
   },

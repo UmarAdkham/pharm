@@ -5,7 +5,6 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
 import Icon from "@mui/material/Icon";
 import Autocomplete from "@mui/material/Autocomplete";
 import MDBox from "components/MDBox";
@@ -37,6 +36,8 @@ function DataTable({
     useSortBy,
     usePagination
   );
+
+  console.log(table);
 
   const {
     getTableProps,

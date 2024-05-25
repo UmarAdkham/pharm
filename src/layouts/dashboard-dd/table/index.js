@@ -7,10 +7,22 @@ import MenuItem from "@mui/material/MenuItem";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
-import useCategoryData from "./category-data";
+import useCategoryData from "./data/category-data";
+import useManufacturerCompanyData from "./data/manufacturer-company-data";
 
-function DeputyDirectorTable({ path, status, title }) {
-  const { columns, rows } = useCategoryData(path);
+function DeputyDirectorTable({ path, status, title, tableType }) {
+  let data = { columns: [], rows: [] }; // Default structure
+  switch (tableType) {
+    case "categories":
+      data = useCategoryData(path) || data; // Use default if hook returns falsy
+      break;
+    case "manufacturer-companies":
+      data = useManufacturerCompanyData(path) || data; // Use default if hook returns falsy
+      break;
+    default:
+      break;
+  }
+  const { columns, rows } = data;
   const [menu, setMenu] = useState(null);
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
@@ -72,8 +84,11 @@ DeputyDirectorTable.propTypes = {
   path: PropTypes.string,
   status: PropTypes.string,
   title: PropTypes.string,
+  tableType: PropTypes.string,
 };
 
-DeputyDirectorTable.defaultProps = {};
+DeputyDirectorTable.defaultProps = {
+  title: "",
+};
 
 export default DeputyDirectorTable;
