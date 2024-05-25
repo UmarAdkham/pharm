@@ -18,6 +18,8 @@ import DeputyDirectorAddFieldForce from "layouts/dashboard-dd/components/dd-add-
 import DeputyDirectorSinglePM from "layouts/dashboard-dd/components/dd-single-pm";
 import DeputyDirectorAddRegionalManager from "layouts/dashboard-dd/components/dd-add-rm";
 import DeputyDirectorAddMedicalRepresentative from "layouts/dashboard-dd/components/dd-add-mr";
+import DeputyDirectorMrs from "layouts/dashboard-dd/components/dd-mrs";
+import DeputyDirectorAddNotification from "layouts/dashboard-dd/components/dd-add-ntfc";
 
 const roleBasedRoutes = [
   {
@@ -55,6 +57,8 @@ const roleBasedRoutes = [
       { path: "add-ff", component: <DeputyDirectorAddFieldForce /> },
       { path: "add-rm", component: <DeputyDirectorAddRegionalManager /> },
       { path: "add-mr", component: <DeputyDirectorAddMedicalRepresentative /> },
+      { path: "mrs", component: <DeputyDirectorMrs /> },
+      { path: "add-notification", component: <DeputyDirectorAddNotification /> },
     ],
     sideNav: [
       {
@@ -66,7 +70,7 @@ const roleBasedRoutes = [
       },
       {
         type: "collapse",
-        name: "Add new user",
+        name: "Add Product Manager",
         key: "dd-add",
         icon: <Icon fontSize="small">add</Icon>,
         route: "add",
@@ -80,10 +84,10 @@ const roleBasedRoutes = [
       },
       {
         type: "collapse",
-        name: "Doctor plans",
-        key: "dd-doctor-plans",
+        name: "Medical Representatives",
+        key: "dd-mrs",
         icon: <Icon fontSize="small">vaccines</Icon>,
-        route: "doctor-plans",
+        route: "mrs",
       },
     ],
   },
