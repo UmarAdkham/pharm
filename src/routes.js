@@ -20,6 +20,8 @@ import DeputyDirectorAddRegionalManager from "layouts/dashboard-dd/components/dd
 import DeputyDirectorAddMedicalRepresentative from "layouts/dashboard-dd/components/dd-add-mr";
 import DeputyDirectorMrs from "layouts/dashboard-dd/components/dd-mrs";
 import DeputyDirectorAddNotification from "layouts/dashboard-dd/components/dd-add-ntfc";
+import DeputyDirectorAddProductCategory from "layouts/dashboard-dd/components/dd-add-ctgr";
+import DeputyDirectorCategories from "layouts/dashboard-dd/components/dd-categories";
 
 const roleBasedRoutes = [
   {
@@ -59,6 +61,8 @@ const roleBasedRoutes = [
       { path: "add-mr", component: <DeputyDirectorAddMedicalRepresentative /> },
       { path: "mrs", component: <DeputyDirectorMrs /> },
       { path: "add-notification", component: <DeputyDirectorAddNotification /> },
+      { path: "categories", component: <DeputyDirectorCategories /> },
+      { path: "add-category", component: <DeputyDirectorAddProductCategory /> },
     ],
     sideNav: [
       {
@@ -79,15 +83,22 @@ const roleBasedRoutes = [
         type: "collapse",
         name: "Product Managers",
         key: "dd-pms",
-        icon: <Icon fontSize="small">medication</Icon>,
+        icon: <Icon fontSize="small">manage_accounts</Icon>,
         route: "pms",
       },
       {
         type: "collapse",
         name: "Medical Representatives",
         key: "dd-mrs",
-        icon: <Icon fontSize="small">vaccines</Icon>,
+        icon: <Icon fontSize="small">support_agent</Icon>,
         route: "mrs",
+      },
+      {
+        type: "collapse",
+        name: "Categories",
+        key: "dd-add-category",
+        icon: <Icon fontSize="small">category</Icon>,
+        route: "categories",
       },
     ],
   },
