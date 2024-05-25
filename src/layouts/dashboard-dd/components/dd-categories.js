@@ -33,7 +33,11 @@ function DeputyDirectorCategories() {
                   Add
                 </Button>
               </Box>
-              <DeputyDirectorTable path={"common/get-category"} tableType="categories" />
+              <DeputyDirectorTable
+                path={"common/get-product-category"}
+                tableType="categories"
+                title="Categories"
+              />
             </Grid>
           </Grid>
         </MDBox>
