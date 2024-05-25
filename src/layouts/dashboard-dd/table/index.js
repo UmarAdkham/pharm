@@ -9,6 +9,7 @@ import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import useCategoryData from "./data/category-data";
 import useManufacturerCompanyData from "./data/manufacturer-company-data";
+import useProductData from "./data/product-data";
 
 function DeputyDirectorTable({ path, status, title, tableType }) {
   let data = { columns: [], rows: [] }; // Default structure
@@ -18,6 +19,9 @@ function DeputyDirectorTable({ path, status, title, tableType }) {
       break;
     case "manufacturer-companies":
       data = useManufacturerCompanyData(path) || data; // Use default if hook returns falsy
+      break;
+    case "products":
+      data = useProductData(path) || data; // Use default if hook returns falsy
       break;
     default:
       break;
