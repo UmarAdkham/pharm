@@ -21,7 +21,7 @@ export default function useUserData(apiPath, status, onIconClick) {
           },
         });
 
-        const users = response.data.filter((user) => user.status === status);
+        const mrs = response.data.filter((user) => user.status === status);
 
         const columns = [
           { Header: "Username", accessor: "username", align: "left" },
@@ -30,26 +30,26 @@ export default function useUserData(apiPath, status, onIconClick) {
           { Header: "Actions", accessor: "actions", align: "center" }, // Add Actions column
         ];
 
-        const rows = users.map((user) => ({
+        const rows = mrs.map((mr) => ({
           username: (
             <MDTypography variant="caption" fontWeight="medium">
-              {user.username}
+              {mr.username}
             </MDTypography>
           ),
           full_name: (
             <MDTypography variant="caption" fontWeight="medium">
-              {user.full_name}
+              {mr.full_name}
             </MDTypography>
           ),
           status: (
             <MDTypography variant="caption" fontWeight="medium" color="text">
-              {user.status}
+              {mr.status}
             </MDTypography>
           ),
           actions: (
             <IconButton
               onClick={() => {
-                navigate("/dd/add-notification");
+                navigate("/dd/add-notification", { state: mr });
               }}
             >
               <NotificationIcon />

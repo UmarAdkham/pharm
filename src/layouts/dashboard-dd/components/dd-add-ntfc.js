@@ -7,6 +7,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 // @mui material components
 import Card from "@mui/material/Card";
 import Alert from "@mui/material/Alert";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -16,29 +20,70 @@ import MDButton from "components/MDButton";
 
 // Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
-import userRoles from "constants/userRoles";
 
 function DeputyDirectorAddNotification() {
   const navigate = useNavigate();
   const location = useLocation();
   const { accessToken } = useSelector((state) => state.auth);
-  const [full_name, setFullname] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [thema, setThema] = useState("");
+  const [description, setDescription] = useState("");
+  const [doctor_id, setDoctorId] = useState(0);
+  const [pharmacy_id, setPharmacyId] = useState(0);
+  const [pharmacies, setPharmacies] = useState([]);
+  const [doctors, setDoctors] = useState([]);
+
   const [message, setMessage] = useState({ color: "", content: "" });
-  const user = location.state || {};
+  const { id, full_name } = location.state || {};
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await axios.get(
+          `https://heartly1.uz/mr/get-doctors`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        const doctors = response.data;
+        setDoctors(doctors);
+      } catch (error) {
+        console.error("Failed to fetch doctors:", error);
+      }
+    };
+
+    fetchDoctors();
+  }, [accessToken]);
+
+  useEffect(() => {
+    const fetchPharmacies = async () => {
+      try {
+        const response = await axios.get(`https://heartly1.uz/mr/get-pharmacy?user_id=0`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        const pharmacies = response.data;
+        setPharmacies(pharmacies);
+      } catch (error) {
+        console.error("Failed to fetch pharmacies:", error);
+      }
+    };
+
+    fetchPharmacies();
+  }, [accessToken]);
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission
-
     // Define the request payload
     const notificationData = {
-      author: "Author",
-      thema: "Theme",
-      description: "Description",
-      med_rep_id: 0,
-      pharmacy_id: 0,
-      doctor_id: 0,
+      author: full_name,
+      thema,
+      description,
+      med_rep_id: id,
+      doctor_id,
+      pharmacy_id,
     };
 
     try {
@@ -50,19 +95,18 @@ function DeputyDirectorAddNotification() {
       });
 
       // Handle a successful response
-      setMessage({ color: "success", content: "Notification is added" });
-
+      setMessage({ color: "success", content: "Notification is sent" });
+      console.log(response.data);
       // Optional: Redirect after a delay
       setTimeout(() => {
         navigate(-1);
       }, 2000);
     } catch (error) {
       console.log(error);
-      // Handle errors gracefully
       setMessage({
         color: "error",
         content:
-          "Failed to register user. " +
+          "Failed to send notification. " +
           (error.response?.data?.detail || "Please check your input and try again."),
       });
     }
@@ -83,7 +127,7 @@ function DeputyDirectorAddNotification() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Add Notification
+            Post Notification
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -92,30 +136,58 @@ function DeputyDirectorAddNotification() {
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Fullname"
+                label="Theme"
                 fullWidth
-                value={full_name}
-                onChange={(e) => setFullname(e.target.value)}
+                value={thema}
+                onChange={(e) => setThema(e.target.value)}
               />
             </MDBox>
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Username"
+                label="Description"
                 fullWidth
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
               />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput
-                type="password"
-                label="Password"
-                fullWidth
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <FormControl fullWidth>
+                <InputLabel id="doctor-label">Doctors</InputLabel>
+                <Select
+                  labelId="doctor-label"
+                  value={doctor_id}
+                  label="Doctors"
+                  onChange={(e) => setDoctorId(e.target.value)}
+                  sx={{ height: "45px" }}
+                >
+                  {doctors.map((doctor) => (
+                    <MenuItem key={doctor.id} value={doctor.id}>
+                      {doctor.full_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </MDBox>
+            <MDBox mb={2}>
+              <FormControl fullWidth>
+                <InputLabel id="pharmacy-label">Pharmacies</InputLabel>
+                <Select
+                  labelId="pharmacy-label"
+                  value={pharmacies}
+                  label="Pharmacies"
+                  onChange={(e) => setPharmacyId(e.target.value)}
+                  sx={{ height: "45px" }}
+                >
+                  {pharmacies.map((pharmacy) => (
+                    <MenuItem key={pharmacy.id} value={pharmacy.id}>
+                      {pharmacy.company_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </MDBox>
+
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
                 Add
