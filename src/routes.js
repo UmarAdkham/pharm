@@ -6,7 +6,7 @@ import ProductManagerDashboard from "layouts/dashboard-pm";
 import RegionalManagerDashboard from "layouts/dashboard-rm";
 import userRoles from "constants/userRoles";
 import DirectorAdd from "layouts/dashboard-director/components/director-add";
-import DeputyDirectorAdd from "layouts/dashboard-dd/components/dd-add";
+import DeputyDirectorAdd from "layouts/dashboard-dd/components/dd-add-pm";
 import ProductManagerAdd from "layouts/dashboard-pm/components/pm-add";
 import FieldForceManagerAdd from "layouts/dashboard-ff/components/ff-add";
 import FieldForceManagerDashboard from "layouts/dashboard-ff";
