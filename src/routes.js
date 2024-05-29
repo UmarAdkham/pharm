@@ -26,6 +26,8 @@ import DeputyDirectorManufacturerCompanies from "layouts/dashboard-dd/components
 import DeputyDirectorAddManufacturerCompany from "layouts/dashboard-dd/components/dd-add-mnfct";
 import DeputyDirectorProducts from "layouts/dashboard-dd/components/dd-products";
 import DeputyDirectorAddProduct from "layouts/dashboard-dd/components/dd-add-product";
+import DeputyDirectorRegions from "layouts/dashboard-dd/components/dd-regions";
+import DeputyDirectorAddRegion from "layouts/dashboard-dd/components/dd-add-region";
 
 const roleBasedRoutes = [
   {
@@ -71,6 +73,8 @@ const roleBasedRoutes = [
       { path: "add-manufacturer-company", component: <DeputyDirectorAddManufacturerCompany /> },
       { path: "products", component: <DeputyDirectorProducts /> },
       { path: "add-product", component: <DeputyDirectorAddProduct /> },
+      { path: "regions", component: <DeputyDirectorRegions /> },
+      { path: "add-region", component: <DeputyDirectorAddRegion /> },
     ],
     sideNav: [
       {
@@ -121,6 +125,13 @@ const roleBasedRoutes = [
         key: "dd-products",
         icon: <Icon fontSize="small">inventory</Icon>,
         route: "products",
+      },
+      {
+        type: "collapse",
+        name: "Regions",
+        key: "dd-regions",
+        icon: <Icon fontSize="small">south_america</Icon>,
+        route: "regions",
       },
     ],
   },
