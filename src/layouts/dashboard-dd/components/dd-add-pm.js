@@ -34,7 +34,7 @@ function DeputyDirectorAdd() {
       full_name,
       username,
       password,
-      region_id: 0,
+      region_id: 1,
       status: userRoles.PRODUCT_MANAGER
     };
 
