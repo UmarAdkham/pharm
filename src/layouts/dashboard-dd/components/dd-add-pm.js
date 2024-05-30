@@ -55,7 +55,7 @@ function DeputyDirectorAdd() {
 
       // Optional: Redirect after a delay
       setTimeout(() => {
-        navigate("/dd/dashboard");
+        navigate("/dd/pms");
       }, 2000);
     } catch (error) {
       // Handle errors gracefully
