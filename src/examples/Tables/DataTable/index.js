@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useTable, usePagination, useGlobalFilter, useAsyncDebounce, useSortBy } from "react-table";
 import Table from "@mui/material/Table";
@@ -27,7 +27,22 @@ function DataTable({
   const entries = entriesPerPage.entries
     ? entriesPerPage.entries.map((el) => el.toString())
     : ["5", "10", "15", "20", "25"];
-  const columns = useMemo(() => table.columns, [table]);
+
+  const columns = useMemo(
+    () => [
+      {
+        Header: "#",
+        accessor: (row, i) => i + 1,
+        disableSortBy: true,
+        // eslint-disable-next-line react/prop-types
+        Cell: ({ value }) => <div>{value}</div>,
+        width: 50,
+      },
+      ...table.columns,
+    ],
+    [table]
+  );
+
   const data = useMemo(() => table.rows, [table]);
 
   const tableInstance = useTable(
@@ -36,8 +51,6 @@ function DataTable({
     useSortBy,
     usePagination
   );
-
-  console.log(table);
 
   const {
     getTableProps,
