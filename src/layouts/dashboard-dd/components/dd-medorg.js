@@ -20,22 +20,11 @@ function DeputyDirectorMedicalOrganizations() {
         <MDBox>
           <Grid container spacing={3}>
             <Grid item xs={12} lg={12}>
-              <Box display="flex" justifyContent="flex-end" mb={3}>
-                <Button
-                  variant="contained"
-                  color="success"
-                  sx={{ color: "white" }}
-                  onClick={() => {
-                    navigate("/dd/add-medical-organziation");
-                  }}
-                >
-                  Add
-                </Button>
-              </Box>
               <DeputyDirectorTable
                 path={"common/get-medical-organization"}
                 tableType="medical-organizations"
                 title={"Medical Organizations"}
+                navigatePath="/dd/add-medical-organization"
               />
             </Grid>
           </Grid>

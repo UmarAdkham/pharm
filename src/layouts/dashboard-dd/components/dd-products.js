@@ -20,22 +20,11 @@ function DeputyDirectorProducts() {
         <MDBox>
           <Grid container spacing={3}>
             <Grid item xs={12} lg={12}>
-              <Box display="flex" justifyContent="flex-end" mb={3}>
-                <Button
-                  variant="contained"
-                  color="success"
-                  sx={{ color: "white" }}
-                  onClick={() => {
-                    navigate("/dd/add-product");
-                  }}
-                >
-                  Add
-                </Button>
-              </Box>
               <DeputyDirectorTable
                 path={"common/get-product"}
                 tableType="products"
                 title={"Products"}
+                navigatePath="/dd/add-product"
               />
             </Grid>
           </Grid>

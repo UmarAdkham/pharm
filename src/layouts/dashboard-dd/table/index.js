@@ -1,9 +1,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import Card from "@mui/material/Card";
-import Icon from "@mui/material/Icon";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
@@ -13,57 +11,34 @@ import useProductData from "./data/product-data";
 import useRegionData from "./data/region-data";
 import useMedicalOrganizationData from "./data/medorg.-data";
 import useSpecialityData from "./data/speciality-data";
+import { useNavigate } from "react-router-dom";
 
-function DeputyDirectorTable({ path, status, title, tableType }) {
+function DeputyDirectorTable({ path, status, title, tableType, navigatePath }) {
+  const navigate = useNavigate();
   let data = { columns: [], rows: [] }; // Default structure
   switch (tableType) {
     case "categories":
-      data = useCategoryData(path) || data; // Use default if hook returns falsy
+      data = useCategoryData(path) || data;
       break;
     case "manufacturer-companies":
-      data = useManufacturerCompanyData(path) || data; // Use default if hook returns falsy
+      data = useManufacturerCompanyData(path) || data;
       break;
     case "products":
-      data = useProductData(path) || data; // Use default if hook returns falsy
+      data = useProductData(path) || data;
       break;
     case "regions":
-      data = useRegionData(path) || data; // Use default if hook returns falsy
+      data = useRegionData(path) || data;
       break;
     case "medical-organizations":
-      data = useMedicalOrganizationData(path) || data; // Use default if hook returns falsy
+      data = useMedicalOrganizationData(path) || data;
       break;
     case "specialities":
-      data = useSpecialityData(path) || data; // Use default if hook returns falsy
+      data = useSpecialityData(path) || data;
       break;
     default:
       break;
   }
   const { columns, rows } = data;
-  const [menu, setMenu] = useState(null);
-
-  const openMenu = ({ currentTarget }) => setMenu(currentTarget);
-  const closeMenu = () => setMenu(null);
-
-  const renderMenu = (
-    <Menu
-      id="simple-menu"
-      anchorEl={menu}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "left",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={Boolean(menu)}
-      onClose={closeMenu}
-    >
-      <MenuItem onClick={closeMenu}>Action</MenuItem>
-      <MenuItem onClick={closeMenu}>Another action</MenuItem>
-      <MenuItem onClick={closeMenu}>Something else</MenuItem>
-    </Menu>
-  );
 
   return (
     <Card>
@@ -73,12 +48,18 @@ function DeputyDirectorTable({ path, status, title, tableType }) {
             {title}
           </MDTypography>
         </MDBox>
-        <MDBox color="text" px={2}>
-          <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
-            more_vert
-          </Icon>
+        <MDBox>
+          <Button
+            variant="contained"
+            color="success"
+            sx={{ color: "white" }}
+            onClick={() => {
+              navigate(navigatePath);
+            }}
+          >
+            Add
+          </Button>
         </MDBox>
-        {renderMenu}
       </MDBox>
       <MDBox>
         <DataTable
@@ -101,6 +82,7 @@ DeputyDirectorTable.propTypes = {
   status: PropTypes.string,
   title: PropTypes.string,
   tableType: PropTypes.string,
+  navigatePath: PropTypes.string,
 };
 
 DeputyDirectorTable.defaultProps = {
