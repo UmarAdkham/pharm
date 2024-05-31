@@ -28,6 +28,8 @@ import DeputyDirectorProducts from "layouts/dashboard-dd/components/dd-products"
 import DeputyDirectorAddProduct from "layouts/dashboard-dd/components/dd-add-product";
 import DeputyDirectorRegions from "layouts/dashboard-dd/components/dd-regions";
 import DeputyDirectorAddRegion from "layouts/dashboard-dd/components/dd-add-region";
+import DeputyDirectorMedicalOrganizations from "layouts/dashboard-dd/components/dd-medorg";
+import DeputyDirectorAddMedicalOrganization from "layouts/dashboard-dd/components/dd-add-medorg";
 
 const roleBasedRoutes = [
   {
@@ -75,6 +77,8 @@ const roleBasedRoutes = [
       { path: "add-product", component: <DeputyDirectorAddProduct /> },
       { path: "regions", component: <DeputyDirectorRegions /> },
       { path: "add-region", component: <DeputyDirectorAddRegion /> },
+      { path: "medical-organizations", component: <DeputyDirectorMedicalOrganizations /> },
+      { path: "add-medical-organziation", component: <DeputyDirectorAddMedicalOrganization /> },
     ],
     sideNav: [
       {
@@ -132,6 +136,13 @@ const roleBasedRoutes = [
         key: "dd-regions",
         icon: <Icon fontSize="small">south_america</Icon>,
         route: "regions",
+      },
+      {
+        type: "collapse",
+        name: "Medical Organizations",
+        key: "dd-medical-organizations",
+        icon: <Icon fontSize="small">south_america</Icon>,
+        route: "medical-organizations",
       },
     ],
   },

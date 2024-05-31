@@ -17,6 +17,8 @@ import useAxiosInterceptor from "./hooks/useAxiosInterceptor";
 import { isTokenExpired } from "./utils/auth";
 import { useDispatch } from "react-redux";
 import { logout } from "./redux/auth/authSlice";
+import "leaflet/dist/leaflet.css";
+// import "react-leaflet-geosearch/lib/react-leaflet-geosearch.css";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
