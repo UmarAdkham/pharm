@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +18,8 @@ import MDButton from "components/MDButton";
 
 // Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
+import userRoles from "constants/userRoles";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 // Fix for Leaflet's default marker icon not being displayed
 delete L.Icon.Default.prototype._getIconUrl;
@@ -35,14 +37,55 @@ function DeputyDirectorAddMedOrganization() {
   const [longitude, setLongitude] = useState(0);
   const [medRepId, setMedRepId] = useState(0);
   const [regionId, setRegionId] = useState(0);
+  const [medReps, setMedReps] = useState([]);
+  const [regions, setRegions] = useState([]);
+
   const [message, setMessage] = useState({ color: "", content: "" });
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(`https://heartly1.uz/common/get-users`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        const medReps = response.data.filter(
+          (user) => user.status == userRoles.MEDICAL_REPRESENTATIVE
+        );
+        setMedReps(medReps);
+      } catch (error) {
+        console.error("Failed to fetch medical representatives:", error);
+      }
+    };
+
+    fetchUsers();
+  }, [accessToken]);
+
+  useEffect(() => {
+    const fetchRegions = async () => {
+      try {
+        const response = await axios.get(`https://heartly1.uz/common/get-regions`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        const regions = response.data;
+        setRegions(regions);
+      } catch (error) {
+        console.error("Failed to fetch regions:", error);
+      }
+    };
+
+    fetchRegions();
+  }, [accessToken]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
       const response = await axios.post(
-        "https://heartly1.uz/common/add-region",
+        "https://heartly1.uz/common/add-medical-organization",
         {
           address,
           latitude: latitude.toString(),
@@ -91,39 +134,42 @@ function DeputyDirectorAddMedOrganization() {
           {message.content && <Alert severity={message.color}>{message.content}</Alert>}
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <MDBox mb={2}>
-              <MDInput
-                type="text"
-                label="Address"
-                fullWidth
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-              />
+              <FormControl fullWidth>
+                <InputLabel id="medical-representatives-label">Medical Representatives</InputLabel>
+                <Select
+                  labelId="medical-representatives-label"
+                  value={medRepId}
+                  label="Medical Representatives"
+                  onChange={(e) => setMedRepId(e.target.value)}
+                  sx={{ height: "45px" }}
+                >
+                  {medReps.map((mr) => (
+                    <MenuItem key={mr.id} value={mr.id}>
+                      {mr.full_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="text" label="Latitude" fullWidth value={latitude} readOnly />
+              <FormControl fullWidth>
+                <InputLabel id="regions-label">Regions</InputLabel>
+                <Select
+                  labelId="regions-label"
+                  value={regionId}
+                  label="Regions"
+                  onChange={(e) => setRegionId(e.target.value)}
+                  sx={{ height: "45px" }}
+                >
+                  {regions.map((region) => (
+                    <MenuItem key={region.id} value={region.id}>
+                      {region.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </MDBox>
-            <MDBox mb={2}>
-              <MDInput type="text" label="Longitude" fullWidth value={longitude} readOnly />
-            </MDBox>
-            <MDBox mb={2}>
-              <MDInput
-                type="number"
-                label="Medical Representative ID"
-                fullWidth
-                value={medRepId}
-                onChange={(e) => setMedRepId(e.target.value)}
-              />
-            </MDBox>
-            <MDBox mb={2}>
-              <MDInput
-                type="number"
-                label="Region ID"
-                fullWidth
-                value={regionId}
-                onChange={(e) => setRegionId(e.target.value)}
-              />
-            </MDBox>
-            <MDBox mb={2} style={{ height: "400px" }}>
+            <MDBox mb={2} style={{ height: "200px" }}>
               <MapContainer
                 center={[51.505, -0.09]}
                 zoom={13}
@@ -140,6 +186,15 @@ function DeputyDirectorAddMedOrganization() {
                 />
                 {latitude !== 0 && longitude !== 0 && <Marker position={[latitude, longitude]} />}
               </MapContainer>
+            </MDBox>
+            <MDBox mb={2}>
+              <MDInput
+                type="text"
+                label="Address"
+                fullWidth
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+              />
             </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">

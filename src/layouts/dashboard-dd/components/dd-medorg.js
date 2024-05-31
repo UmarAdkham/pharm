@@ -34,7 +34,7 @@ function DeputyDirectorMedicalOrganizations() {
               </Box>
               <DeputyDirectorTable
                 path={"common/get-medical-organization"}
-                tableType="medical-organizaions"
+                tableType="medical-organizations"
                 title={"Medical Organizations"}
               />
             </Grid>
