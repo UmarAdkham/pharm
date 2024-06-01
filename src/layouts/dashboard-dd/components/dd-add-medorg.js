@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import SearchControl from "../../../services/geoSearchController"; // Import the custom SearchControl component
 
@@ -55,7 +55,7 @@ function DeputyDirectorAddMedOrganization() {
         );
         setMedReps(medReps);
       } catch (error) {
-        console.error("Не удалось получить медицинских представителей:", error);
+        console.error("Failed to fetch medical representatives:", error);
       }
     };
 
@@ -73,7 +73,7 @@ function DeputyDirectorAddMedOrganization() {
         const regions = response.data;
         setRegions(regions);
       } catch (error) {
-        console.error("Не удалось получить регионы:", error);
+        console.error("Failed to fetch regions:", error);
       }
     };
 
@@ -100,18 +100,45 @@ function DeputyDirectorAddMedOrganization() {
         }
       );
 
-      setMessage({ color: "success", content: "Медицинская организация успешно добавлена" });
+      setMessage({ color: "success", content: "Medical organization added successfully" });
       setTimeout(() => navigate(-1), 2000);
     } catch (error) {
       setMessage({
         color: "error",
         content:
-          "Не удалось добавить медицинскую организацию. " +
-          (error.response?.data?.detail ||
-            "Проверьте правильность введенных данных и попробуйте снова."),
+          "Failed to add medical organization. " +
+          (error.response?.data?.detail || "Please check your input and try again."),
       });
     }
   };
+
+  function LocationMarker() {
+    const map = useMapEvents({
+      click(e) {
+        setLatitude(e.latlng.lat);
+        setLongitude(e.latlng.lng);
+      },
+      move() {
+        setLatitude(map.getCenter().lat);
+        setLongitude(map.getCenter().lng);
+      },
+    });
+
+    return latitude !== 0 && longitude !== 0 ? (
+      <Marker
+        position={[latitude, longitude]}
+        draggable={true}
+        eventHandlers={{
+          dragend(e) {
+            const marker = e.target;
+            const position = marker.getLatLng();
+            setLatitude(position.lat);
+            setLongitude(position.lng);
+          },
+        }}
+      ></Marker>
+    ) : null;
+  }
 
   return (
     <BasicLayout>
@@ -128,7 +155,7 @@ function DeputyDirectorAddMedOrganization() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Добавить медицинскую организацию
+            Add Medical Organization
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -136,13 +163,11 @@ function DeputyDirectorAddMedOrganization() {
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <MDBox mb={2}>
               <FormControl fullWidth>
-                <InputLabel id="medical-representatives-label">
-                  Медицинские представители
-                </InputLabel>
+                <InputLabel id="medical-representatives-label">Medical Representatives</InputLabel>
                 <Select
                   labelId="medical-representatives-label"
                   value={medRepId}
-                  label="Медицинские представители"
+                  label="Medical Representatives"
                   onChange={(e) => setMedRepId(e.target.value)}
                   sx={{ height: "45px" }}
                 >
@@ -156,11 +181,11 @@ function DeputyDirectorAddMedOrganization() {
             </MDBox>
             <MDBox mb={2}>
               <FormControl fullWidth>
-                <InputLabel id="regions-label">Регионы</InputLabel>
+                <InputLabel id="regions-label">Regions</InputLabel>
                 <Select
                   labelId="regions-label"
                   value={regionId}
-                  label="Регионы"
+                  label="Regions"
                   onChange={(e) => setRegionId(e.target.value)}
                   sx={{ height: "45px" }}
                 >
@@ -187,13 +212,17 @@ function DeputyDirectorAddMedOrganization() {
                   setLongitude={setLongitude}
                   setAddress={setAddress}
                 />
-                {latitude !== 0 && longitude !== 0 && <Marker position={[latitude, longitude]} />}
+                <LocationMarker />
               </MapContainer>
+            </MDBox>
+            <MDBox mb={2}>
+              <MDTypography variant="h6">Latitude: {latitude}</MDTypography>
+              <MDTypography variant="h6">Longitude: {longitude}</MDTypography>
             </MDBox>
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Адрес"
+                label="Address"
                 fullWidth
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
@@ -201,7 +230,7 @@ function DeputyDirectorAddMedOrganization() {
             </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
-                Добавить
+                Add
               </MDButton>
             </MDBox>
           </MDBox>
