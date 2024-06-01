@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -28,17 +28,14 @@ function DeputyDirectorAddRegion() {
 
     try {
       // Call the API with authorization header
-      const response = await axios.post(
-        `https://heartly1.uz/common/add-region?name=${name}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await axios.post(`https://heartly1.uz/common/add-region?name=${name}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
       // Handle a successful response
-      setMessage({ color: "success", content: "Region is added" });
+      setMessage({ color: "success", content: "Регион добавлен" });
 
       // Optional: Redirect after a delay
       setTimeout(() => {
@@ -49,8 +46,9 @@ function DeputyDirectorAddRegion() {
       setMessage({
         color: "error",
         content:
-          "Failed to add region. " +
-          (error.response?.data?.detail || "Please check your input and try again."),
+          "Не удалось добавить регион. " +
+          (error.response?.data?.detail ||
+            "Проверьте правильность введенных данных и попробуйте снова."),
       });
     }
   };
@@ -70,7 +68,7 @@ function DeputyDirectorAddRegion() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Add Region
+            Добавить регион
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -79,7 +77,7 @@ function DeputyDirectorAddRegion() {
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Region name"
+                label="Название региона"
                 fullWidth
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -87,7 +85,7 @@ function DeputyDirectorAddRegion() {
             </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
-                Add
+                Добавить
               </MDButton>
             </MDBox>
           </MDBox>

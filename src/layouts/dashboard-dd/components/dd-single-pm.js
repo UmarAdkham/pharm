@@ -6,7 +6,7 @@ import UsersTable from "layouts/user-table";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import MDBox from "components/MDBox";
 import userRoles from "constants/userRoles";
-import getFullStatusName from "../../../constants/getFullStatusName";
+import getFullStatusName, { getFullStatusTranslation } from "../../../constants/getFullStatusName";
 
 const DeputyDirectorSinglePM = () => {
   const [status, setStatus] = useState(userRoles.FIELD_FORCE_MANAGER);
@@ -39,7 +39,9 @@ const DeputyDirectorSinglePM = () => {
                     <Avatar src={""} sx={{ width: 56, height: 56, mr: 2 }} />
                     <Box>
                       <Typography variant="h6">{user.full_name}</Typography>
-                      <Typography variant="body2">{getFullStatusName(user.status)}</Typography>
+                      <Typography variant="body2">
+                        {getFullStatusTranslation(user.status)}
+                      </Typography>
                       <Typography variant="body2" color="textSecondary">
                         {user.username}
                       </Typography>
@@ -57,7 +59,7 @@ const DeputyDirectorSinglePM = () => {
                         setStatus(userRoles.FIELD_FORCE_MANAGER);
                       }}
                     >
-                      Field Force Managers
+                      Менеджеры полевых сил
                     </Button>
                     <Button
                       variant={status === userRoles.REGIONAL_MANAGER ? "contained" : "outlined"}
@@ -69,7 +71,7 @@ const DeputyDirectorSinglePM = () => {
                         setStatus(userRoles.REGIONAL_MANAGER);
                       }}
                     >
-                      Regional Managers
+                      Региональные менеджеры
                     </Button>
                     <Button
                       variant={
@@ -83,7 +85,7 @@ const DeputyDirectorSinglePM = () => {
                         setStatus(userRoles.MEDICAL_REPRESENTATIVE);
                       }}
                     >
-                      Medical Representatives
+                      Медицинские представители
                     </Button>
                   </Box>
 
@@ -94,7 +96,7 @@ const DeputyDirectorSinglePM = () => {
                       sx={{ color: "white" }}
                       onClick={handleAddStatus}
                     >
-                      Add
+                      Добавить
                     </Button>
                   </Box>
 
@@ -103,7 +105,7 @@ const DeputyDirectorSinglePM = () => {
                     path={`common/get-users-by-username?username=${user.username}`}
                     status={status}
                     title={`${getFullStatusName(status)}s`}
-                    onRowClick={() => alert("Hello")}
+                    onRowClick={() => alert("Привет")}
                   />
                 </CardContent>
               </Card>

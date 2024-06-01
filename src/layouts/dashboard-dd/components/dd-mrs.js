@@ -26,7 +26,7 @@ function DeputyDirectorMrs({ children }) {
               <MedicalRepresentativeTable
                 path={"common/get-users"}
                 status={userRoles.MEDICAL_REPRESENTATIVE}
-                title={`${getFullStatusName(userRoles.MEDICAL_REPRESENTATIVE)}s`}
+                title={`Медицинские прредставители`}
                 // navigatePath={"/dd/single-pm"}
                 // onRowClick={(navigatePath, user) => {
                 //   navigate(navigatePath, { state: user });

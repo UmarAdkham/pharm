@@ -52,7 +52,7 @@ function DeputyDirectorAddRegionalManager() {
         console.log(fieldForceManagers);
         setFieldForceManagers(fieldForceManagers);
       } catch (error) {
-        console.error("Failed to fetch users:", error);
+        console.error("Не удалось получить пользователей:", error);
       }
     };
 
@@ -82,7 +82,7 @@ function DeputyDirectorAddRegionalManager() {
       });
 
       // Handle a successful response
-      setMessage({ color: "success", content: "User successfully registered!" });
+      setMessage({ color: "success", content: "Пользователь успешно зарегистрирован!" });
 
       // Optional: Redirect after a delay
       setTimeout(() => {
@@ -94,8 +94,8 @@ function DeputyDirectorAddRegionalManager() {
       setMessage({
         color: "error",
         content:
-          "Failed to register user. " +
-          (error.response?.data?.detail || "Please check your input and try again."),
+          "Не удалось зарегистрировать пользователя. " +
+          (error.response?.data?.detail || "Проверьте правильность введенных данных и попробуйте снова."),
       });
     }
   };
@@ -115,7 +115,7 @@ function DeputyDirectorAddRegionalManager() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Add Regional Manager
+            Добавить регионального менеджера
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -124,7 +124,7 @@ function DeputyDirectorAddRegionalManager() {
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Fullname"
+                label="Полное имя"
                 fullWidth
                 value={full_name}
                 onChange={(e) => setFullname(e.target.value)}
@@ -133,7 +133,7 @@ function DeputyDirectorAddRegionalManager() {
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Username"
+                label="Имя пользователя"
                 fullWidth
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -142,7 +142,7 @@ function DeputyDirectorAddRegionalManager() {
             <MDBox mb={2}>
               <MDInput
                 type="password"
-                label="Password"
+                label="Пароль"
                 fullWidth
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -150,11 +150,11 @@ function DeputyDirectorAddRegionalManager() {
             </MDBox>
             <MDBox mb={2}>
               <FormControl fullWidth>
-                <InputLabel id="field-force-manager-label">Field Force Manager</InputLabel>
+                <InputLabel id="field-force-manager-label">Менеджер полевых сил</InputLabel>
                 <Select
                   labelId="field-force-manager-label"
                   value={ffm_id}
-                  label="Field Force Manager"
+                  label="Менеджер полевых сил"
                   onChange={(e) => setFieldForceManagerId(e.target.value)}
                   sx={{ height: "45px" }}
                 >
@@ -168,7 +168,7 @@ function DeputyDirectorAddRegionalManager() {
             </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
-                Add
+                Добавить
               </MDButton>
             </MDBox>
           </MDBox>

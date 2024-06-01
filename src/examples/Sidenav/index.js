@@ -179,7 +179,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           rel="noreferrer"
           sx={{ textDecoration: "none" }}
         >
-          <SidenavCollapse name={"Logout"} icon={<Icon fontSize="small">exit_to_app</Icon>} />
+          <SidenavCollapse name={"Выйти"} icon={<Icon fontSize="small">exit_to_app</Icon>} />
         </Link>
       </MDBox>
     </SidenavRoot>

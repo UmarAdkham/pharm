@@ -23,7 +23,7 @@ function DeputyDirectorManufacturerCompanies() {
               <DeputyDirectorTable
                 path={"common/get-manufactured-company"}
                 tableType="manufacturer-companies"
-                title={"Manufacturer Companies"}
+                title={"Производственные компании"}
                 navigatePath="/dd/add-manufacturer-company"
               />
             </Grid>

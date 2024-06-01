@@ -57,7 +57,7 @@ function DeputyDirectorTable({ path, status, title, tableType, navigatePath }) {
               navigate(navigatePath);
             }}
           >
-            Add
+            Добавить
           </Button>
         </MDBox>
       </MDBox>

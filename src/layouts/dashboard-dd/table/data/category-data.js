@@ -19,7 +19,7 @@ export default function useCategoryData(apiPath) {
 
         const categories = response.data;
 
-        const columns = [{ Header: "Name", accessor: "name", align: "left" }];
+        const columns = [{ Header: "Название", accessor: "name", align: "left" }];
 
         const rows = categories.map((category) => ({
           name: (

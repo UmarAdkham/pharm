@@ -23,7 +23,7 @@ function DeputyDirectorProducts() {
               <DeputyDirectorTable
                 path={"common/get-product"}
                 tableType="products"
-                title={"Products"}
+                title={"Продукты"}
                 navigatePath="/dd/add-product"
               />
             </Grid>

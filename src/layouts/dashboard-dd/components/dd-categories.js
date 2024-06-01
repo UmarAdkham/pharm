@@ -24,7 +24,7 @@ function DeputyDirectorCategories() {
               <DeputyDirectorTable
                 path={"common/get-product-category"}
                 tableType="categories"
-                title="Categories"
+                title="Категории"
                 navigatePath="/dd/add-category"
               />
             </Grid>

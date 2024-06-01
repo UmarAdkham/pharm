@@ -22,9 +22,9 @@ export default function useUserData(apiPath, status, navigatePath, onRowClick) {
         const users = response.data.filter((user) => user.status === status);
 
         const columns = [
-          { Header: "Username", accessor: "username", align: "left" },
-          { Header: "Full Name", accessor: "full_name", align: "left" },
-          { Header: "Status", accessor: "status", align: "center" },
+          { Header: "Имя пользователя", accessor: "username", align: "left" },
+          { Header: "Полное имя", accessor: "full_name", align: "left" },
+          { Header: "Статус", accessor: "status", align: "center" },
         ];
 
         const rows = users.map((user) => ({
@@ -55,7 +55,7 @@ export default function useUserData(apiPath, status, navigatePath, onRowClick) {
     }
 
     fetchUsers();
-  }, [accessToken, apiPath, navigatePath, onRowClick]);
+  }, [accessToken, apiPath, status, navigatePath, onRowClick]);
 
   return data;
 }

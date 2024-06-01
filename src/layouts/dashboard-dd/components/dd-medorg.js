@@ -23,7 +23,7 @@ function DeputyDirectorMedicalOrganizations() {
               <DeputyDirectorTable
                 path={"common/get-medical-organization"}
                 tableType="medical-organizations"
-                title={"Medical Organizations"}
+                title={"Медицинские организации"}
                 navigatePath="/dd/add-medical-organization"
               />
             </Grid>

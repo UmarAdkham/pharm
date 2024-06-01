@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -28,17 +28,14 @@ function DeputyDirectorAddSpeciality() {
 
     try {
       // Call the API with authorization header
-      const response = await axios.post(
-        `https://heartly1.uz/common/add-speciality?name=${name}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await axios.post(`https://heartly1.uz/common/add-speciality?name=${name}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
       // Handle a successful response
-      setMessage({ color: "success", content: "Speciality is added" });
+      setMessage({ color: "success", content: "Специальность добавлена" });
 
       // Optional: Redirect after a delay
       setTimeout(() => {
@@ -49,8 +46,9 @@ function DeputyDirectorAddSpeciality() {
       setMessage({
         color: "error",
         content:
-          "Failed to add speciality. " +
-          (error.response?.data?.detail || "Please check your input and try again."),
+          "Не удалось добавить специальность. " +
+          (error.response?.data?.detail ||
+            "Проверьте правильность введенных данных и попробуйте снова."),
       });
     }
   };
@@ -70,7 +68,7 @@ function DeputyDirectorAddSpeciality() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Add Speciality
+            Добавить специальность
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -79,7 +77,7 @@ function DeputyDirectorAddSpeciality() {
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Speciality name"
+                label="Название специальности"
                 fullWidth
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -87,7 +85,7 @@ function DeputyDirectorAddSpeciality() {
             </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
-                Add
+                Добавить
               </MDButton>
             </MDBox>
           </MDBox>

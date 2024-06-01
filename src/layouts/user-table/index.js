@@ -8,6 +8,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import useUserData from "./data"; // Ensure correct path
+import { getFullStatusTranslation } from "../../constants/getFullStatusName";
 
 function UsersTable({ path, status, title, navigatePath, onRowClick }) {
   const { columns, rows } = useUserData(path, status, navigatePath, onRowClick);
@@ -42,7 +43,7 @@ function UsersTable({ path, status, title, navigatePath, onRowClick }) {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            {title}
+            {getFullStatusTranslation(status)}
           </MDTypography>
         </MDBox>
         <MDBox color="text" px={2}>

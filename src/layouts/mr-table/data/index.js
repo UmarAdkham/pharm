@@ -24,10 +24,10 @@ export default function useUserData(apiPath, status, onIconClick) {
         const mrs = response.data.filter((user) => user.status === status);
 
         const columns = [
-          { Header: "Username", accessor: "username", align: "left" },
-          { Header: "Full Name", accessor: "full_name", align: "left" },
-          { Header: "Status", accessor: "status", align: "center" },
-          { Header: "Actions", accessor: "actions", align: "center" }, // Add Actions column
+          { Header: "Имя пользователя", accessor: "username", align: "left" },
+          { Header: "Полное имя", accessor: "full_name", align: "left" },
+          { Header: "Статус", accessor: "status", align: "center" },
+          { Header: "Действия", accessor: "actions", align: "center" }, // Add Actions column
         ];
 
         const rows = mrs.map((mr) => ({

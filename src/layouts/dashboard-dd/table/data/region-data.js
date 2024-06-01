@@ -18,7 +18,7 @@ export default function useRegionData(apiPath) {
 
         const regions = response.data;
 
-        const columns = [{ Header: "Name", accessor: "name", align: "left" }];
+        const columns = [{ Header: "Название", accessor: "name", align: "left" }];
 
         const rows = regions.map((region) => ({
           name: (

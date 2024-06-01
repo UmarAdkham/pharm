@@ -35,23 +35,19 @@ function DeputyDirectorAdd() {
       username,
       password,
       region_id: 1,
-      status: userRoles.PRODUCT_MANAGER
+      status: userRoles.PRODUCT_MANAGER,
     };
 
     try {
       // Call the API with authorization header
-      const response = await axios.post(
-        "https://heartly1.uz/dd/register-for-dd",
-        userData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await axios.post("https://heartly1.uz/dd/register-for-dd", userData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
       // Handle a successful response
-      setMessage({ color: "success", content: "User successfully registered!" });
+      setMessage({ color: "success", content: "Пользователь успешно зарегистрирован!" });
 
       // Optional: Redirect after a delay
       setTimeout(() => {
@@ -62,8 +58,9 @@ function DeputyDirectorAdd() {
       setMessage({
         color: "error",
         content:
-          "Failed to register user. " +
-          (error.response?.data?.detail || "Please check your input and try again."),
+          "Не удалось зарегистрировать пользователя. " +
+          (error.response?.data?.detail ||
+            "Проверьте правильность введенных данных и попробуйте снова."),
       });
     }
   };
@@ -83,7 +80,7 @@ function DeputyDirectorAdd() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Add Product Manager
+            Добавить менеджера по продукту
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -92,7 +89,7 @@ function DeputyDirectorAdd() {
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Fullname"
+                label="Полное имя"
                 fullWidth
                 value={full_name}
                 onChange={(e) => setFullname(e.target.value)}
@@ -101,7 +98,7 @@ function DeputyDirectorAdd() {
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Username"
+                label="Имя пользователя"
                 fullWidth
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -110,7 +107,7 @@ function DeputyDirectorAdd() {
             <MDBox mb={2}>
               <MDInput
                 type="password"
-                label="Password"
+                label="Пароль"
                 fullWidth
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -118,7 +115,7 @@ function DeputyDirectorAdd() {
             </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
-                add
+                добавить
               </MDButton>
             </MDBox>
           </MDBox>

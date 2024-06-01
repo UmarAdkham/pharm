@@ -55,7 +55,7 @@ function DeputyDirectorAddMedOrganization() {
         );
         setMedReps(medReps);
       } catch (error) {
-        console.error("Failed to fetch medical representatives:", error);
+        console.error("Не удалось получить медицинских представителей:", error);
       }
     };
 
@@ -73,7 +73,7 @@ function DeputyDirectorAddMedOrganization() {
         const regions = response.data;
         setRegions(regions);
       } catch (error) {
-        console.error("Failed to fetch regions:", error);
+        console.error("Не удалось получить регионы:", error);
       }
     };
 
@@ -100,14 +100,15 @@ function DeputyDirectorAddMedOrganization() {
         }
       );
 
-      setMessage({ color: "success", content: "Medical organization added successfully" });
+      setMessage({ color: "success", content: "Медицинская организация успешно добавлена" });
       setTimeout(() => navigate(-1), 2000);
     } catch (error) {
       setMessage({
         color: "error",
         content:
-          "Failed to add medical organization. " +
-          (error.response?.data?.detail || "Please check your input and try again."),
+          "Не удалось добавить медицинскую организацию. " +
+          (error.response?.data?.detail ||
+            "Проверьте правильность введенных данных и попробуйте снова."),
       });
     }
   };
@@ -127,7 +128,7 @@ function DeputyDirectorAddMedOrganization() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Add Medical Organization
+            Добавить медицинскую организацию
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -135,11 +136,13 @@ function DeputyDirectorAddMedOrganization() {
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <MDBox mb={2}>
               <FormControl fullWidth>
-                <InputLabel id="medical-representatives-label">Medical Representatives</InputLabel>
+                <InputLabel id="medical-representatives-label">
+                  Медицинские представители
+                </InputLabel>
                 <Select
                   labelId="medical-representatives-label"
                   value={medRepId}
-                  label="Medical Representatives"
+                  label="Медицинские представители"
                   onChange={(e) => setMedRepId(e.target.value)}
                   sx={{ height: "45px" }}
                 >
@@ -153,11 +156,11 @@ function DeputyDirectorAddMedOrganization() {
             </MDBox>
             <MDBox mb={2}>
               <FormControl fullWidth>
-                <InputLabel id="regions-label">Regions</InputLabel>
+                <InputLabel id="regions-label">Регионы</InputLabel>
                 <Select
                   labelId="regions-label"
                   value={regionId}
-                  label="Regions"
+                  label="Регионы"
                   onChange={(e) => setRegionId(e.target.value)}
                   sx={{ height: "45px" }}
                 >
@@ -190,7 +193,7 @@ function DeputyDirectorAddMedOrganization() {
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Address"
+                label="Адрес"
                 fullWidth
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
@@ -198,7 +201,7 @@ function DeputyDirectorAddMedOrganization() {
             </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
-                Add
+                Добавить
               </MDButton>
             </MDBox>
           </MDBox>

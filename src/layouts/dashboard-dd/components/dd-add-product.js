@@ -47,7 +47,7 @@ function DeputyDirectorAddProduct() {
         const manufacturerCompanies = response.data;
         setManufacturerCompanies(manufacturerCompanies);
       } catch (error) {
-        console.error("Failed to fetch manufacturer companies:", error);
+        console.error("Не удалось получить производителей:", error);
       }
     };
 
@@ -65,7 +65,7 @@ function DeputyDirectorAddProduct() {
         const categories = response.data;
         setCategories(categories);
       } catch (error) {
-        console.error("Failed to fetch product categories:", error);
+        console.error("Не удалось получить категории продуктов:", error);
       }
     };
 
@@ -93,7 +93,7 @@ function DeputyDirectorAddProduct() {
       });
 
       // Handle a successful response
-      setMessage({ color: "success", content: "Product added successfully" });
+      setMessage({ color: "success", content: "Продукт успешно добавлен" });
 
       // Optional: Redirect after a delay
       setTimeout(() => {
@@ -104,8 +104,9 @@ function DeputyDirectorAddProduct() {
       setMessage({
         color: "error",
         content:
-          "Failed to add product. " +
-          (error.response?.data?.detail || "Please check your input and try again."),
+          "Не удалось добавить продукт. " +
+          (error.response?.data?.detail ||
+            "Проверьте правильность введенных данных и попробуйте снова."),
       });
     }
   };
@@ -125,7 +126,7 @@ function DeputyDirectorAddProduct() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Add Product
+            Добавить продукт
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -134,7 +135,7 @@ function DeputyDirectorAddProduct() {
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Name"
+                label="Название"
                 fullWidth
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -143,7 +144,7 @@ function DeputyDirectorAddProduct() {
             <MDBox mb={2}>
               <MDInput
                 type="number"
-                label="Price"
+                label="Цена"
                 fullWidth
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
@@ -152,7 +153,7 @@ function DeputyDirectorAddProduct() {
             <MDBox mb={2}>
               <MDInput
                 type="number"
-                label="Discount price"
+                label="Цена со скидкой"
                 fullWidth
                 value={discount_price}
                 onChange={(e) => setDiscountPrice(e.target.value)}
@@ -160,11 +161,11 @@ function DeputyDirectorAddProduct() {
             </MDBox>
             <MDBox mb={2}>
               <FormControl fullWidth>
-                <InputLabel id="manufactuer-companies-label">Manufacturer Companies</InputLabel>
+                <InputLabel id="manufactuer-companies-label">Производители</InputLabel>
                 <Select
                   labelId="manufactuer-companies-label"
                   value={man_company_id}
-                  label="Manufacturer Companies"
+                  label="Производители"
                   onChange={(e) => setManufacturerCompanyId(e.target.value)}
                   sx={{ height: "45px" }}
                 >
@@ -178,11 +179,11 @@ function DeputyDirectorAddProduct() {
             </MDBox>
             <MDBox mb={2}>
               <FormControl fullWidth>
-                <InputLabel id="category-label">Product Category</InputLabel>
+                <InputLabel id="category-label">Категория продукта</InputLabel>
                 <Select
                   labelId="category-label"
                   value={category_id}
-                  label="Product Category"
+                  label="Категория продукта"
                   onChange={(e) => setCategoryId(e.target.value)}
                   sx={{ height: "45px" }}
                 >
@@ -197,7 +198,7 @@ function DeputyDirectorAddProduct() {
 
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
-                Add
+                Добавить
               </MDButton>
             </MDBox>
           </MDBox>

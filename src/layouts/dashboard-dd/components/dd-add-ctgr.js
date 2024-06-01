@@ -38,7 +38,7 @@ function DeputyDirectorAddProductCategory() {
       );
 
       // Handle a successful response
-      setMessage({ color: "success", content: "Category is added" });
+      setMessage({ color: "success", content: "Категория добавлена" });
 
       // Optional: Redirect after a delay
       setTimeout(() => {
@@ -49,8 +49,9 @@ function DeputyDirectorAddProductCategory() {
       setMessage({
         color: "error",
         content:
-          "Failed to register user. " +
-          (error.response?.data?.detail || "Please check your input and try again."),
+          "Не удалось добавить категорию. " +
+          (error.response?.data?.detail ||
+            "Проверьте правильность введенных данных и попробуйте снова."),
       });
     }
   };
@@ -70,7 +71,7 @@ function DeputyDirectorAddProductCategory() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Add Category
+            Добавить категорию
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -79,7 +80,7 @@ function DeputyDirectorAddProductCategory() {
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Product category name"
+                label="Название категории продукта"
                 fullWidth
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -87,7 +88,7 @@ function DeputyDirectorAddProductCategory() {
             </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
-                Add
+                Добавить
               </MDButton>
             </MDBox>
           </MDBox>

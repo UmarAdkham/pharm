@@ -19,11 +19,11 @@ export default function useProductData(apiPath) {
         const products = response.data;
 
         const columns = [
-          { Header: "Name", accessor: "name", align: "left" },
-          { Header: "Price", accessor: "price", align: "left" },
-          { Header: "Discount price", accessor: "discount_price", align: "left" },
-          { Header: "Manufacturer company", accessor: "man_company", align: "left" },
-          { Header: "Category", accessor: "category", align: "left" },
+          { Header: "Название", accessor: "name", align: "left" },
+          { Header: "Цена", accessor: "price", align: "left" },
+          { Header: "Цена со скидкой", accessor: "discount_price", align: "left" },
+          { Header: "Производитель", accessor: "man_company", align: "left" },
+          { Header: "Категория", accessor: "category", align: "left" },
         ];
 
         const rows = products.map((product) => ({

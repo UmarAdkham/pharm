@@ -19,4 +19,23 @@ const getFullStatusName = (role) => {
   }
 };
 
+export const getFullStatusTranslation = (role) => {
+  switch (role) {
+    case userRoles.DIRECTOR:
+      return "Директор";
+    case userRoles.DEPUTY_DIRECTOR:
+      return "Заместитель директора";
+    case userRoles.PRODUCT_MANAGER:
+      return "Менеджер по продукту";
+    case userRoles.FIELD_FORCE_MANAGER:
+      return "Менеджер полевых сил";
+    case userRoles.REGIONAL_MANAGER:
+      return "Региональный менеджер";
+    case userRoles.MEDICAL_REPRESENTATIVE:
+      return "Медицинские представитель";
+    default:
+      return "";
+  }
+};
+
 export default getFullStatusName;

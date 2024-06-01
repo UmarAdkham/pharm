@@ -19,7 +19,7 @@ export default function useSpecialityData(apiPath) {
 
         const specialities = response.data;
 
-        const columns = [{ Header: "Name", accessor: "name", align: "left" }];
+        const columns = [{ Header: "Название", accessor: "name", align: "left" }];
 
         const rows = specialities.map((speciality) => ({
           name: (

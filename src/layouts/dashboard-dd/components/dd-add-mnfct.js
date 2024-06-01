@@ -38,7 +38,7 @@ function DeputyDirectorAddManufacturerCompany() {
       );
 
       // Handle a successful response
-      setMessage({ color: "success", content: "Manufacturer Company is added" });
+      setMessage({ color: "success", content: "Производственная компания успешно добавлена" });
 
       // Optional: Redirect after a delay
       setTimeout(() => {
@@ -49,8 +49,8 @@ function DeputyDirectorAddManufacturerCompany() {
       setMessage({
         color: "error",
         content:
-          "Failed to add company. " +
-          (error.response?.data?.detail || "Please check your input and try again."),
+        "Не удалось добавить. " +
+        (error.response?.data?.detail || "Проверьте правильность введенных данных и попробуйте снова."),
       });
     }
   };
@@ -70,7 +70,7 @@ function DeputyDirectorAddManufacturerCompany() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Add Manufacturer Company
+            Добавить производственную компанию
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -79,7 +79,7 @@ function DeputyDirectorAddManufacturerCompany() {
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Manufacturer Company name"
+                label="Название производственной компании"
                 fullWidth
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -87,7 +87,7 @@ function DeputyDirectorAddManufacturerCompany() {
             </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
-                Add
+                Добавить
               </MDButton>
             </MDBox>
           </MDBox>

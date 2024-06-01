@@ -1,4 +1,3 @@
-// routes.js
 import Icon from "@mui/material/Icon";
 import DirectorDashboard from "layouts/dashboard-director";
 import DeputyDirectorDashboard from "layouts/dashboard-dd";
@@ -44,14 +43,14 @@ const roleBasedRoutes = [
     sideNav: [
       {
         type: "collapse",
-        name: "Dashboard",
+        name: "Панель управления",
         key: "dashboard-director",
         icon: <Icon fontSize="small">dashboard</Icon>,
         route: "dashboard",
       },
       {
         type: "collapse",
-        name: "Add new user",
+        name: "Добавить нового пользователя",
         key: "director-add",
         icon: <Icon fontSize="small">add</Icon>,
         route: "add",
@@ -87,63 +86,63 @@ const roleBasedRoutes = [
     sideNav: [
       {
         type: "collapse",
-        name: "Add Product Manager",
+        name: "Добавить менеджера по продукту",
         key: "dd-add",
         icon: <Icon fontSize="small">add</Icon>,
         route: "add",
       },
       {
         type: "collapse",
-        name: "Product Managers",
+        name: "Менеджеры по продукту",
         key: "dd-pms",
         icon: <Icon fontSize="small">manage_accounts</Icon>,
         route: "pms",
       },
       {
         type: "collapse",
-        name: "Medical Representatives",
+        name: "Медицинские представители",
         key: "dd-mrs",
         icon: <Icon fontSize="small">support_agent</Icon>,
         route: "mrs",
       },
       {
         type: "collapse",
-        name: "Categories",
+        name: "Категории",
         key: "dd-add-category",
         icon: <Icon fontSize="small">category</Icon>,
         route: "categories",
       },
       {
         type: "collapse",
-        name: "Manufacturer Companies",
+        name: "Производственные компании",
         key: "dd-manufacturer-companies",
         icon: <Icon fontSize="small">business</Icon>,
         route: "manufacturer-companies",
       },
       {
         type: "collapse",
-        name: "Products",
+        name: "Продукты",
         key: "dd-products",
         icon: <Icon fontSize="small">inventory</Icon>,
         route: "products",
       },
       {
         type: "collapse",
-        name: "Regions",
+        name: "Регионы",
         key: "dd-regions",
         icon: <Icon fontSize="small">south_america</Icon>,
         route: "regions",
       },
       {
         type: "collapse",
-        name: "Medical Organizations",
+        name: "Медицинские организации",
         key: "dd-medical-organizations",
         icon: <Icon fontSize="small">corporate_fare</Icon>,
         route: "medical-organizations",
       },
       {
         type: "collapse",
-        name: "Specialities",
+        name: "Специальности",
         key: "dd-specialities",
         icon: <Icon fontSize="small">work</Icon>,
         route: "specialities",
@@ -160,14 +159,14 @@ const roleBasedRoutes = [
     sideNav: [
       {
         type: "collapse",
-        name: "Dashboard",
+        name: "Панель управления",
         key: "dashboard-pm",
         icon: <Icon fontSize="small">dashboard</Icon>,
         route: "dashboard",
       },
       {
         type: "collapse",
-        name: "Add new user",
+        name: "Добавить нового пользователя",
         key: "pm-add",
         icon: <Icon fontSize="small">add</Icon>,
         route: "add",
@@ -184,14 +183,14 @@ const roleBasedRoutes = [
     sideNav: [
       {
         type: "collapse",
-        name: "Dashboard",
+        name: "Панель управления",
         key: "dashboard-ff",
         icon: <Icon fontSize="small">dashboard</Icon>,
         route: "dashboard",
       },
       {
         type: "collapse",
-        name: "Add new user",
+        name: "Добавить нового пользователя",
         key: "ff-add",
         icon: <Icon fontSize="small">add</Icon>,
         route: "add",
@@ -208,21 +207,21 @@ const roleBasedRoutes = [
     sideNav: [
       {
         type: "collapse",
-        name: "Dashboard",
+        name: "Панель управления",
         key: "dashboard-rm",
         icon: <Icon fontSize="small">dashboard</Icon>,
         route: "dashboard",
       },
       {
         type: "collapse",
-        name: "Add new user",
+        name: "Добавить нового пользователя",
         key: "rm-add",
         icon: <Icon fontSize="small">add</Icon>,
         route: "add",
       },
       {
         type: "collapse",
-        name: "Notifications",
+        name: "Уведомления",
         key: "rm-notifications",
         icon: <Icon fontSize="small">notifications</Icon>,
         route: "notifications",
@@ -236,35 +235,35 @@ const roleBasedRoutes = [
     sideNav: [
       {
         type: "collapse",
-        name: "Dashboard",
+        name: "Панель управления",
         key: "dashboard-mr",
         icon: <Icon fontSize="small">dashboard</Icon>,
         route: "dashboard",
       },
       {
         type: "collapse",
-        name: "Pharmacy",
+        name: "Аптека",
         key: "mr-pharmacy",
         icon: <Icon fontSize="small">medication</Icon>,
         route: "pharmacy",
       },
       {
         type: "collapse",
-        name: "Balance",
+        name: "Баланс",
         key: "mr-balance",
         icon: <Icon fontSize="small">balance</Icon>,
         route: "balance",
       },
       {
         type: "collapse",
-        name: "Doctors",
+        name: "Врачи",
         key: "mr-doctors",
         icon: <Icon fontSize="small">vaccines</Icon>,
         route: "doctors",
       },
       {
         type: "collapse",
-        name: "Wholesales",
+        name: "Оптовая торговля",
         key: "mr-wholesales",
         icon: <Icon fontSize="small">receipt</Icon>,
         route: "wholesales",
@@ -278,7 +277,7 @@ const roleBasedRoutes = [
     sideNav: [
       {
         type: "collapse",
-        name: "Dashboard",
+        name: "Панель управления",
         key: "dashboard-hoc",
         icon: <Icon fontSize="small">dashboard</Icon>,
         route: "dashboard",
@@ -295,7 +294,7 @@ const roleBasedRoutes = [
     sideNav: [
       {
         type: "collapse",
-        name: "Dashboard",
+        name: "Панель управления",
         key: "dashboard-sabrina",
         icon: <Icon fontSize="small">dashboard</Icon>,
         route: "dashboard",

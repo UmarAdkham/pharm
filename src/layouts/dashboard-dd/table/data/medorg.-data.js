@@ -19,9 +19,9 @@ export default function useMedicalOrganizationData(apiPath) {
         const medicalOrganizations = response.data;
 
         const columns = [
-          { Header: "Address", accessor: "address", align: "left" },
-          { Header: "Region", accessor: "region", align: "left" },
-          { Header: "Medical Representative", accessor: "medRep", align: "left" },
+          { Header: "Адрес", accessor: "address", align: "left" },
+          { Header: "Регион", accessor: "region", align: "left" },
+          { Header: "Медицинский представитель", accessor: "medRep", align: "left" },
         ];
 
         const rows = medicalOrganizations.map((medOrg) => ({

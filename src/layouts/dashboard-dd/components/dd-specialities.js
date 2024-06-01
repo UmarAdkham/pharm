@@ -23,7 +23,7 @@ function DeputyDirectorSpecialities() {
               <DeputyDirectorTable
                 path={"common/get-speciality"}
                 tableType="specialities"
-                title={"Specialities"}
+                title={"Специальности"}
                 navigatePath="/dd/add-speciality"
               />
             </Grid>

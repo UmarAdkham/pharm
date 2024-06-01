@@ -23,7 +23,7 @@ function DeputyDirectorRegions() {
               <DeputyDirectorTable
                 path={"common/get-regions"}
                 tableType="regions"
-                title={"Regions"}
+                title={"Регионы"}
                 navigatePath="/dd/add-region"
               />
             </Grid>

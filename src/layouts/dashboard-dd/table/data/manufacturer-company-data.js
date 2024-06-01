@@ -18,7 +18,7 @@ export default function useManufacturerCompanyData(apiPath) {
 
         const manufacturerCompanies = response.data;
 
-        const columns = [{ Header: "Name", accessor: "name", align: "left" }];
+        const columns = [{ Header: "Название", accessor: "name", align: "left" }];
 
         const rows = manufacturerCompanies.map((mnfct) => ({
           name: (

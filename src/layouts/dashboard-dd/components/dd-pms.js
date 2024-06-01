@@ -24,7 +24,7 @@ function DeputyDirectorPms({ children }) {
               <UsersTable
                 path={"common/get-users"}
                 status={userRoles.PRODUCT_MANAGER}
-                title={"Product Managers"}
+                title={"Менеджеры по продукту"}
                 navigatePath={"/dd/single-pm"}
                 onRowClick={(navigatePath, user) => {
                   navigate(navigatePath, { state: user });

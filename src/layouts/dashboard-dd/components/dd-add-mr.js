@@ -53,7 +53,7 @@ function DeputyDirectorAddMedicalRepresentative() {
         );
         setFieldForceManagers(fieldForceManagers); // Update the state with the fetched Field Force Managers
       } catch (error) {
-        console.error("Failed to fetch users:", error); // Log any errors that occur during the fetch
+        console.error("Не удалось получить пользователей:", error); // Log any errors that occur during the fetch
       }
     };
 
@@ -77,7 +77,7 @@ function DeputyDirectorAddMedicalRepresentative() {
         );
         setRegionalManagers(regionalManagers); // Update the state with the fetched Regional Managers
       } catch (error) {
-        console.error("Failed to fetch users:", error); // Log any errors that occur during the fetch
+        console.error("Не удалось получить пользователей:", error); // Log any errors that occur during the fetch
       }
     };
 
@@ -111,7 +111,7 @@ function DeputyDirectorAddMedicalRepresentative() {
       });
 
       // Handle a successful response
-      setMessage({ color: "success", content: "User successfully registered!" });
+      setMessage({ color: "success", content: "Пользователь успешно зарегистрирован!" });
 
       // Optional: Redirect after a delay
       setTimeout(() => {
@@ -123,8 +123,9 @@ function DeputyDirectorAddMedicalRepresentative() {
       setMessage({
         color: "error",
         content:
-          "Failed to register user. " +
-          (error.response?.data?.detail || "Please check your input and try again."), // Display an error message
+          "Не удалось зарегистрировать пользователя. " +
+          (error.response?.data?.detail ||
+            "Проверьте правильность введенных данных и попробуйте снова."), // Display an error message
       });
     }
   };
@@ -144,7 +145,7 @@ function DeputyDirectorAddMedicalRepresentative() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Add Medical Representative
+            Добавить медицинского представителя
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -153,7 +154,7 @@ function DeputyDirectorAddMedicalRepresentative() {
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Fullname"
+                label="Полное имя"
                 fullWidth
                 value={full_name}
                 onChange={(e) => setFullname(e.target.value)} // Update the fullname state
@@ -162,7 +163,7 @@ function DeputyDirectorAddMedicalRepresentative() {
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Username"
+                label="Имя пользователя"
                 fullWidth
                 value={username}
                 onChange={(e) => setUsername(e.target.value)} // Update the username state
@@ -171,7 +172,7 @@ function DeputyDirectorAddMedicalRepresentative() {
             <MDBox mb={2}>
               <MDInput
                 type="password"
-                label="Password"
+                label="Пароль"
                 fullWidth
                 value={password}
                 onChange={(e) => setPassword(e.target.value)} // Update the password state
@@ -179,11 +180,11 @@ function DeputyDirectorAddMedicalRepresentative() {
             </MDBox>
             <MDBox mb={2}>
               <FormControl fullWidth>
-                <InputLabel id="field-force-manager-label">Field Force Manager</InputLabel>
+                <InputLabel id="field-force-manager-label">Менеджер полевых сил</InputLabel>
                 <Select
                   labelId="field-force-manager-label"
                   value={selectedFFM || ""}
-                  label="Field Force Manager"
+                  label="Менеджер полевых сил"
                   onChange={(e) => {
                     setSelectedFFM(e.target.value); // Update the selected Field Force Manager state
                   }}
@@ -199,11 +200,11 @@ function DeputyDirectorAddMedicalRepresentative() {
             </MDBox>
             <MDBox mb={2}>
               <FormControl fullWidth>
-                <InputLabel id="regional-manager-label">Regional Manager</InputLabel>
+                <InputLabel id="regional-manager-label">Региональный менеджер</InputLabel>
                 <Select
                   labelId="regional-manager-label"
                   value={region_manager_id}
-                  label="Regional Manager"
+                  label="Региональный менеджер"
                   onChange={(e) => setRegionalManagerId(e.target.value)} // Update the selected Regional Manager state
                   sx={{ height: "45px" }}
                 >
@@ -217,7 +218,7 @@ function DeputyDirectorAddMedicalRepresentative() {
             </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
-                Add
+                Добавить
               </MDButton>
             </MDBox>
           </MDBox>
