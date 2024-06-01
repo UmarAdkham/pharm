@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import SearchControl from "../../../services/geoSearchController"; // Import the custom SearchControl component
 
@@ -112,6 +112,34 @@ function DeputyDirectorAddMedOrganization() {
     }
   };
 
+  function LocationMarker() {
+    const map = useMapEvents({
+      click(e) {
+        setLatitude(e.latlng.lat);
+        setLongitude(e.latlng.lng);
+      },
+      move() {
+        setLatitude(map.getCenter().lat);
+        setLongitude(map.getCenter().lng);
+      },
+    });
+
+    return latitude !== 0 && longitude !== 0 ? (
+      <Marker
+        position={[latitude, longitude]}
+        draggable={true}
+        eventHandlers={{
+          dragend(e) {
+            const marker = e.target;
+            const position = marker.getLatLng();
+            setLatitude(position.lat);
+            setLongitude(position.lng);
+          },
+        }}
+      ></Marker>
+    ) : null;
+  }
+
   return (
     <BasicLayout>
       <Card>
@@ -184,8 +212,12 @@ function DeputyDirectorAddMedOrganization() {
                   setLongitude={setLongitude}
                   setAddress={setAddress}
                 />
-                {latitude !== 0 && longitude !== 0 && <Marker position={[latitude, longitude]} />}
+                <LocationMarker />
               </MapContainer>
+            </MDBox>
+            <MDBox mb={2}>
+              <MDTypography variant="h6">Latitude: {latitude}</MDTypography>
+              <MDTypography variant="h6">Longitude: {longitude}</MDTypography>
             </MDBox>
             <MDBox mb={2}>
               <MDInput
