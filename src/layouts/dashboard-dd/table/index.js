@@ -25,6 +25,7 @@ function DeputyDirectorTable({
   navigatePath,
   onRowClick,
   showAddButton,
+  pmPath,
 }) {
   const navigate = useNavigate();
   let data = { columns: [], rows: [] }; // Default structure
@@ -48,7 +49,7 @@ function DeputyDirectorTable({
       data = useSpecialityData(path) || data;
       break;
     case "pms":
-      data = usePmData(path, status, navigatePath, onRowClick) || data;
+      data = usePmData(path, status, navigatePath, onRowClick, pmPath) || data;
       break;
     case "mrs":
       data = useMrData(path, status, navigatePath, onRowClick) || data;

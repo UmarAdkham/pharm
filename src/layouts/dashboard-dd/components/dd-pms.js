@@ -36,8 +36,8 @@ function DeputyDirectorPms({ children }) {
                 tableType="pms"
                 status={userRoles.PRODUCT_MANAGER}
                 title={"Менеджеры по продукту"}
-                navigatePath="/dd/single-pm"
-                pmPath="/dd/add-pm"
+                navigatePath="/dd/add-pm"
+                pmPath="/dd/single-pm"
                 onRowClick={(navigatePath, user) => {
                   navigate(navigatePath, { state: user });
                 }}

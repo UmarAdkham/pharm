@@ -84,7 +84,7 @@ function DeputyDirectorAddFieldForce() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Добавить менеджера полевых сил
+            Добавить менеджера полевых персоналов
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>

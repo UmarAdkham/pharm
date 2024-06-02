@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L from "leaflet";
-import SearchControl from "../../../services/geoSearchController"; // Import the custom SearchControl component
+import SearchControl from "../../../services/geoSearchController"; // Импорт компонента SearchControl
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -21,7 +21,7 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 import userRoles from "constants/userRoles";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
-// Fix for Leaflet's default marker icon not being displayed
+// Исправление для не отображающейся иконки маркера по умолчанию в Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
@@ -35,8 +35,8 @@ function DeputyDirectorAddMedOrganization() {
   const [address, setAddress] = useState("");
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
-  const [medRepId, setMedRepId] = useState(0);
-  const [regionId, setRegionId] = useState(0);
+  const [medRepId, setMedRepId] = useState("");
+  const [regionId, setRegionId] = useState("");
   const [medReps, setMedReps] = useState([]);
   const [regions, setRegions] = useState([]);
 
@@ -55,7 +55,7 @@ function DeputyDirectorAddMedOrganization() {
         );
         setMedReps(medReps);
       } catch (error) {
-        console.error("Failed to fetch medical representatives:", error);
+        console.error("Не удалось получить медицинских представителей:", error);
       }
     };
 
@@ -73,7 +73,7 @@ function DeputyDirectorAddMedOrganization() {
         const regions = response.data;
         setRegions(regions);
       } catch (error) {
-        console.error("Failed to fetch regions:", error);
+        console.error("Не удалось получить регионы:", error);
       }
     };
 
@@ -100,14 +100,14 @@ function DeputyDirectorAddMedOrganization() {
         }
       );
 
-      setMessage({ color: "success", content: "Medical organization added successfully" });
+      setMessage({ color: "success", content: "Медицинская организация успешно добавлена" });
       setTimeout(() => navigate(-1), 2000);
     } catch (error) {
       setMessage({
         color: "error",
         content:
-          "Failed to add medical organization. " +
-          (error.response?.data?.detail || "Please check your input and try again."),
+          "Не удалось добавить медицинскую организацию. " +
+          (error.response?.data?.detail || "Пожалуйста, проверьте свои данные и попробуйте снова."),
       });
     }
   };
@@ -155,7 +155,7 @@ function DeputyDirectorAddMedOrganization() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Add Medical Organization
+            Добавить Медицинскую Организацию
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -163,11 +163,13 @@ function DeputyDirectorAddMedOrganization() {
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <MDBox mb={2}>
               <FormControl fullWidth>
-                <InputLabel id="medical-representatives-label">Medical Representatives</InputLabel>
+                <InputLabel id="medical-representatives-label">
+                  Медицинские Представители
+                </InputLabel>
                 <Select
                   labelId="medical-representatives-label"
                   value={medRepId}
-                  label="Medical Representatives"
+                  label="Медицинские Представители"
                   onChange={(e) => setMedRepId(e.target.value)}
                   sx={{ height: "45px" }}
                 >
@@ -181,11 +183,11 @@ function DeputyDirectorAddMedOrganization() {
             </MDBox>
             <MDBox mb={2}>
               <FormControl fullWidth>
-                <InputLabel id="regions-label">Regions</InputLabel>
+                <InputLabel id="regions-label">Регионы</InputLabel>
                 <Select
                   labelId="regions-label"
                   value={regionId}
-                  label="Regions"
+                  label="Регионы"
                   onChange={(e) => setRegionId(e.target.value)}
                   sx={{ height: "45px" }}
                 >
@@ -216,13 +218,13 @@ function DeputyDirectorAddMedOrganization() {
               </MapContainer>
             </MDBox>
             <MDBox mb={2}>
-              <MDTypography variant="h6">Latitude: {latitude}</MDTypography>
-              <MDTypography variant="h6">Longitude: {longitude}</MDTypography>
+              <MDTypography variant="h6">Широта: {latitude}</MDTypography>
+              <MDTypography variant="h6">Долгота: {longitude}</MDTypography>
             </MDBox>
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Address"
+                label="Адрес"
                 fullWidth
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
@@ -230,7 +232,7 @@ function DeputyDirectorAddMedOrganization() {
             </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
-                Add
+                Добавить
               </MDButton>
             </MDBox>
           </MDBox>

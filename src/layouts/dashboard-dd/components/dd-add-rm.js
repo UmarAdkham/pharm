@@ -150,11 +150,11 @@ function DeputyDirectorAddRegionalManager() {
             </MDBox>
             <MDBox mb={2}>
               <FormControl fullWidth>
-                <InputLabel id="field-force-manager-label">Менеджер полевых сил</InputLabel>
+                <InputLabel id="field-force-manager-label">Менеджер полевых персоналов</InputLabel>
                 <Select
                   labelId="field-force-manager-label"
                   value={ffm_id}
-                  label="Менеджер полевых сил"
+                  label="Менеджер полевых персоналов"
                   onChange={(e) => setFieldForceManagerId(e.target.value)}
                   sx={{ height: "45px" }}
                 >

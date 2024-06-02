@@ -5,7 +5,7 @@ import axiosInstance from "services/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import MDTypography from "components/MDTypography";
 
-export default function usePmData(apiPath, status, navigatePath, onRowClick) {
+export default function usePmData(apiPath, status, navigatePath, onRowClick, pmPath) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
   const navigate = useNavigate();
@@ -44,7 +44,7 @@ export default function usePmData(apiPath, status, navigatePath, onRowClick) {
             </MDTypography>
           ),
           onClick: () => {
-            onRowClick(navigatePath, user);
+            onRowClick(pmPath, user);
           }, // Use onRowClick handler
         }));
 

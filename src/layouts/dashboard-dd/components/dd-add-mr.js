@@ -180,11 +180,11 @@ function DeputyDirectorAddMedicalRepresentative() {
             </MDBox>
             <MDBox mb={2}>
               <FormControl fullWidth>
-                <InputLabel id="field-force-manager-label">Менеджер полевых сил</InputLabel>
+                <InputLabel id="field-force-manager-label">Менеджер полевых персоналов</InputLabel>
                 <Select
                   labelId="field-force-manager-label"
                   value={selectedFFM || ""}
-                  label="Менеджер полевых сил"
+                  label="Менеджер полевых персоналов"
                   onChange={(e) => {
                     setSelectedFFM(e.target.value); // Update the selected Field Force Manager state
                   }}

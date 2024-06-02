@@ -28,7 +28,7 @@ export const getFullStatusTranslation = (role) => {
     case userRoles.PRODUCT_MANAGER:
       return "Менеджер по продукту";
     case userRoles.FIELD_FORCE_MANAGER:
-      return "Менеджер полевых сил";
+      return "Менеджер полевых персоналов";
     case userRoles.REGIONAL_MANAGER:
       return "Региональный менеджер";
     case userRoles.MEDICAL_REPRESENTATIVE:

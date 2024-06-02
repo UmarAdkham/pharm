@@ -59,7 +59,7 @@ const DeputyDirectorSinglePM = () => {
                         setStatus(userRoles.FIELD_FORCE_MANAGER);
                       }}
                     >
-                      Менеджеры полевых сил
+                      Менеджеры полевых персоналов
                     </Button>
                     <Button
                       variant={status === userRoles.REGIONAL_MANAGER ? "contained" : "outlined"}
