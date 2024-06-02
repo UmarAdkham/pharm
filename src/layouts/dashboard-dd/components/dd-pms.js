@@ -11,6 +11,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 // Dashboard components
 import UsersTable from "layouts/user-table";
 import { Outlet, useNavigate } from "react-router-dom";
+import DeputyDirectorTable from "../table";
 
 // eslint-disable-next-line react/prop-types
 function DeputyDirectorPms({ children }) {
@@ -21,11 +22,22 @@ function DeputyDirectorPms({ children }) {
         <MDBox>
           <Grid container spacing={3}>
             <Grid item xs={12} lg={12}>
-              <UsersTable
+              {/* <UsersTable
                 path={"common/get-users"}
                 status={userRoles.PRODUCT_MANAGER}
                 title={"Менеджеры по продукту"}
                 navigatePath={"/dd/single-pm"}
+                onRowClick={(navigatePath, user) => {
+                  navigate(navigatePath, { state: user });
+                }}
+              /> */}
+              <DeputyDirectorTable
+                path={"common/get-users"}
+                tableType="users"
+                status={userRoles.PRODUCT_MANAGER}
+                title={"Менеджеры по продукту"}
+                navigatePath="/dd/single-pm"
+                pmPath="/dd/add-pm"
                 onRowClick={(navigatePath, user) => {
                   navigate(navigatePath, { state: user });
                 }}

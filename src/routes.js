@@ -62,7 +62,7 @@ const roleBasedRoutes = [
     path: "dd",
     routes: [
       { path: "dashboard", component: <DeputyDirectorDashboard /> },
-      { path: "add", component: <DeputyDirectorAdd /> },
+      { path: "add-pm", component: <DeputyDirectorAdd /> },
       { path: "pms", component: <DeputyDirectorPms /> },
       { path: "single-pm", component: <DeputyDirectorSinglePM /> },
       { path: "add-ff", component: <DeputyDirectorAddFieldForce /> },
@@ -84,13 +84,6 @@ const roleBasedRoutes = [
       { path: "add-speciality", component: <DeputyDirectorAddSpeciality /> },
     ],
     sideNav: [
-      {
-        type: "collapse",
-        name: "Добавить менеджера по продукту",
-        key: "dd-add",
-        icon: <Icon fontSize="small">add</Icon>,
-        route: "add",
-      },
       {
         type: "collapse",
         name: "Менеджеры по продукту",

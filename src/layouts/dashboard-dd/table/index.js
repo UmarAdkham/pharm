@@ -12,10 +12,12 @@ import useRegionData from "./data/region-data";
 import useMedicalOrganizationData from "./data/medorg.-data";
 import useSpecialityData from "./data/speciality-data";
 import { useNavigate } from "react-router-dom";
+import useUserData from "./data/user-data";
 
-function DeputyDirectorTable({ path, status, title, tableType, navigatePath }) {
+function DeputyDirectorTable({ path, status, title, tableType, navigatePath, onRowClick, pmPath }) {
   const navigate = useNavigate();
   let data = { columns: [], rows: [] }; // Default structure
+  console.log(status);
   switch (tableType) {
     case "categories":
       data = useCategoryData(path) || data;
@@ -34,6 +36,9 @@ function DeputyDirectorTable({ path, status, title, tableType, navigatePath }) {
       break;
     case "specialities":
       data = useSpecialityData(path) || data;
+      break;
+    case "users":
+      data = useUserData(path, status, navigatePath, onRowClick) || data;
       break;
     default:
       break;
@@ -54,7 +59,7 @@ function DeputyDirectorTable({ path, status, title, tableType, navigatePath }) {
             color="success"
             sx={{ color: "white" }}
             onClick={() => {
-              navigate(navigatePath);
+              navigate(pmPath);
             }}
           >
             Добавить
@@ -83,10 +88,13 @@ DeputyDirectorTable.propTypes = {
   title: PropTypes.string,
   tableType: PropTypes.string,
   navigatePath: PropTypes.string,
+  pmPath: PropTypes.string,
+  onRowClick: PropTypes.func,
 };
 
 DeputyDirectorTable.defaultProps = {
   title: "",
+  onRowClick: () => {}, // Default to no-op function if not provided
 };
 
 export default DeputyDirectorTable;
