@@ -20,7 +20,6 @@ export default function usePmData(apiPath, status, navigatePath, onRowClick) {
         });
 
         const users = response.data.filter((user) => user.status === status);
-        console.log(status);
 
         const columns = [
           { Header: "Имя пользователя", accessor: "username", align: "left" },

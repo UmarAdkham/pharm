@@ -32,7 +32,7 @@ export const getFullStatusTranslation = (role) => {
     case userRoles.REGIONAL_MANAGER:
       return "Региональный менеджер";
     case userRoles.MEDICAL_REPRESENTATIVE:
-      return "Медицинские представитель";
+      return "Медицинскиq представитель";
     default:
       return "";
   }

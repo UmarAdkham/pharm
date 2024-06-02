@@ -1,4 +1,3 @@
-// layouts/DashboardWrapper.js
 import React, { useState, useEffect } from "react";
 import Sidenav from "../../examples/Sidenav";
 import { Outlet, useLocation } from "react-router-dom";
@@ -6,12 +5,14 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 import { Icon } from "@mui/material";
 import MDBox from "components/MDBox";
 import brandWhite from "../../assets/images/logo-ct.png";
+import brandDark from "../../assets/images/logo-ct-dark.png";
 import roleBasedRoutes from "../../routes";
 import { useSelector } from "react-redux";
 
 function DashboardWrapper() {
   const [controller, dispatch] = useMaterialUIController();
   const [onMouseEnter, setOnMouseEnter] = useState(false);
+  const [isSidenavVisible, setIsSidenavVisible] = useState(false); // Set initial visibility to false
   const {
     miniSidenav,
     direction,
@@ -24,10 +25,8 @@ function DashboardWrapper() {
   const { pathname } = useLocation();
   const userRole = useSelector((state) => state.auth.userRole); // Get user role from Redux
 
-  // Select appropriate routes based on user role
   const roleRoutes = roleBasedRoutes.find((route) => route.role === userRole);
 
-  // Open sidenav when mouse enter on mini sidenav
   const handleOnMouseEnter = () => {
     if (miniSidenav && !onMouseEnter) {
       setMiniSidenav(dispatch, false);
@@ -35,7 +34,6 @@ function DashboardWrapper() {
     }
   };
 
-  // Close sidenav when mouse leave mini sidenav
   const handleOnMouseLeave = () => {
     if (onMouseEnter) {
       setMiniSidenav(dispatch, true);
@@ -43,15 +41,12 @@ function DashboardWrapper() {
     }
   };
 
-  // Change the openConfigurator state
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
 
-  // Setting the dir attribute for the body element
   useEffect(() => {
     document.body.setAttribute("dir", direction);
   }, [direction]);
 
-  // Setting page scroll to 0 when changing the route
   useEffect(() => {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
@@ -81,8 +76,23 @@ function DashboardWrapper() {
     </MDBox>
   );
 
+  const handleSidenavToggle = () => {
+    setIsSidenavVisible(!isSidenavVisible);
+    console.log("Sidenav visibility:", !isSidenavVisible);
+  };
+
   return (
     <>
+      <MDBox
+        display={{ xs: "flex", md: "none" }}
+        justifyContent="flex-end"
+        alignItems="center"
+        p={2}
+      >
+        <Icon fontSize="large" onClick={handleSidenavToggle} sx={{ cursor: "pointer" }}>
+          menu
+        </Icon>
+      </MDBox>
       <Sidenav
         color={sidenavColor}
         brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
@@ -90,6 +100,8 @@ function DashboardWrapper() {
         routes={roleRoutes ? roleRoutes.sideNav : []}
         onMouseEnter={handleOnMouseEnter}
         onMouseLeave={handleOnMouseLeave}
+        isVisible={isSidenavVisible}
+        onClose={handleSidenavToggle}
       />
       <Outlet />
     </>

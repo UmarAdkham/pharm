@@ -18,7 +18,6 @@ import useMrData from "./data/mr-data";
 function DeputyDirectorTable({ path, status, title, tableType, navigatePath, onRowClick, pmPath }) {
   const navigate = useNavigate();
   let data = { columns: [], rows: [] }; // Default structure
-  console.log(status);
   switch (tableType) {
     case "categories":
       data = useCategoryData(path) || data;
