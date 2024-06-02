@@ -50,7 +50,7 @@ function Basic() {
         setCredentials({ accessToken: response.data.access_token, userRole: response.data.status })
       );
 
-      setMessage({ color: "success", content: "Login successful! Redirecting..." });
+      setMessage({ color: "success", content: "Вход выполнен успешно! Перенаправление..." });
       setTimeout(() => {
         navigate(roleBasedRedirect[response.data.role]);
       }, 2000); // Redirect to dashboard after 2 seconds
@@ -59,8 +59,9 @@ function Basic() {
       setMessage({
         color: "error",
         content:
-          "Failed to login. " +
-          (error.response?.data?.detail || "Check your username and password and try again."),
+          "Не удалось войти в систему. " +
+          (error.response?.data?.detail ||
+            "Проверьте свое имя пользователя и пароль и попробуйте снова."),
       });
     }
   };
@@ -80,7 +81,7 @@ function Basic() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Sign in
+            Вход
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -89,7 +90,7 @@ function Basic() {
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Username"
+                label="Имя пользователя"
                 fullWidth
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -98,7 +99,7 @@ function Basic() {
             <MDBox mb={2}>
               <MDInput
                 type="password"
-                label="Password"
+                label="Пароль"
                 fullWidth
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -106,12 +107,12 @@ function Basic() {
             </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
-                sign in
+                Войти
               </MDButton>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">
               <MDTypography variant="button" color="text">
-                Do not have an account?{" "}
+                Нет аккаунта?{" "}
                 <MDTypography
                   component={Link}
                   to="/sign-up"
@@ -120,7 +121,7 @@ function Basic() {
                   fontWeight="medium"
                   textGradient
                 >
-                  Sign up
+                  Зарегистрироваться
                 </MDTypography>
               </MDTypography>
             </MDBox>
