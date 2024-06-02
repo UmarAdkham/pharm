@@ -25,6 +25,8 @@ export default function useMrData(apiPath, status, onIconClick) {
 
         const mrs = response.data.filter((user) => user.status === status);
 
+        console.log(mrs);
+
         const columns = [
           { Header: "Имя пользователя", accessor: "username", align: "left" },
           { Header: "Полное имя", accessor: "full_name", align: "left" },
@@ -50,7 +52,7 @@ export default function useMrData(apiPath, status, onIconClick) {
           ),
           actions: (
             <div>
-              <Tooltip title="Add Notification">
+              <Tooltip title="Добавить уведомение">
                 <IconButton
                   onClick={() => {
                     navigate("/dd/add-notification", { state: mr });
@@ -59,7 +61,7 @@ export default function useMrData(apiPath, status, onIconClick) {
                   <NotificationIcon />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Add Doctor Plan">
+              <Tooltip title="Добавить план врача">
                 <IconButton
                   onClick={() => {
                     navigate("/dd/add-doctor-plan", { state: mr });
@@ -68,10 +70,10 @@ export default function useMrData(apiPath, status, onIconClick) {
                   <MedicalServicesIcon />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Add Pharmacy Plan">
+              <Tooltip title="Добавить план аптеки">
                 <IconButton
                   onClick={() => {
-                    navigate("/dd/add-doctor-plan", { state: mr });
+                    navigate("/dd/add-pharmacy-plan", { state: mr });
                   }}
                 >
                   <VaccinesIcon />
