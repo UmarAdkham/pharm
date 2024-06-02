@@ -12,7 +12,8 @@ import useRegionData from "./data/region-data";
 import useMedicalOrganizationData from "./data/medorg.-data";
 import useSpecialityData from "./data/speciality-data";
 import { useNavigate } from "react-router-dom";
-import useUserData from "./data/user-data";
+import usePmData from "./data/pm-data";
+import useMrData from "./data/mr-data";
 
 function DeputyDirectorTable({ path, status, title, tableType, navigatePath, onRowClick, pmPath }) {
   const navigate = useNavigate();
@@ -37,8 +38,11 @@ function DeputyDirectorTable({ path, status, title, tableType, navigatePath, onR
     case "specialities":
       data = useSpecialityData(path) || data;
       break;
-    case "users":
-      data = useUserData(path, status, navigatePath, onRowClick) || data;
+    case "pms":
+      data = usePmData(path, status, navigatePath, onRowClick) || data;
+      break;
+    case "mrs":
+      data = useMrData(path, status) || data;
       break;
     default:
       break;

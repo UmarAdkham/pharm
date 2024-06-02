@@ -33,7 +33,7 @@ function DeputyDirectorPms({ children }) {
               /> */}
               <DeputyDirectorTable
                 path={"common/get-users"}
-                tableType="users"
+                tableType="pms"
                 status={userRoles.PRODUCT_MANAGER}
                 title={"Менеджеры по продукту"}
                 navigatePath="/dd/single-pm"
