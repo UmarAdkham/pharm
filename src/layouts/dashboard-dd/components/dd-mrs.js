@@ -27,7 +27,7 @@ function DeputyDirectorMrs({ children }) {
               <DeputyDirectorTable
                 path={"common/get-users"}
                 status={userRoles.MEDICAL_REPRESENTATIVE}
-                title={`Медицинские прредставители`}
+                title={`Медицинские представители`}
                 tableType="mrs"
                 navigatePath="/dd/mr-info"
                 onRowClick={(navigatePath, user) => {

@@ -15,8 +15,17 @@ import { useNavigate } from "react-router-dom";
 import usePmData from "./data/pm-data";
 import useMrData from "./data/mr-data";
 import usePharmacyPlanData from "./data/pharmacy-plan-data";
+import useDoctorPlanData from "./data/doctor-plan-data";
 
-function DeputyDirectorTable({ path, status, title, tableType, navigatePath, onRowClick, pmPath }) {
+function DeputyDirectorTable({
+  path,
+  status,
+  title,
+  tableType,
+  navigatePath,
+  onRowClick,
+  showAddButton,
+}) {
   const navigate = useNavigate();
   let data = { columns: [], rows: [] }; // Default structure
   switch (tableType) {
@@ -47,6 +56,9 @@ function DeputyDirectorTable({ path, status, title, tableType, navigatePath, onR
     case "pharmacy-plan":
       data = usePharmacyPlanData(path) || data;
       break;
+    case "doctor-plan":
+      data = useDoctorPlanData(path) || data;
+      break;
     default:
       break;
   }
@@ -60,18 +72,20 @@ function DeputyDirectorTable({ path, status, title, tableType, navigatePath, onR
             {title}
           </MDTypography>
         </MDBox>
-        <MDBox>
-          <Button
-            variant="contained"
-            color="success"
-            sx={{ color: "white" }}
-            onClick={() => {
-              navigate(navigatePath);
-            }}
-          >
-            Добавить
-          </Button>
-        </MDBox>
+        {showAddButton && (
+          <MDBox>
+            <Button
+              variant="contained"
+              color="success"
+              sx={{ color: "white" }}
+              onClick={() => {
+                navigate(navigatePath);
+              }}
+            >
+              Добавить
+            </Button>
+          </MDBox>
+        )}
       </MDBox>
       <MDBox>
         <DataTable
@@ -97,11 +111,13 @@ DeputyDirectorTable.propTypes = {
   navigatePath: PropTypes.string,
   pmPath: PropTypes.string,
   onRowClick: PropTypes.func,
+  showAddButton: PropTypes.bool,
 };
 
 DeputyDirectorTable.defaultProps = {
   title: "",
-  onRowClick: () => {}, // Default to no-op function if not provided
+  onRowClick: () => {},
+  showAddButton: true, // Default to no-op function if not provided
 };
 
 export default DeputyDirectorTable;

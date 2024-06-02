@@ -21,28 +21,30 @@ function DeputyDirectorMRInfo() {
       <MDBox py={3}>
         <MDBox>
           <Grid container spacing={3}>
-            {/* <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6}>
               <DeputyDirectorTable
-                path={`common//mr/get-doctor-visit-plan?user_id=${user_id}`}
-                tableType="doctorPlans"
+                path={`/mr/get-doctor-visit-plan?user_id=${user.id}`}
+                tableType="doctor-plan"
                 title="Планы Врачей"
-                navigatePath="/dd/add-doctor-plan"
+                showAddButton={false}
               />
-            </Grid> */}
+            </Grid>
             <Grid item xs={12} md={6}>
               <DeputyDirectorTable
                 path={`mr/get-pharmacy-visit-plan?user_id=${user.id}`}
                 tableType="pharmacy-plan"
                 title="Планы Аптек"
+                showAddButton={false}
               />
             </Grid>
-            {/* <Grid item xs={12}>
+            <Grid item xs={12}>
               <DeputyDirectorTable
                 path={"common/get-notifications"}
                 tableType="notifications"
                 title="Уведомления"
+                showAddButton={false}
               />
-            </Grid> */}
+            </Grid>
           </Grid>
         </MDBox>
       </MDBox>
