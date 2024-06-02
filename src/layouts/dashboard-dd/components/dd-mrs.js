@@ -33,6 +33,7 @@ function DeputyDirectorMrs({ children }) {
                 onRowClick={(navigatePath, user) => {
                   navigate(navigatePath, { state: user });
                 }}
+                showAddButton={false}
               />
             </Grid>
           </Grid>

@@ -4,7 +4,7 @@ import axiosInstance from "services/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import MDTypography from "components/MDTypography";
 import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip"; // Import Tooltip
+import Tooltip from "@mui/material/Tooltip";
 import NotificationIcon from "@mui/icons-material/Notifications";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
@@ -29,7 +29,7 @@ export default function useMrData(apiPath, status, navigatePath, onRowClick) {
           { Header: "Имя пользователя", accessor: "username", align: "left" },
           { Header: "Полное имя", accessor: "full_name", align: "left" },
           { Header: "Статус", accessor: "status", align: "center" },
-          { Header: "Действия", accessor: "actions", align: "center" }, // Add Actions column
+          { Header: "Действия", accessor: "actions", align: "center" },
         ];
 
         const rows = mrs.map((mr) => ({
@@ -52,7 +52,8 @@ export default function useMrData(apiPath, status, navigatePath, onRowClick) {
             <div>
               <Tooltip title="Добавить уведомение">
                 <IconButton
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     navigate("/dd/add-notification", { state: mr });
                   }}
                 >
@@ -61,7 +62,8 @@ export default function useMrData(apiPath, status, navigatePath, onRowClick) {
               </Tooltip>
               <Tooltip title="Добавить план врача">
                 <IconButton
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     navigate("/dd/add-doctor-plan", { state: mr });
                   }}
                 >
@@ -70,7 +72,8 @@ export default function useMrData(apiPath, status, navigatePath, onRowClick) {
               </Tooltip>
               <Tooltip title="Добавить план аптеки">
                 <IconButton
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     navigate("/dd/add-pharmacy-plan", { state: mr });
                   }}
                 >

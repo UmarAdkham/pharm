@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { format } from "date-fns";
 
 export default function useDoctorPlanData(apiPath) {
@@ -24,6 +26,7 @@ export default function useDoctorPlanData(apiPath) {
           { Header: "Тема", accessor: "theme", align: "left" },
           { Header: "Описание", accessor: "description", align: "left" },
           { Header: "Врач", accessor: "doctor", align: "left" },
+          { Header: "Удалить", accessor: "delete", align: "center" },
         ];
 
         const rows = doctorPlans.map((plan) => ({
@@ -47,6 +50,32 @@ export default function useDoctorPlanData(apiPath) {
               {plan.doctor.full_name}
             </MDTypography>
           ),
+          delete: (
+            <IconButton
+              color="secondary"
+              onClick={async () => {
+                try {
+                  await axiosInstance.delete(
+                    `https://heartly1.uz/dd/delete-doctor-plan/${plan.id}`,
+                    {
+                      headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                      },
+                    }
+                  );
+                  setData((prevData) => ({
+                    ...prevData,
+                    rows: prevData.rows.filter((row) => row.id !== plan.id),
+                  }));
+                } catch (error) {
+                  console.error("Failed to delete doctor plan:", error);
+                }
+              }}
+            >
+              <DeleteIcon style={{ color: "red" }} />
+            </IconButton>
+          ),
+          id: plan.id,
         }));
 
         setData({ columns, rows });
