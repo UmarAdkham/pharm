@@ -25,10 +25,10 @@ function DeputyDirectorAddNotification() {
   const navigate = useNavigate();
   const location = useLocation();
   const { accessToken } = useSelector((state) => state.auth);
-  const [thema, setThema] = useState("");
+  const [theme, setThema] = useState("");
   const [description, setDescription] = useState("");
-  const [doctor_id, setDoctorId] = useState(0);
-  const [pharmacy_id, setPharmacyId] = useState(0);
+  const [doctor_id, setDoctorId] = useState("");
+  const [pharmacy_id, setPharmacyId] = useState("");
   const [pharmacies, setPharmacies] = useState([]);
   const [doctors, setDoctors] = useState([]);
 
@@ -38,18 +38,15 @@ function DeputyDirectorAddNotification() {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await axios.get(
-          `https://heartly1.uz/mr/get-doctors`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
+        const response = await axios.get(`https://heartly1.uz/mr/get-doctors`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
         const doctors = response.data;
         setDoctors(doctors);
       } catch (error) {
-        console.error("Failed to fetch doctors:", error);
+        console.error("Не удалось получить список врачей:", error);
       }
     };
 
@@ -59,7 +56,7 @@ function DeputyDirectorAddNotification() {
   useEffect(() => {
     const fetchPharmacies = async () => {
       try {
-        const response = await axios.get(`https://heartly1.uz/mr/get-pharmacy?user_id=0`, {
+        const response = await axios.get(`https://heartly1.uz/mr/get-pharmacy?user_id=${id}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -67,7 +64,7 @@ function DeputyDirectorAddNotification() {
         const pharmacies = response.data;
         setPharmacies(pharmacies);
       } catch (error) {
-        console.error("Failed to fetch pharmacies:", error);
+        console.error("Не удалось получить список аптек:", error);
       }
     };
 
@@ -79,7 +76,7 @@ function DeputyDirectorAddNotification() {
     // Define the request payload
     const notificationData = {
       author: full_name,
-      thema,
+      theme,
       description,
       med_rep_id: id,
       doctor_id,
@@ -88,14 +85,18 @@ function DeputyDirectorAddNotification() {
 
     try {
       // Call the API with authorization header
-      const response = await axios.post("https://heartly1.uz/dd/post-notification", notificationData, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axios.post(
+        "https://heartly1.uz/dd/post-notification",
+        notificationData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
 
       // Handle a successful response
-      setMessage({ color: "success", content: "Notification is sent" });
+      setMessage({ color: "success", content: "Уведомление отправлено" });
       console.log(response.data);
       // Optional: Redirect after a delay
       setTimeout(() => {
@@ -106,8 +107,8 @@ function DeputyDirectorAddNotification() {
       setMessage({
         color: "error",
         content:
-          "Failed to send notification. " +
-          (error.response?.data?.detail || "Please check your input and try again."),
+          "Не удалось отправить уведомление. " +
+          (error.response?.data?.detail || "Пожалуйста, проверьте ввод и попробуйте снова."),
       });
     }
   };
@@ -127,7 +128,7 @@ function DeputyDirectorAddNotification() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Post Notification
+            Добавить уведомление
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -136,16 +137,16 @@ function DeputyDirectorAddNotification() {
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Theme"
+                label="Тема"
                 fullWidth
-                value={thema}
+                value={theme}
                 onChange={(e) => setThema(e.target.value)}
               />
             </MDBox>
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Description"
+                label="Описание"
                 fullWidth
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -153,17 +154,17 @@ function DeputyDirectorAddNotification() {
             </MDBox>
             <MDBox mb={2}>
               <FormControl fullWidth>
-                <InputLabel id="doctor-label">Doctors</InputLabel>
+                <InputLabel id="doctor-label">Врачи</InputLabel>
                 <Select
                   labelId="doctor-label"
                   value={doctor_id}
-                  label="Doctors"
+                  label="Врачи"
                   onChange={(e) => setDoctorId(e.target.value)}
                   sx={{ height: "45px" }}
                 >
                   {doctors.map((doctor) => (
                     <MenuItem key={doctor.id} value={doctor.id}>
-                      {doctor.full_name}
+                      {`${doctor.full_name} (${doctor.speciality.name})`}
                     </MenuItem>
                   ))}
                 </Select>
@@ -171,17 +172,17 @@ function DeputyDirectorAddNotification() {
             </MDBox>
             <MDBox mb={2}>
               <FormControl fullWidth>
-                <InputLabel id="pharmacy-label">Pharmacies</InputLabel>
+                <InputLabel id="pharmacy-label">Аптеки</InputLabel>
                 <Select
                   labelId="pharmacy-label"
-                  value={pharmacies}
-                  label="Pharmacies"
+                  value={pharmacy_id}
+                  label="Аптеки"
                   onChange={(e) => setPharmacyId(e.target.value)}
                   sx={{ height: "45px" }}
                 >
                   {pharmacies.map((pharmacy) => (
                     <MenuItem key={pharmacy.id} value={pharmacy.id}>
-                      {pharmacy.company_name}
+                      {`${pharmacy.company_name} (${pharmacy.region.name})`}
                     </MenuItem>
                   ))}
                 </Select>
@@ -190,7 +191,7 @@ function DeputyDirectorAddNotification() {
 
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
-                Add
+                Добавить
               </MDButton>
             </MDBox>
           </MDBox>
