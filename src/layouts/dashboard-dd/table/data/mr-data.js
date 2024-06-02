@@ -1,11 +1,13 @@
-// data.js (useUserData function)
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import MDTypography from "components/MDTypography";
-import IconButton from "@mui/material/IconButton"; // Import IconButton
-import NotificationIcon from "@mui/icons-material/Notifications"; // Import an icon, change as needed
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip"; // Import Tooltip
+import NotificationIcon from "@mui/icons-material/Notifications";
+import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
+import VaccinesIcon from "@mui/icons-material/Vaccines";
 
 export default function useMrData(apiPath, status, onIconClick) {
   const [data, setData] = useState({ columns: [], rows: [] });
@@ -47,14 +49,39 @@ export default function useMrData(apiPath, status, onIconClick) {
             </MDTypography>
           ),
           actions: (
-            <IconButton
-              onClick={() => {
-                navigate("/dd/add-notification", { state: mr });
-              }}
-            >
-              <NotificationIcon />
-            </IconButton>
-          ), // Add the icon button with onClick handler
+            <div>
+              <Tooltip title="Add Notification">
+                <IconButton
+                  onClick={() => {
+                    navigate("/dd/add-notification", { state: mr });
+                  }}
+                >
+                  <NotificationIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Add Doctor Plan">
+                <IconButton
+                  onClick={() => {
+                    navigate("/dd/add-doctor-plan", { state: mr });
+                  }}
+                >
+                  <MedicalServicesIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Add Pharmacy Plan">
+                <IconButton
+                  onClick={() => {
+                    navigate("/dd/add-doctor-plan", { state: mr });
+                  }}
+                >
+                  <VaccinesIcon />
+                </IconButton>
+              </Tooltip>
+            </div>
+          ),
+          onClick: () => {
+            // onRowClick(navigatePath, user);
+          },
         }));
 
         setData({ columns, rows });

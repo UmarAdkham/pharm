@@ -31,6 +31,7 @@ import DeputyDirectorMedicalOrganizations from "layouts/dashboard-dd/components/
 import DeputyDirectorAddMedicalOrganization from "layouts/dashboard-dd/components/dd-add-medorg";
 import DeputyDirectorAddSpeciality from "layouts/dashboard-dd/components/dd-add-speciality";
 import DeputyDirectorSpecialities from "layouts/dashboard-dd/components/dd-specialities";
+import DeputyDirectorAddDoctorPlan from "layouts/dashboard-dd/components/dd-add-doctor-plan";
 
 const roleBasedRoutes = [
   {
@@ -82,6 +83,7 @@ const roleBasedRoutes = [
       { path: "add-medical-organization", component: <DeputyDirectorAddMedicalOrganization /> },
       { path: "specialities", component: <DeputyDirectorSpecialities /> },
       { path: "add-speciality", component: <DeputyDirectorAddSpeciality /> },
+      { path: "add-doctor-plan", component: <DeputyDirectorAddDoctorPlan /> },
     ],
     sideNav: [
       {

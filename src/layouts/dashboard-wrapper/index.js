@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 function DashboardWrapper() {
   const [controller, dispatch] = useMaterialUIController();
   const [onMouseEnter, setOnMouseEnter] = useState(false);
-  const [isSidenavVisible, setIsSidenavVisible] = useState(false); // Set initial visibility to false
+  const [isSidenavVisible, setIsSidenavVisible] = useState(true); // Set initial visibility to false
   const {
     miniSidenav,
     direction,

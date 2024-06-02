@@ -62,7 +62,7 @@ function DeputyDirectorTable({ path, status, title, tableType, navigatePath, onR
             color="success"
             sx={{ color: "white" }}
             onClick={() => {
-              navigate(pmPath);
+              navigate(navigatePath);
             }}
           >
             Добавить
