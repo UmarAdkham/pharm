@@ -9,7 +9,7 @@ import NotificationIcon from "@mui/icons-material/Notifications";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
 
-export default function useMrData(apiPath, status, onIconClick) {
+export default function useMrData(apiPath, status, navigatePath, onRowClick) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
   const navigate = useNavigate();
@@ -24,8 +24,6 @@ export default function useMrData(apiPath, status, onIconClick) {
         });
 
         const mrs = response.data.filter((user) => user.status === status);
-
-        console.log(mrs);
 
         const columns = [
           { Header: "Имя пользователя", accessor: "username", align: "left" },
@@ -82,7 +80,7 @@ export default function useMrData(apiPath, status, onIconClick) {
             </div>
           ),
           onClick: () => {
-            // onRowClick(navigatePath, user);
+            onRowClick(navigatePath, mr);
           },
         }));
 
@@ -93,7 +91,7 @@ export default function useMrData(apiPath, status, onIconClick) {
     }
 
     fetchUsers();
-  }, [accessToken, apiPath, onIconClick]);
+  }, [accessToken, apiPath, onRowClick]);
 
   return data;
 }

@@ -24,20 +24,15 @@ function DeputyDirectorMrs({ children }) {
         <MDBox>
           <Grid container spacing={3}>
             <Grid item xs={12} lg={12}>
-              {/* <MedicalRepresentativeTable
-                path={"common/get-users"}
-                status={userRoles.MEDICAL_REPRESENTATIVE}
-                title={`Медицинские прредставители`}
-                // navigatePath={"/dd/single-pm"}
-                // onRowClick={(navigatePath, user) => {
-                //   navigate(navigatePath, { state: user });
-                // }}
-              /> */}
               <DeputyDirectorTable
                 path={"common/get-users"}
                 status={userRoles.MEDICAL_REPRESENTATIVE}
                 title={`Медицинские прредставители`}
                 tableType="mrs"
+                navigatePath="/dd/mr-info"
+                onRowClick={(navigatePath, user) => {
+                  navigate(navigatePath, { state: user });
+                }}
               />
             </Grid>
           </Grid>
