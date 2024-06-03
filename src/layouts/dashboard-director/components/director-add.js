@@ -42,7 +42,7 @@ function DirectorAdd() {
     try {
       // Call the API with authorization header
       const response = await axios.post(
-        "https://heartly1.uz/d/register-for-d",
+        "https://it-club.uz/d/register-for-d",
         userData,
         {
           headers: {

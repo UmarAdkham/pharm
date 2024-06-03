@@ -41,7 +41,7 @@ function DeputyDirectorAddDoctorPlan() {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await axios.get(`https://heartly1.uz/mr/get-doctors`, {
+        const response = await axios.get(`https://it-club.uz/mr/get-doctors`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -69,7 +69,7 @@ function DeputyDirectorAddDoctorPlan() {
     try {
       // Call the API with authorization header
       const response = await axios.post(
-        `https://heartly1.uz/dd/add-doctor-plan/${id}`,
+        `https://it-club.uz/dd/add-doctor-plan/${id}`,
         doctorPlanData,
         {
           headers: {

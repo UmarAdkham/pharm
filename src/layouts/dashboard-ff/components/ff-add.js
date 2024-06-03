@@ -41,7 +41,7 @@ function FieldForceManagerAdd() {
     try {
       // Call the API with authorization header
       const response = await axios.post(
-        "https://heartly1.uz/ffm/register-for-ffm",
+        "https://it-club.uz/ffm/register-for-ffm",
         userData,
         {
           headers: {

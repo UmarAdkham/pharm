@@ -39,7 +39,7 @@ function DeputyDirectorAddProduct() {
   useEffect(() => {
     const fetchManufacturerCompanies = async () => {
       try {
-        const response = await axios.get(`https://heartly1.uz/common/get-manufactured-company`, {
+        const response = await axios.get(`https://it-club.uz/common/get-manufactured-company`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -57,7 +57,7 @@ function DeputyDirectorAddProduct() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`https://heartly1.uz/common/get-product-category`, {
+        const response = await axios.get(`https://it-club.uz/common/get-product-category`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -86,7 +86,7 @@ function DeputyDirectorAddProduct() {
 
     try {
       // Call the API with authorization header
-      const response = await axios.post("https://heartly1.uz/common/add-product", productData, {
+      const response = await axios.post("https://it-club.uz/common/add-product", productData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },

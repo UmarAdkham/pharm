@@ -41,7 +41,7 @@ function RegionalManagerAdd() {
     try {
       // Call the API with authorization header
       const response = await axios.post(
-        "https://heartly1.uz/rm/register-for-rm",
+        "https://it-club.uz/rm/register-for-rm",
         userData,
         {
           headers: {

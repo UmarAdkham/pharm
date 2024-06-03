@@ -40,7 +40,7 @@ function DeputyDirectorAdd() {
 
     try {
       // Call the API with authorization header
-      const response = await axios.post("https://heartly1.uz/dd/register-for-dd", userData, {
+      const response = await axios.post("https://it-club.uz/dd/register-for-dd", userData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },

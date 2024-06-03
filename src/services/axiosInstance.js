@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "https://heartly1.uz/",
+  baseURL: "https://it-club.uz/",
 });
 
 export default axiosInstance;

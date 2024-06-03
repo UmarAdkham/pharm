@@ -41,7 +41,7 @@ function DeputyDirectorAddMedicalRepresentative() {
     const fetchFieldForceManagers = async () => {
       try {
         const response = await axios.get(
-          `https://heartly1.uz/common/get-users-by-username?username=${user.username}`,
+          `https://it-club.uz/common/get-users-by-username?username=${user.username}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`, // Set the authorization header with the access token
@@ -65,7 +65,7 @@ function DeputyDirectorAddMedicalRepresentative() {
     const getRegionalManagers = async () => {
       try {
         const response = await axios.get(
-          `https://heartly1.uz/common/get-users-by-username?username=${selectedFFM.username}`,
+          `https://it-club.uz/common/get-users-by-username?username=${selectedFFM.username}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`, // Set the authorization header with the access token
@@ -104,7 +104,7 @@ function DeputyDirectorAddMedicalRepresentative() {
 
     try {
       // Call the API with authorization header
-      const response = await axios.post("https://heartly1.uz/dd/register-for-dd", userData, {
+      const response = await axios.post("https://it-club.uz/dd/register-for-dd", userData, {
         headers: {
           Authorization: `Bearer ${accessToken}`, // Set the authorization header with the access token
         },

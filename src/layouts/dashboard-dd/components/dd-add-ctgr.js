@@ -29,7 +29,7 @@ function DeputyDirectorAddProductCategory() {
     try {
       // Call the API with authorization header
       const response = await axios.post(
-        `https://heartly1.uz/common/add-product-category?name=${name}`,
+        `https://it-club.uz/common/add-product-category?name=${name}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

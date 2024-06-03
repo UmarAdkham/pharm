@@ -56,7 +56,7 @@ export default function usePharmacyPlanData(apiPath) {
               onClick={async () => {
                 try {
                   await axiosInstance.delete(
-                    `https://heartly1.uz/dd/delete-pharmacy-plan/${plan.id}`,
+                    `https://it-club.uz/dd/delete-pharmacy-plan/${plan.id}`,
                     {
                       headers: {
                         Authorization: `Bearer ${accessToken}`,

@@ -28,7 +28,7 @@ function DeputyDirectorAddSpeciality() {
 
     try {
       // Call the API with authorization header
-      const response = await axios.post(`https://heartly1.uz/common/add-speciality?name=${name}`, {
+      const response = await axios.post(`https://it-club.uz/common/add-speciality?name=${name}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
