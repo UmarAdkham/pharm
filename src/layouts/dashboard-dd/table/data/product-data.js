@@ -21,7 +21,7 @@ export default function useProductData(apiPath) {
         const columns = [
           { Header: "Название", accessor: "name", align: "left" },
           { Header: "Цена", accessor: "price", align: "left" },
-          { Header: "Цена со скидкой", accessor: "discount_price", align: "left" },
+          { Header: "Произ. цена", accessor: "discount_price", align: "left" },
           { Header: "Производитель", accessor: "man_company", align: "left" },
           { Header: "Категория", accessor: "category", align: "left" },
         ];
