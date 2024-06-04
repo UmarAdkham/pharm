@@ -71,6 +71,9 @@ export default styled(Drawer)(({ theme, ownerState, isVisible }) => {
       border: "none",
       ...(miniSidenav ? drawerCloseStyles() : drawerOpenStyles()),
       display: isVisible ? "block" : "none", // Ensure the visibility is controlled here
+      overflow: "hidden", // Added to prevent horizontal scrolling
+      textOverflow: "ellipsis", // Truncate with ellipsis
+      whiteSpace: "nowrap", // Keep text in a single line
     },
   };
 });
