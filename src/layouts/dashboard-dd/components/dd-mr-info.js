@@ -48,6 +48,15 @@ function DeputyDirectorMRInfo() {
                 navigateState={user}
               />
             </Grid>
+            <Grid item xs={12} md={6}>
+              <DeputyDirectorTable
+                path={`mr/get-doctors`}
+                tableType="mr-doctors"
+                title="Врачи"
+                navigatePath="/dd/add-doctor"
+                navigateState={user}
+              />
+            </Grid>
             <Grid item xs={12}>
               <DeputyDirectorTable
                 path={"common/get-notifications"}
