@@ -147,7 +147,7 @@ function DeputyDirectorAddPharmacyPlan() {
                 >
                   {pharmacies.map((pharmacy) => (
                     <MenuItem key={pharmacy.id} value={pharmacy.id}>
-                      {`${pharmacy.company_name} (${pharmacy.region.name})`}
+                      {`${pharmacy.company_name}`}
                     </MenuItem>
                   ))}
                 </Select>

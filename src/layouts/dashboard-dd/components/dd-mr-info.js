@@ -25,16 +25,18 @@ function DeputyDirectorMRInfo() {
               <DeputyDirectorTable
                 path={`/mr/get-doctor-visit-plan?user_id=${user.id}`}
                 tableType="doctor-plan"
-                title="Планы Врачей"
-                showAddButton={false}
+                title="Планы врачей"
+                navigatePath="/dd/add-doctor-plan"
+                navigateState={user}
               />
             </Grid>
             <Grid item xs={12} md={6}>
               <DeputyDirectorTable
                 path={`mr/get-pharmacy-visit-plan?user_id=${user.id}`}
                 tableType="pharmacy-plan"
-                title="Планы Аптек"
-                showAddButton={false}
+                title="Планы аптек"
+                navigatePath="/dd/add-pharmacy-plan"
+                navigateState={user}
               />
             </Grid>
             <Grid item xs={12}>
@@ -42,7 +44,8 @@ function DeputyDirectorMRInfo() {
                 path={"common/get-notifications"}
                 tableType="notifications"
                 title="Уведомления"
-                showAddButton={false}
+                navigatePath="/dd/add-notification"
+                navigateState={user}
               />
             </Grid>
           </Grid>

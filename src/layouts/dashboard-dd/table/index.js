@@ -25,7 +25,8 @@ function DeputyDirectorTable({
   navigatePath,
   onRowClick,
   showAddButton,
-  pmPath,
+  rowPath,
+  navigateState,
 }) {
   const navigate = useNavigate();
   let data = { columns: [], rows: [] }; // Default structure
@@ -49,7 +50,7 @@ function DeputyDirectorTable({
       data = useSpecialityData(path) || data;
       break;
     case "pms":
-      data = usePmData(path, status, navigatePath, onRowClick, pmPath) || data;
+      data = usePmData(path, status, navigatePath, onRowClick, rowPath) || data;
       break;
     case "mrs":
       data = useMrData(path, status, navigatePath, onRowClick) || data;
@@ -80,7 +81,9 @@ function DeputyDirectorTable({
               color="success"
               sx={{ color: "white" }}
               onClick={() => {
-                navigate(navigatePath);
+                navigateState
+                  ? navigate(navigatePath, { state: navigateState })
+                  : navigate(navigatePath);
               }}
             >
               Добавить
@@ -110,9 +113,10 @@ DeputyDirectorTable.propTypes = {
   title: PropTypes.string,
   tableType: PropTypes.string,
   navigatePath: PropTypes.string,
-  pmPath: PropTypes.string,
+  rowPath: PropTypes.string,
   onRowClick: PropTypes.func,
   showAddButton: PropTypes.bool,
+  navigateState: PropTypes.obj, // to pass user object when necessary
 };
 
 DeputyDirectorTable.defaultProps = {
