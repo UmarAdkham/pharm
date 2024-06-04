@@ -39,6 +39,15 @@ function DeputyDirectorMRInfo() {
                 navigateState={user}
               />
             </Grid>
+            <Grid item xs={12} md={6}>
+              <DeputyDirectorTable
+                path={`mr/get-pharmacy?user_id=${user.id}`}
+                tableType="mr-pharmacies"
+                title="Аптеки"
+                navigatePath="/dd/add-pharmacy"
+                navigateState={user}
+              />
+            </Grid>
             <Grid item xs={12}>
               <DeputyDirectorTable
                 path={"common/get-notifications"}
