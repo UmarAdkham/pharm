@@ -59,7 +59,7 @@ function DeputyDirectorMRInfo() {
             </Grid>
             <Grid item xs={12}>
               <DeputyDirectorTable
-                path={"common/get-notifications"}
+                path={`dd/notofications/${user.id}`}
                 tableType="notifications"
                 title="Уведомления"
                 navigatePath="/dd/add-notification"

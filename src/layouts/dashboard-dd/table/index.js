@@ -18,6 +18,7 @@ import usePharmacyPlanData from "./data/pharmacy-plan-data";
 import useDoctorPlanData from "./data/doctor-plan-data";
 import usePharmacyData from "./data/mr-pharmacies-data";
 import useDoctorData from "./data/mr-doctors-data";
+import useNotificationData from "./data/notification-data";
 
 function DeputyDirectorTable({
   path,
@@ -68,6 +69,9 @@ function DeputyDirectorTable({
       break;
     case "mr-doctors":
       data = useDoctorData(path) || data;
+      break;
+    case "notifications":
+      data = useNotificationData(path) || data;
       break;
     default:
       break;

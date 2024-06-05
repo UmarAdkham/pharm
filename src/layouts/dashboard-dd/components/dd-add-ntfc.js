@@ -1,16 +1,19 @@
-/* eslint-disable prettier/prettier */
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
+import Grid from "@mui/material/Grid";
 import Alert from "@mui/material/Alert";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -19,39 +22,26 @@ import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 
 // Authentication layout components
-import BasicLayout from "layouts/authentication/components/BasicLayout";
+import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 
 function DeputyDirectorAddNotification() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { id } = location.state || {};
   const { accessToken } = useSelector((state) => state.auth);
-  const [theme, setThema] = useState("");
-  const [description, setDescription] = useState("");
-  const [doctor_id, setDoctorId] = useState("");
-  const [pharmacy_id, setPharmacyId] = useState("");
+  const [notificationType, setNotificationType] = useState("pharmacy");
   const [pharmacies, setPharmacies] = useState([]);
   const [doctors, setDoctors] = useState([]);
+  const [notificationData, setNotificationData] = useState({
+    author: "",
+    theme: "",
+    description: "",
+    pharmacy_id: "",
+    doctor_id: "",
+    wholesale_id: "",
+  });
 
   const [message, setMessage] = useState({ color: "", content: "" });
-  const { id, full_name } = location.state || {};
-
-  useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        const response = await axios.get(`https://it-club.uz/mr/get-doctors`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        const doctors = response.data;
-        setDoctors(doctors);
-      } catch (error) {
-        console.error("Не удалось получить список врачей:", error);
-      }
-    };
-
-    fetchDoctors();
-  }, [accessToken]);
 
   useEffect(() => {
     const fetchPharmacies = async () => {
@@ -61,60 +51,75 @@ function DeputyDirectorAddNotification() {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        const pharmacies = response.data;
-        setPharmacies(pharmacies);
+        setPharmacies(response.data);
       } catch (error) {
-        console.error("Не удалось получить список аптек:", error);
+        console.error("Не удалось получить аптеки:", error);
+      }
+    };
+
+    const fetchDoctors = async () => {
+      try {
+        const response = await axios.get(`https://it-club.uz/mr/get-doctors`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setDoctors(response.data);
+      } catch (error) {
+        console.error("Не удалось получить докторов:", error);
       }
     };
 
     fetchPharmacies();
-  }, [accessToken]);
+    fetchDoctors();
+  }, [accessToken, id]);
 
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent default form submission
-    // Define the request payload
-    const notificationData = {
-      author: full_name,
-      theme,
-      description,
-      med_rep_id: id,
-      doctor_id,
-      pharmacy_id,
+    event.preventDefault();
+
+    const dataToSend = {
+      author: notificationData.author,
+      theme: notificationData.theme,
+      description: notificationData.description,
+      med_rep_id: parseInt(id, 10),
     };
 
-    try {
-      // Call the API with authorization header
-      const response = await axios.post(
-        "https://it-club.uz/dd/post-notification",
-        notificationData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+    if (notificationType === "pharmacy") {
+      dataToSend.pharmacy_id = parseInt(notificationData.pharmacy_id, 10);
+    } else if (notificationType === "doctor") {
+      dataToSend.doctor_id = parseInt(notificationData.doctor_id, 10);
+    } else {
+      dataToSend.wholesale_id = parseInt(notificationData.wholesale_id, 10);
+    }
 
-      // Handle a successful response
-      setMessage({ color: "success", content: "Уведомление отправлено" });
-      console.log(response.data);
-      // Optional: Redirect after a delay
-      setTimeout(() => {
-        navigate(-1);
-      }, 2000);
+    try {
+      const response = await axios.post(`https://it-club.uz/dd/post-notification`, dataToSend, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      setMessage({ color: "success", content: "Уведомление успешно добавлено" });
+      setTimeout(() => navigate(-1), 2000);
     } catch (error) {
-      console.log(error);
       setMessage({
         color: "error",
         content:
-          "Не удалось отправить уведомление. " +
-          (error.response?.data?.detail || "Пожалуйста, проверьте ввод и попробуйте снова."),
+          "Не удалось добавить уведомление. " +
+          (error.response?.data?.detail || "Пожалуйста, проверьте свои данные и попробуйте снова."),
       });
     }
   };
 
+  const handleChange = (e) => {
+    setNotificationData({
+      ...notificationData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   return (
-    <BasicLayout>
+    <DashboardLayout>
       <Card>
         <MDBox
           variant="gradient"
@@ -128,67 +133,117 @@ function DeputyDirectorAddNotification() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Добавить уведомление
+            Добавить Уведомление
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           {message.content && <Alert severity={message.color}>{message.content}</Alert>}
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
-            <MDBox mb={2}>
-              <MDInput
-                type="text"
-                label="Тема"
-                fullWidth
-                value={theme}
-                onChange={(e) => setThema(e.target.value)}
-              />
-            </MDBox>
-            <MDBox mb={2}>
-              <MDInput
-                type="text"
-                label="Описание"
-                fullWidth
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </MDBox>
-            <MDBox mb={2}>
-              <FormControl fullWidth>
-                <InputLabel id="doctor-label">Врачи</InputLabel>
-                <Select
-                  labelId="doctor-label"
-                  value={doctor_id}
-                  label="Врачи"
-                  onChange={(e) => setDoctorId(e.target.value)}
-                  sx={{ height: "45px" }}
-                >
-                  {doctors.map((doctor) => (
-                    <MenuItem key={doctor.id} value={doctor.id}>
-                      {`${doctor.full_name} (${doctor.speciality.name})`}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </MDBox>
-            <MDBox mb={2}>
-              <FormControl fullWidth>
-                <InputLabel id="pharmacy-label">Аптеки</InputLabel>
-                <Select
-                  labelId="pharmacy-label"
-                  value={pharmacy_id}
-                  label="Аптеки"
-                  onChange={(e) => setPharmacyId(e.target.value)}
-                  sx={{ height: "45px" }}
-                >
-                  {pharmacies.map((pharmacy) => (
-                    <MenuItem key={pharmacy.id} value={pharmacy.id}>
-                      {`${pharmacy.company_name} (${pharmacy.region.name})`}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </MDBox>
-
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
+                <MDInput
+                  type="text"
+                  label="Автор"
+                  fullWidth
+                  name="author"
+                  value={notificationData.author}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <MDInput
+                  type="text"
+                  label="Тема"
+                  fullWidth
+                  name="theme"
+                  value={notificationData.theme}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <MDInput
+                  type="text"
+                  label="Описание"
+                  fullWidth
+                  multiline
+                  rows={4}
+                  name="description"
+                  value={notificationData.description}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl component="fieldset">
+                  <RadioGroup
+                    row
+                    value={notificationType}
+                    onChange={(e) => setNotificationType(e.target.value)}
+                  >
+                    <FormControlLabel value="pharmacy" control={<Radio />} label="Аптека" />
+                    <FormControlLabel value="doctor" control={<Radio />} label="Доктор" />
+                    <FormControlLabel
+                      value="wholesale"
+                      control={<Radio />}
+                      label="Оптовая компания"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+              {notificationType === "pharmacy" && (
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth>
+                    <InputLabel id="pharmacy-label">Аптека</InputLabel>
+                    <Select
+                      labelId="pharmacy-label"
+                      value={notificationData.pharmacy_id}
+                      label="Аптека"
+                      onChange={handleChange}
+                      sx={{ height: "45px" }}
+                      name="pharmacy_id"
+                    >
+                      {pharmacies.map((pharmacy) => (
+                        <MenuItem key={pharmacy.id} value={pharmacy.id}>
+                          {pharmacy.company_name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              )}
+              {notificationType === "doctor" && (
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth>
+                    <InputLabel id="doctor-label">Доктор</InputLabel>
+                    <Select
+                      labelId="doctor-label"
+                      value={notificationData.doctor_id}
+                      label="Доктор"
+                      onChange={handleChange}
+                      sx={{ height: "45px" }}
+                      name="doctor_id"
+                    >
+                      {doctors.map((doctor) => (
+                        <MenuItem key={doctor.id} value={doctor.id}>
+                          {doctor.full_name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              )}
+              {notificationType === "wholesale" && (
+                <Grid item xs={12} md={6}>
+                  <MDInput
+                    type="text"
+                    label="Оптовая компания"
+                    fullWidth
+                    name="wholesale_id"
+                    value={notificationData.wholesale_id}
+                    onChange={handleChange}
+                  />
+                </Grid>
+              )}
+            </Grid>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
                 Добавить
@@ -197,7 +252,7 @@ function DeputyDirectorAddNotification() {
           </MDBox>
         </MDBox>
       </Card>
-    </BasicLayout>
+    </DashboardLayout>
   );
 }
 
