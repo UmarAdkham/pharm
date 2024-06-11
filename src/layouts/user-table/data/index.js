@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import MDTypography from "components/MDTypography";
+import RegionalManagerDashboard from "layouts/dashboard-rm";
 
 export default function useUserData(apiPath, status, navigatePath, onRowClick) {
   const [data, setData] = useState({ columns: [], rows: [] });
@@ -24,6 +25,7 @@ export default function useUserData(apiPath, status, navigatePath, onRowClick) {
         const columns = [
           { Header: "Имя пользователя", accessor: "username", align: "left" },
           { Header: "Полное имя", accessor: "full_name", align: "left" },
+          { Header: "Регион", accessor: "region", align: "center" },
           { Header: "Статус", accessor: "status", align: "center" },
         ];
 
@@ -36,6 +38,11 @@ export default function useUserData(apiPath, status, navigatePath, onRowClick) {
           full_name: (
             <MDTypography variant="caption" fontWeight="medium">
               {user.full_name}
+            </MDTypography>
+          ),
+          region: (
+            <MDTypography variant="caption" fontWeight="medium" color="text">
+              {user.region.name}
             </MDTypography>
           ),
           status: (

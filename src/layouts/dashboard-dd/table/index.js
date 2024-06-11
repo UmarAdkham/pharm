@@ -2,6 +2,10 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
@@ -32,6 +36,9 @@ function DeputyDirectorTable({
   navigateState,
 }) {
   const navigate = useNavigate();
+  const [fieldForceManager, setFieldForceManager] = useState("");
+  const [regionalManager, setRegionalManager] = useState("");
+
   let data = { columns: [], rows: [] }; // Default structure
   switch (tableType) {
     case "categories":
@@ -86,22 +93,52 @@ function DeputyDirectorTable({
             {title}
           </MDTypography>
         </MDBox>
-        {showAddButton && (
-          <MDBox>
-            <Button
-              variant="contained"
-              color="success"
-              sx={{ color: "white" }}
-              onClick={() => {
-                navigateState
-                  ? navigate(navigatePath, { state: navigateState })
-                  : navigate(navigatePath);
-              }}
+        <MDBox display="flex" alignItems="center">
+          <FormControl sx={{ m: 1, minWidth: 120 }}>
+            <InputLabel id="field-force-manager-label">Field Force Manager</InputLabel>
+            <Select
+              labelId="field-force-manager-label"
+              value={fieldForceManager}
+              onChange={(e) => setFieldForceManager(e.target.value)}
+              label="Field Force Manager"
+              sx={{ height: "45px" }}
             >
-              Добавить
-            </Button>
-          </MDBox>
-        )}
+              <MenuItem value="A">A</MenuItem>
+              <MenuItem value="B">B</MenuItem>
+              <MenuItem value="C">C</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl sx={{ m: 1, minWidth: 120 }}>
+            <InputLabel id="regional-manager-label">Regional Manager</InputLabel>
+            <Select
+              labelId="regional-manager-label"
+              value={regionalManager}
+              onChange={(e) => setRegionalManager(e.target.value)}
+              label="Regional Manager"
+              sx={{ height: "45px" }}
+            >
+              <MenuItem value="A">A</MenuItem>
+              <MenuItem value="B">B</MenuItem>
+              <MenuItem value="C">C</MenuItem>
+            </Select>
+          </FormControl>
+          {showAddButton && (
+            <MDBox>
+              <Button
+                variant="contained"
+                color="success"
+                sx={{ color: "white" }}
+                onClick={() => {
+                  navigateState
+                    ? navigate(navigatePath, { state: navigateState })
+                    : navigate(navigatePath);
+                }}
+              >
+                Добавить
+              </Button>
+            </MDBox>
+          )}
+        </MDBox>
       </MDBox>
       <MDBox>
         <DataTable
@@ -128,7 +165,7 @@ DeputyDirectorTable.propTypes = {
   rowPath: PropTypes.string,
   onRowClick: PropTypes.func,
   showAddButton: PropTypes.bool,
-  navigateState: PropTypes.obj, // to pass user object when necessary
+  navigateState: PropTypes.object, // to pass user object when necessary
 };
 
 DeputyDirectorTable.defaultProps = {

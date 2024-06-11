@@ -28,6 +28,7 @@ export default function useMrData(apiPath, status, navigatePath, onRowClick) {
         const columns = [
           { Header: "Имя пользователя", accessor: "username", align: "left" },
           { Header: "Полное имя", accessor: "full_name", align: "left" },
+          { Header: "Регион", accessor: "region", align: "left" },
           { Header: "Статус", accessor: "status", align: "center" },
           { Header: "Действия", accessor: "actions", align: "center" },
         ];
@@ -41,6 +42,11 @@ export default function useMrData(apiPath, status, navigatePath, onRowClick) {
           full_name: (
             <MDTypography variant="caption" fontWeight="medium">
               {mr.full_name}
+            </MDTypography>
+          ),
+          region: (
+            <MDTypography variant="caption" fontWeight="medium" color="text">
+              {mr.region.name}
             </MDTypography>
           ),
           status: (
