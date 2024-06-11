@@ -34,6 +34,7 @@ function DeputyDirectorMrs({ children }) {
                   navigate(navigatePath, { state: user });
                 }}
                 showAddButton={false}
+                showFilters={true}
               />
             </Grid>
           </Grid>

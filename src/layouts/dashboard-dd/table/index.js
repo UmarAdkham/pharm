@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
@@ -23,6 +23,9 @@ import useDoctorPlanData from "./data/doctor-plan-data";
 import usePharmacyData from "./data/mr-pharmacies-data";
 import useDoctorData from "./data/mr-doctors-data";
 import useNotificationData from "./data/notification-data";
+import userRoles from "constants/userRoles";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 function DeputyDirectorTable({
   path,
@@ -34,10 +37,14 @@ function DeputyDirectorTable({
   showAddButton,
   rowPath,
   navigateState,
+  showFilters,
 }) {
+  const { accessToken } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-  const [fieldForceManager, setFieldForceManager] = useState("");
-  const [regionalManager, setRegionalManager] = useState("");
+  const [selectedFFM, setSelectedFFM] = useState(null);
+  const [selectedRM, setSelectedRM] = useState(null); // State to track the selected Regional Manager
+  const [fieldForceManagers, setFieldForceManagers] = useState([]);
+  const [regionalManagers, setRegionalManagers] = useState([]); // State to store the list of Regional Managers
 
   let data = { columns: [], rows: [] }; // Default structure
   switch (tableType) {
@@ -85,6 +92,43 @@ function DeputyDirectorTable({
   }
   const { columns, rows } = data;
 
+  useEffect(() => {
+    const fetchFieldForceManagers = async () => {
+      try {
+        const response = await axios.get(`https://it-club.uz/common/get-users`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        const fieldForceManagers = response.data.filter(
+          (user) => user.status === userRoles.FIELD_FORCE_MANAGER
+        );
+        setFieldForceManagers(fieldForceManagers);
+      } catch (error) {
+        console.error("Не удалось получить пользователей:", error);
+      }
+    };
+
+    const fetchRegionalManagers = async () => {
+      try {
+        const response = await axios.get(`https://it-club.uz/common/get-users`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        const regionalManagers = response.data.filter(
+          (user) => user.status === userRoles.REGIONAL_MANAGER
+        );
+        setRegionalManagers(regionalManagers);
+      } catch (error) {
+        console.error("Не удалось получить пользователей:", error);
+      }
+    };
+
+    fetchFieldForceManagers();
+    fetchRegionalManagers();
+  }, [accessToken]);
+
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
@@ -94,34 +138,42 @@ function DeputyDirectorTable({
           </MDTypography>
         </MDBox>
         <MDBox display="flex" alignItems="center">
-          <FormControl sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="field-force-manager-label">Field Force Manager</InputLabel>
-            <Select
-              labelId="field-force-manager-label"
-              value={fieldForceManager}
-              onChange={(e) => setFieldForceManager(e.target.value)}
-              label="Field Force Manager"
-              sx={{ height: "45px" }}
-            >
-              <MenuItem value="A">A</MenuItem>
-              <MenuItem value="B">B</MenuItem>
-              <MenuItem value="C">C</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="regional-manager-label">Regional Manager</InputLabel>
-            <Select
-              labelId="regional-manager-label"
-              value={regionalManager}
-              onChange={(e) => setRegionalManager(e.target.value)}
-              label="Regional Manager"
-              sx={{ height: "45px" }}
-            >
-              <MenuItem value="A">A</MenuItem>
-              <MenuItem value="B">B</MenuItem>
-              <MenuItem value="C">C</MenuItem>
-            </Select>
-          </FormControl>
+          {showFilters && (
+            <>
+              <FormControl sx={{ m: 1, minWidth: 200 }}>
+                <InputLabel id="field-force-manager-label">Field Force Manager</InputLabel>
+                <Select
+                  labelId="field-force-manager-label"
+                  value={selectedFFM}
+                  onChange={(e) => setSelectedFFM(e.target.value)}
+                  label="Field Force Manager"
+                  sx={{ height: "45px" }}
+                >
+                  {fieldForceManagers.map((ffm) => (
+                    <MenuItem key={ffm.id} value={ffm}>
+                      {ffm.full_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl sx={{ m: 1, minWidth: 200 }}>
+                <InputLabel id="regional-manager-label">Regional Manager</InputLabel>
+                <Select
+                  labelId="regional-manager-label"
+                  value={selectedRM}
+                  onChange={(e) => setSelectedRM(e.target.value)}
+                  label="Regional Manager"
+                  sx={{ height: "45px" }}
+                >
+                  {regionalManagers.map((rm) => (
+                    <MenuItem key={rm.id} value={rm}>
+                      {rm.full_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </>
+          )}
           {showAddButton && (
             <MDBox>
               <Button
@@ -165,13 +217,15 @@ DeputyDirectorTable.propTypes = {
   rowPath: PropTypes.string,
   onRowClick: PropTypes.func,
   showAddButton: PropTypes.bool,
-  navigateState: PropTypes.object, // to pass user object when necessary
+  showFilters: PropTypes.bool,
+  navigateState: PropTypes.object,
 };
 
 DeputyDirectorTable.defaultProps = {
   title: "",
   onRowClick: () => {},
-  showAddButton: true, // Default to no-op function if not provided
+  showAddButton: true,
+  showFilters: false,
 };
 
 export default DeputyDirectorTable;
