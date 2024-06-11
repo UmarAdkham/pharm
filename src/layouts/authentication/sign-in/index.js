@@ -110,21 +110,6 @@ function Basic() {
                 Войти
               </MDButton>
             </MDBox>
-            <MDBox mt={3} mb={1} textAlign="center">
-              <MDTypography variant="button" color="text">
-                Нет аккаунта?{" "}
-                <MDTypography
-                  component={Link}
-                  to="/sign-up"
-                  variant="button"
-                  color="info"
-                  fontWeight="medium"
-                  textGradient
-                >
-                  Зарегистрироваться
-                </MDTypography>
-              </MDTypography>
-            </MDBox>
           </MDBox>
         </MDBox>
       </Card>
