@@ -50,7 +50,7 @@ function DeputyDirectorMRInfo() {
             </Grid>
             <Grid item xs={12} md={6}>
               <DeputyDirectorTable
-                path={`mr/get-doctors`}
+                path={`https://it-club.uz/mr/get-doctors-by-med-rep/${user.id}`}
                 tableType="mr-doctors"
                 title="Врачи"
                 navigatePath="/dd/add-doctor"
