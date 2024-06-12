@@ -26,6 +26,7 @@ import useNotificationData from "./data/notification-data";
 import userRoles from "constants/userRoles";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import SelectCategory from "../components/category";
 
 function DeputyDirectorTable({
   path,
@@ -38,6 +39,8 @@ function DeputyDirectorTable({
   rowPath,
   navigateState,
   showFilters,
+  trued,
+  selectDatas,
 }) {
   const { accessToken } = useSelector((state) => state.auth);
   const navigate = useNavigate();
@@ -55,7 +58,7 @@ function DeputyDirectorTable({
       data = useManufacturerCompanyData(path) || data;
       break;
     case "products":
-      data = useProductData(path) || data;
+      data = useProductData(path, selectDatas[0].categori, selectDatas[1].categori) || data;
       break;
     case "regions":
       data = useRegionData(path) || data;
@@ -93,6 +96,8 @@ function DeputyDirectorTable({
   const { columns, rows } = data;
 
   useEffect(() => {
+    const getCategory = async () => {};
+
     const fetchFieldForceManagers = async () => {
       try {
         const response = await axios.get(`https://it-club.uz/common/get-users`, {
@@ -140,40 +145,50 @@ function DeputyDirectorTable({
         <MDBox display="flex" alignItems="center">
           {showFilters && (
             <>
-              <FormControl sx={{ m: 1, minWidth: 200 }}>
-                <InputLabel id="field-force-manager-label">Field Force Manager</InputLabel>
-                <Select
-                  labelId="field-force-manager-label"
-                  value={selectedFFM}
-                  onChange={(e) => setSelectedFFM(e.target.value)}
-                  label="Field Force Manager"
-                  sx={{ height: "45px" }}
-                >
-                  {fieldForceManagers.map((ffm) => (
-                    <MenuItem key={ffm.id} value={ffm}>
-                      {ffm.full_name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl sx={{ m: 1, minWidth: 200 }}>
-                <InputLabel id="regional-manager-label">Regional Manager</InputLabel>
-                <Select
-                  labelId="regional-manager-label"
-                  value={selectedRM}
-                  onChange={(e) => setSelectedRM(e.target.value)}
-                  label="Regional Manager"
-                  sx={{ height: "45px" }}
-                >
-                  {regionalManagers.map((rm) => (
-                    <MenuItem key={rm.id} value={rm}>
-                      {rm.full_name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              {trued ? (
+                <>
+                  <FormControl sx={{ m: 1, minWidth: 200 }}>
+                    <InputLabel id="field-force-manager-label">Field Force Manager</InputLabel>
+                    <Select
+                      labelId="field-force-manager-label"
+                      value={selectedFFM}
+                      onChange={(e) => setSelectedFFM(e.target.value)}
+                      label="Field Force Manager"
+                      sx={{ height: "45px" }}
+                    >
+                      {fieldForceManagers.map((ffm) => (
+                        <MenuItem key={ffm.id} value={ffm.id}>
+                          {ffm.full_name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl sx={{ m: 1, minWidth: 200 }}>
+                    <InputLabel id="regional-manager-label">Regional Manager</InputLabel>
+                    <Select
+                      labelId="regional-manager-label"
+                      value={selectedRM}
+                      onChange={(e) => setSelectedRM(e.target.value)}
+                      label="Regional Manager"
+                      sx={{ height: "45px" }}
+                    >
+                      {regionalManagers.map((rm) => (
+                        <MenuItem key={rm.id} value={rm}>
+                          {rm.full_name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </>
+              ) : (
+                <>
+                  <SelectCategory selectDatas={selectDatas[0]} />
+                  <SelectCategory selectDatas={selectDatas[1]} />
+                </>
+              )}
             </>
           )}
+
           {showAddButton && (
             <MDBox>
               <Button
@@ -186,7 +201,7 @@ function DeputyDirectorTable({
                     : navigate(navigatePath);
                 }}
               >
-                Добавить
+                Добавитьee
               </Button>
             </MDBox>
           )}
@@ -219,6 +234,8 @@ DeputyDirectorTable.propTypes = {
   showAddButton: PropTypes.bool,
   showFilters: PropTypes.bool,
   navigateState: PropTypes.object,
+  trued: PropTypes.bool,
+  selectDatas: PropTypes.obj,
 };
 
 DeputyDirectorTable.defaultProps = {
@@ -226,6 +243,7 @@ DeputyDirectorTable.defaultProps = {
   onRowClick: () => {},
   showAddButton: true,
   showFilters: false,
+  trued: false,
 };
 
 export default DeputyDirectorTable;
