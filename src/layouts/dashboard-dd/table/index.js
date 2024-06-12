@@ -26,6 +26,7 @@ import useNotificationData from "./data/notification-data";
 import userRoles from "constants/userRoles";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import SimpleDialog from "../modal/doctor-plan-modal";
 
 function DeputyDirectorTable({
   path,
@@ -45,6 +46,24 @@ function DeputyDirectorTable({
   const [selectedRM, setSelectedRM] = useState(null); // State to track the selected Regional Manager
   const [fieldForceManagers, setFieldForceManagers] = useState([]);
   const [regionalManagers, setRegionalManagers] = useState([]); // State to store the list of Regional Managers
+
+  const [dialogOpen, setDialogOpen] = useState(false); // State to manage dialog open/close
+  const [visitId, setVisitId] = useState(-1);
+
+  const handleDialogOpen = (visitId) => {
+    console.log(`Setting state ${visitId}`);
+    setVisitId(visitId);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
+  useEffect(() => {
+    if (visitId !== -1) {
+      setDialogOpen(true);
+    }
+  }, [visitId]);
 
   let data = { columns: [], rows: [] }; // Default structure
   switch (tableType) {
@@ -76,7 +95,7 @@ function DeputyDirectorTable({
       data = usePharmacyPlanData(path) || data;
       break;
     case "doctor-plan":
-      data = useDoctorPlanData(path) || data;
+      data = useDoctorPlanData(path, handleDialogOpen) || data; // Pass handleDialogOpen to useDoctorPlanData
       break;
     case "mr-pharmacies":
       data = usePharmacyData(path) || data;
@@ -204,6 +223,8 @@ function DeputyDirectorTable({
           entriesPerPage={false}
         />
       </MDBox>
+
+      <SimpleDialog open={dialogOpen} onClose={handleDialogClose} visitId={visitId} />
     </Card>
   );
 }
