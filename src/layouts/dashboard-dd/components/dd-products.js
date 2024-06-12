@@ -11,8 +11,69 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 // Dashboard components
 import { Outlet, useNavigate } from "react-router-dom";
 import DeputyDirectorTable from "../table";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
 function DeputyDirectorProducts() {
+  const [categories, setCategories] = useState([]);
+  const [categori, setCategori] = useState(0);
+
+  const [man_companies, setMan_companies] = useState([]);
+  const [man_company, setMan_company] = useState(0);
+
+  const handleChange = (e) => {
+    setCategori(e.target.value);
+  };
+  const handleChangeManCompany = (e) => {
+    setMan_company(e.target.value);
+  };
+
+  const { accessToken } = useSelector((state) => state.auth);
+  useEffect(() => {
+    const getManCompany = async () => {
+      try {
+        const { data } = await axios.get(`https://it-club.uz/common/get-manufactured-company`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setMan_companies(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    const getCategory = async () => {
+      try {
+        const { data } = await axios.get(`https://it-club.uz/common/get-product-category`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setCategories(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getManCompany();
+    getCategory();
+  }, [setCategories, setMan_companies]);
+
+  const datas = [
+    {
+      categories: [{ id: 0, name: "All" }, ...man_companies],
+      categori: man_company,
+      handleChange: handleChangeManCompany,
+      title: "Производитель",
+    },
+    {
+      categories: [{ id: 0, name: "All" }, ...categories],
+      categori,
+      handleChange,
+      title: "Категория",
+    },
+  ];
+
   const navigate = useNavigate();
   return (
     <DashboardLayout>
@@ -25,6 +86,8 @@ function DeputyDirectorProducts() {
                 tableType="products"
                 title={"Продукты"}
                 navigatePath="/dd/add-product"
+                showFilters
+                selectDatas={datas}
               />
             </Grid>
           </Grid>
