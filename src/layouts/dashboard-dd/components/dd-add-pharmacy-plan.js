@@ -80,7 +80,6 @@ function DeputyDirectorAddPharmacyPlan() {
 
       // Handle a successful response
       setMessage({ color: "success", content: "План аптеки добавлен" });
-      console.log(response.data);
       // Optional: Redirect after a delay
       setTimeout(() => {
         navigate(-1);

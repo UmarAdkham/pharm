@@ -6,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { format } from "date-fns";
 
-export default function usePharmacyPlanData(apiPath) {
+export default function usePharmacyPlanData(apiPath, openDialog) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -36,7 +36,7 @@ export default function usePharmacyPlanData(apiPath) {
           ),
           date: (
             <MDTypography variant="caption" fontWeight="medium">
-              {format(new Date(plan.date), "yyyy-MM-dd")}
+              {format(new Date(plan.date), "MM-dd-yyyy")}
             </MDTypography>
           ),
           status: (
@@ -83,7 +83,9 @@ export default function usePharmacyPlanData(apiPath) {
               <DeleteIcon style={{ color: "red" }} />
             </IconButton>
           ),
-          id: plan.id,
+          onClick: () => {
+            openDialog(plan.id, "pharmacy");
+          }, // Open dialog on click
         }));
 
         setData({ columns, rows });
@@ -93,7 +95,7 @@ export default function usePharmacyPlanData(apiPath) {
     }
 
     fetchPharmacyPlans();
-  }, [accessToken, apiPath]);
+  }, [accessToken, apiPath, openDialog]);
 
   return data;
 }

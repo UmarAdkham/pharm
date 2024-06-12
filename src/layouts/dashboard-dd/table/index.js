@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
@@ -26,7 +26,7 @@ import useNotificationData from "./data/notification-data";
 import userRoles from "constants/userRoles";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import SimpleDialog from "../modal/doctor-plan-modal";
+import VisitDialog from "../modal/doctor-plan-modal";
 
 function DeputyDirectorTable({
   path,
@@ -49,67 +49,19 @@ function DeputyDirectorTable({
 
   const [dialogOpen, setDialogOpen] = useState(false); // State to manage dialog open/close
   const [visitId, setVisitId] = useState(-1);
+  const [visitType, setVisitType] = useState("");
 
-  const handleDialogOpen = (visitId) => {
-    console.log(`Setting state ${visitId}`);
+  const handleDialogOpen = useCallback((visitId, visitType) => {
     setVisitId(visitId);
-  };
+    setVisitType(visitType);
+    setDialogOpen(true);
+  }, []);
 
-  const handleDialogClose = () => {
+  const handleDialogClose = useCallback(() => {
     setDialogOpen(false);
-  };
-
-  useEffect(() => {
-    if (visitId !== -1) {
-      setDialogOpen(true);
-    }
-  }, [visitId]);
-
-  let data = { columns: [], rows: [] }; // Default structure
-  switch (tableType) {
-    case "categories":
-      data = useCategoryData(path) || data;
-      break;
-    case "manufacturer-companies":
-      data = useManufacturerCompanyData(path) || data;
-      break;
-    case "products":
-      data = useProductData(path) || data;
-      break;
-    case "regions":
-      data = useRegionData(path) || data;
-      break;
-    case "medical-organizations":
-      data = useMedicalOrganizationData(path) || data;
-      break;
-    case "specialities":
-      data = useSpecialityData(path) || data;
-      break;
-    case "pms":
-      data = usePmData(path, status, navigatePath, onRowClick, rowPath) || data;
-      break;
-    case "mrs":
-      data = useMrData(path, status, navigatePath, onRowClick) || data;
-      break;
-    case "pharmacy-plan":
-      data = usePharmacyPlanData(path) || data;
-      break;
-    case "doctor-plan":
-      data = useDoctorPlanData(path, handleDialogOpen) || data; // Pass handleDialogOpen to useDoctorPlanData
-      break;
-    case "mr-pharmacies":
-      data = usePharmacyData(path) || data;
-      break;
-    case "mr-doctors":
-      data = useDoctorData(path) || data;
-      break;
-    case "notifications":
-      data = useNotificationData(path) || data;
-      break;
-    default:
-      break;
-  }
-  const { columns, rows } = data;
+    setVisitId(-1); // Reset visitId
+    setVisitType(""); // Reset visitType
+  }, []);
 
   useEffect(() => {
     const fetchFieldForceManagers = async () => {
@@ -147,6 +99,52 @@ function DeputyDirectorTable({
     fetchFieldForceManagers();
     fetchRegionalManagers();
   }, [accessToken]);
+
+  let data = { columns: [], rows: [] }; // Default structure
+  switch (tableType) {
+    case "categories":
+      data = useCategoryData(path) || data;
+      break;
+    case "manufacturer-companies":
+      data = useManufacturerCompanyData(path) || data;
+      break;
+    case "products":
+      data = useProductData(path) || data;
+      break;
+    case "regions":
+      data = useRegionData(path) || data;
+      break;
+    case "medical-organizations":
+      data = useMedicalOrganizationData(path) || data;
+      break;
+    case "specialities":
+      data = useSpecialityData(path) || data;
+      break;
+    case "pms":
+      data = usePmData(path, status, navigatePath, onRowClick, rowPath) || data;
+      break;
+    case "mrs":
+      data = useMrData(path, status, navigatePath, onRowClick) || data;
+      break;
+    case "pharmacy-plan":
+      data = usePharmacyPlanData(path, handleDialogOpen) || data;
+      break;
+    case "doctor-plan":
+      data = useDoctorPlanData(path, handleDialogOpen) || data; // Pass handleDialogOpen to useDoctorPlanData
+      break;
+    case "mr-pharmacies":
+      data = usePharmacyData(path) || data;
+      break;
+    case "mr-doctors":
+      data = useDoctorData(path) || data;
+      break;
+    case "notifications":
+      data = useNotificationData(path) || data;
+      break;
+    default:
+      break;
+  }
+  const { columns, rows } = data;
 
   return (
     <Card>
@@ -224,7 +222,12 @@ function DeputyDirectorTable({
         />
       </MDBox>
 
-      <SimpleDialog open={dialogOpen} onClose={handleDialogClose} visitId={visitId} />
+      <VisitDialog
+        open={dialogOpen}
+        onClose={handleDialogClose}
+        visitId={visitId}
+        visitType={visitType}
+      />
     </Card>
   );
 }

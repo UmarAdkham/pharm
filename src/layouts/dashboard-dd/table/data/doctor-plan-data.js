@@ -84,8 +84,7 @@ export default function useDoctorPlanData(apiPath, openDialog) {
             </IconButton>
           ),
           onClick: () => {
-            console.log(`DATA: ${plan.id}`);
-            openDialog(plan.id);
+            openDialog(plan.id, "doctor");
           }, // Open dialog on click
         }));
 

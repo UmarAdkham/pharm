@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogActions,
@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 import axios from "axios";
-import debounce from "lodash.debounce";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
 import doctorImage from "assets/images/doctor.png"; // Import your image
@@ -40,37 +39,38 @@ const StyledTextField = styled(Box)({
 });
 
 // eslint-disable-next-line react/prop-types
-const SimpleDialog = ({ open, onClose, onSave, onPostpone, visitId }) => {
+const VisitDialog = React.memo(({ open, onClose, visitId, visitType }) => {
   const [visitData, setVisitData] = useState(null);
   const accessToken = useSelector((state) => state.auth.accessToken);
 
-  const fetchVisitData = useCallback(
-    debounce(async (id) => {
-      try {
-        console.log(`Inside modal: ${id}`);
-        const response = await axios.get(`https://it-club.uz/mr/get-doctor-visit-plan/${id}`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        setVisitData(response.data);
-      } catch (error) {
-        console.error("Failed to fetch visit data:", error);
-      }
-    }, 300),
-    [accessToken]
-  );
-
   useEffect(() => {
-    if (open && visitId !== -1) {
-      fetchVisitData(visitId);
+    if (open && visitId !== -1 && visitType) {
+      const fetchVisitData = async () => {
+        try {
+          const response = await axios.get(
+            `https://it-club.uz/mr/get-${visitType}-visit-plan/${visitId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+          setVisitData(response.data);
+        } catch (error) {
+          console.error("Failed to fetch visit data:", error);
+        }
+      };
+
+      fetchVisitData();
     }
-  }, [open, visitId, fetchVisitData]);
+  }, [open, visitId, visitType, accessToken]);
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <StyledDialogContent>
-        <DialogTitle align="center">Посещение доктора</DialogTitle>
+        <DialogTitle align="center">
+          Посещение {visitType === "doctor" ? "доктора" : "аптеки"}
+        </DialogTitle>
         <Typography variant="subtitle1" align="center">
           Запланированная дата:{" "}
           {visitData?.date ? format(new Date(visitData.date), "MM-dd-yyyy hh:mm") : "N/A"}
@@ -79,13 +79,18 @@ const SimpleDialog = ({ open, onClose, onSave, onPostpone, visitId }) => {
         <StyledBox>
           <Box display="flex" alignItems="center">
             <Box mr={2}>
-              {/* Replace with the appropriate icon or image */}
-              <img src={doctorImage} alt="Pharmacy" width="80" height="80" />
+              <img src={doctorImage} alt="Doctor" width="80" height="80" />
             </Box>
             <Box>
-              <Typography>{visitData?.doctor?.full_name || "N/A"}</Typography>
+              <Typography>
+                {visitType === "doctor"
+                  ? visitData?.doctor?.full_name
+                  : visitData?.pharmacy?.company_name || "N/A"}
+              </Typography>
               <Typography variant="caption">
-                {visitData?.doctor?.medical_organization?.name || "N/A"}
+                {visitType === "doctor"
+                  ? visitData?.doctor?.medical_organization?.name
+                  : visitData?.pharmacy?.contact1 || "N/A"}
               </Typography>
             </Box>
           </Box>
@@ -104,7 +109,6 @@ const SimpleDialog = ({ open, onClose, onSave, onPostpone, visitId }) => {
         <StyledTextField>
           <Typography variant="subtitle2">Статус:</Typography>
           <Typography variant="body1">
-            {" "}
             {visitData?.status ? "Сделано" : visitData?.postpone ? "Отложено" : "В очереди"}
           </Typography>
         </StyledTextField>
@@ -117,6 +121,6 @@ const SimpleDialog = ({ open, onClose, onSave, onPostpone, visitId }) => {
       </DialogActions>
     </Dialog>
   );
-};
+});
 
-export default SimpleDialog;
+export default VisitDialog;
