@@ -12,7 +12,8 @@ import { styled } from "@mui/system";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
-import doctorImage from "assets/images/doctor.png"; // Import your image
+import doctorImage from "assets/images/doctor.png";
+import pharmacyImage from "assets/images/pharmacy.png";
 
 const StyledDialogContent = styled(DialogContent)({
   borderRadius: "15px",
@@ -79,7 +80,12 @@ const VisitDialog = React.memo(({ open, onClose, visitId, visitType }) => {
         <StyledBox>
           <Box display="flex" alignItems="center">
             <Box mr={2}>
-              <img src={doctorImage} alt="Doctor" width="80" height="80" />
+              <img
+                src={visitType === "doctor" ? doctorImage : pharmacyImage}
+                alt="Doctor"
+                width="80"
+                height="80"
+              />
             </Box>
             <Box>
               <Typography>

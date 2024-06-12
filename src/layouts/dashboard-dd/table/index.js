@@ -26,7 +26,7 @@ import useNotificationData from "./data/notification-data";
 import userRoles from "constants/userRoles";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import VisitDialog from "../modal/doctor-plan-modal";
+import VisitDialog from "../modal/visit-modal";
 
 function DeputyDirectorTable({
   path,
