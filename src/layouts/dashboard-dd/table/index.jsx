@@ -201,7 +201,7 @@ function DeputyDirectorTable({
                     : navigate(navigatePath);
                 }}
               >
-                Добавитьee
+                Добавить
               </Button>
             </MDBox>
           )}

@@ -25,7 +25,7 @@ function DeputyDirectorProducts() {
   const handleChange = (e) => {
     setCategori(e.target.value);
   };
-  const handleChangeCategory = (e) => {
+  const handleChangeManCompany = (e) => {
     setMan_company(e.target.value);
   };
 
@@ -63,8 +63,8 @@ function DeputyDirectorProducts() {
     {
       categories: [{ id: 0, name: "All" }, ...man_companies],
       categori: man_company,
-      handleChange: handleChangeCategory,
-      title: "ПРОИЗВОДИТЕЛЬ",
+      handleChange: handleChangeManCompany,
+      title: "Производитель",
     },
     {
       categories: [{ id: 0, name: "All" }, ...categories],
