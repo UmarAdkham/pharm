@@ -33,7 +33,6 @@ function DeputyDirectorMrs({ children }) {
                 onRowClick={(navigatePath, user) => {
                   navigate(navigatePath, { state: user });
                 }}
-                trued
                 showAddButton={false}
                 showFilters={true}
               />
