@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -13,8 +13,10 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import TextField from "@mui/material/TextField";
 
 // Material Dashboard 2 React components
@@ -63,7 +65,7 @@ function DeputyDirectorAddDoctorPlan() {
       theme,
       description,
       doctor_id,
-      date: date ? date.format("YYYY-MM-DD") : null, // Convert date to YYYY-MM-DD format
+      date: date ? date.format("YYYY-MM-DD hh:mm") : null, // Convert date to YYYY-MM-DD format
     };
 
     try {
@@ -155,12 +157,16 @@ function DeputyDirectorAddDoctorPlan() {
             </MDBox>
             <MDBox mb={2}>
               <LocalizationProvider dateAdapter={AdapterDayjs} locale="ru">
-                <DatePicker
+                <DateTimePicker
                   label="Выберите дату"
                   value={date}
-                  onChange={(newValue) => {
-                    setDate(newValue);
+                  viewRenderers={{
+                    hours: renderTimeViewClock,
+                    minutes: renderTimeViewClock,
+                    seconds: renderTimeViewClock,
                   }}
+                  ampm={false} // Use 24-hour format
+                  onChange={(newValue) => setDate(newValue)}
                   renderInput={(params) => <TextField {...params} fullWidth />}
                   disablePast // Disable past dates
                 />
