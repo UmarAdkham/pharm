@@ -74,7 +74,7 @@ const VisitDialog = React.memo(({ open, onClose, visitId, visitType }) => {
         </DialogTitle>
         <Typography variant="subtitle1" align="center">
           Запланированная дата:{" "}
-          {visitData?.date ? format(new Date(visitData.date), "MM-dd-yyyy hh:mm") : "N/A"}
+          {visitData?.date ? format(new Date(visitData.date), "MM-dd-yy HH:mm") : "N/A"}
         </Typography>
 
         <StyledBox>

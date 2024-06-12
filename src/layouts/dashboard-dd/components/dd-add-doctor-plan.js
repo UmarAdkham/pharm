@@ -65,7 +65,7 @@ function DeputyDirectorAddDoctorPlan() {
       theme,
       description,
       doctor_id,
-      date: date ? date.format("YYYY-MM-DD hh:mm") : null, // Convert date to YYYY-MM-DD format
+      date: date ? date.format("YYYY-MM-DD HH:mm") : null, // Convert date to YYYY-MM-DD format
     };
 
     try {
