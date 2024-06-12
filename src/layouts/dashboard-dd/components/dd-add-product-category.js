@@ -17,7 +17,7 @@ import MDButton from "components/MDButton";
 // Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 
-function DeputyDirectorAddCategory() {
+function DeputyDirectorAddProductCategory() {
   const navigate = useNavigate();
   const { accessToken } = useSelector((state) => state.auth);
   const [name, setName] = useState("");
@@ -29,7 +29,7 @@ function DeputyDirectorAddCategory() {
     try {
       // Call the API with authorization header
       const response = await axios.post(
-        `https://it-club.uz/common/add-category?name=${name}`,
+        `https://it-club.uz/common/add-product-category?name=${name}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -38,7 +38,7 @@ function DeputyDirectorAddCategory() {
       );
 
       // Handle a successful response
-      setMessage({ color: "success", content: "Категория добавлена" });
+      setMessage({ color: "success", content: "Категория продукта добавлена" });
 
       // Optional: Redirect after a delay
       setTimeout(() => {
@@ -49,7 +49,7 @@ function DeputyDirectorAddCategory() {
       setMessage({
         color: "error",
         content:
-          "Не удалось добавить категорию. " +
+          "Не удалось добавить категорию продукта. " +
           (error.response?.data?.detail ||
             "Проверьте правильность введенных данных и попробуйте снова."),
       });
@@ -71,7 +71,7 @@ function DeputyDirectorAddCategory() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Добавить категорию
+            Добавить категорию продукта
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -98,4 +98,4 @@ function DeputyDirectorAddCategory() {
   );
 }
 
-export default DeputyDirectorAddCategory;
+export default DeputyDirectorAddProductCategory;

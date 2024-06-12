@@ -36,6 +36,8 @@ import DeputyDirectorAddPharmacyPlan from "layouts/dashboard-dd/components/dd-ad
 import DeputyDirectorMRInfo from "layouts/dashboard-dd/components/dd-mr-info";
 import DeputyDirectorAddPharmacy from "layouts/dashboard-dd/components/dd-add-pharmacy";
 import DeputyDirectorAddDoctor from "layouts/dashboard-dd/components/dd-add-doctor";
+import DeputyDirectorAddCategory from "layouts/dashboard-dd/components/dd-add-ctgr";
+import DeputyDirectorProductCategories from "layouts/dashboard-dd/components/dd-product-categories";
 
 const roleBasedRoutes = [
   {
@@ -76,7 +78,9 @@ const roleBasedRoutes = [
       { path: "mrs", component: <DeputyDirectorMrs /> },
       { path: "add-notification", component: <DeputyDirectorAddNotification /> },
       { path: "categories", component: <DeputyDirectorCategories /> },
-      { path: "add-category", component: <DeputyDirectorAddProductCategory /> },
+      { path: "add-category", component: <DeputyDirectorAddCategory /> },
+      { path: "product-categories", component: <DeputyDirectorProductCategories /> },
+      { path: "add-product-category", component: <DeputyDirectorAddProductCategory /> },
       { path: "manufacturer-companies", component: <DeputyDirectorManufacturerCompanies /> },
       { path: "add-manufacturer-company", component: <DeputyDirectorAddManufacturerCompany /> },
       { path: "products", component: <DeputyDirectorProducts /> },
@@ -110,31 +114,17 @@ const roleBasedRoutes = [
       },
       {
         type: "collapse",
-        name: "Категории",
-        key: "dd-add-category",
-        icon: <Icon fontSize="small">category</Icon>,
-        route: "categories",
+        name: "Регионы",
+        key: "dd-regions",
+        icon: <Icon fontSize="small">south_america</Icon>,
+        route: "regions",
       },
       {
         type: "collapse",
         name: "Производственные компании",
         key: "dd-manufacturer-companies",
         icon: <Icon fontSize="small">business</Icon>,
-        route: "manufacturer-companies",
-      },
-      {
-        type: "collapse",
-        name: "Продукты",
-        key: "dd-products",
-        icon: <Icon fontSize="small">inventory</Icon>,
-        route: "products",
-      },
-      {
-        type: "collapse",
-        name: "Регионы",
-        key: "dd-regions",
-        icon: <Icon fontSize="small">south_america</Icon>,
-        route: "regions",
+        route: "product-categories",
       },
       {
         type: "collapse",
@@ -145,10 +135,31 @@ const roleBasedRoutes = [
       },
       {
         type: "collapse",
-        name: "Специальности",
+        name: "Специальности врачей",
         key: "dd-specialities",
         icon: <Icon fontSize="small">work</Icon>,
         route: "specialities",
+      },
+      {
+        type: "collapse",
+        name: "Категории врачей",
+        key: "dd-add-category",
+        icon: <Icon fontSize="small">category</Icon>,
+        route: "categories",
+      },
+      {
+        type: "collapse",
+        name: "Категории продуктов",
+        key: "dd-product-categories",
+        icon: <Icon fontSize="small">business</Icon>,
+        route: "manufacturer-companies",
+      },
+      {
+        type: "collapse",
+        name: "Продукты",
+        key: "dd-products",
+        icon: <Icon fontSize="small">inventory</Icon>,
+        route: "products",
       },
     ],
   },

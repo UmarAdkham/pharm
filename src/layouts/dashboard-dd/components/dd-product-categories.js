@@ -13,7 +13,7 @@ import MedicalRepresentativeTable from "layouts/mr-table";
 import { Outlet, useNavigate } from "react-router-dom";
 import DeputyDirectorTable from "../table";
 
-function DeputyDirectorCategories() {
+function DeputyDirectorProductCategories() {
   const navigate = useNavigate();
   return (
     <DashboardLayout>
@@ -22,10 +22,10 @@ function DeputyDirectorCategories() {
           <Grid container spacing={3}>
             <Grid item xs={12} lg={12}>
               <DeputyDirectorTable
-                path={"common/get-category"}
-                tableType="categories"
-                title="Категории"
-                navigatePath="/dd/add-category"
+                path={"common/get-product-category"}
+                tableType="product-categories"
+                title="Категории продуктов"
+                navigatePath="/dd/add-product-category"
               />
             </Grid>
           </Grid>
@@ -36,4 +36,4 @@ function DeputyDirectorCategories() {
   );
 }
 
-export default DeputyDirectorCategories;
+export default DeputyDirectorProductCategories;
