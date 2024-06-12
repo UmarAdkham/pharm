@@ -35,7 +35,7 @@ function DeputyDirectorAddDoctorPlan() {
   const [theme, setTheme] = useState("");
   const [description, setDescription] = useState("");
   const [doctor_id, setDoctorId] = useState("");
-  const [date, setDate] = useState(dayjs());
+  const [date, setDate] = useState(null);
   const [doctors, setDoctors] = useState([]);
   const [message, setMessage] = useState({ color: "", content: "" });
   const { id } = location.state || {};

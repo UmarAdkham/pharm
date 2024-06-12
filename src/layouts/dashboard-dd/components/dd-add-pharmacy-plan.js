@@ -35,7 +35,7 @@ function DeputyDirectorAddPharmacyPlan() {
   const [theme, setTheme] = useState("");
   const [description, setDescription] = useState("");
   const [pharmacy_id, setPharmacyId] = useState("");
-  const [date, setDate] = useState(dayjs());
+  const [date, setDate] = useState(null);
   const [pharmacies, setPharmacies] = useState([]);
   const [message, setMessage] = useState({ color: "", content: "" });
   const { id } = location.state || {};
