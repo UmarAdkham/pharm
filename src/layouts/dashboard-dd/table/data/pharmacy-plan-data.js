@@ -29,6 +29,7 @@ export default function usePharmacyPlanData(apiPath, openDialog) {
         ];
 
         const rows = pharmacyPlans.map((plan) => ({
+          id: plan.id,
           pharmacy: (
             <MDTypography variant="caption" fontWeight="medium">
               {plan.pharmacy.company_name}
@@ -36,7 +37,7 @@ export default function usePharmacyPlanData(apiPath, openDialog) {
           ),
           date: (
             <MDTypography variant="caption" fontWeight="medium">
-              {format(new Date(plan.date), "MM-dd-yyyy")}
+              {format(new Date(plan.date), "MM-dd-yyyy HH:mm")}
             </MDTypography>
           ),
           status: (
@@ -61,7 +62,8 @@ export default function usePharmacyPlanData(apiPath, openDialog) {
           delete: (
             <IconButton
               color="secondary"
-              onClick={async () => {
+              onClick={async (event) => {
+                event.stopPropagation(); // Stop the row click event from being triggered
                 try {
                   await axiosInstance.delete(
                     `https://it-club.uz/dd/delete-pharmacy-plan/${plan.id}`,
@@ -85,7 +87,7 @@ export default function usePharmacyPlanData(apiPath, openDialog) {
           ),
           onClick: () => {
             openDialog(plan.id, "pharmacy");
-          }, // Open dialog on click
+          },
         }));
 
         setData({ columns, rows });

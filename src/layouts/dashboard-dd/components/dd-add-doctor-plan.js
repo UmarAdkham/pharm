@@ -82,7 +82,6 @@ function DeputyDirectorAddDoctorPlan() {
 
       // Handle a successful response
       setMessage({ color: "success", content: "План врача добавлен" });
-      console.log(response.data);
       // Optional: Redirect after a delay
       setTimeout(() => {
         navigate(-1);

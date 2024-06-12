@@ -29,6 +29,7 @@ export default function useDoctorPlanData(apiPath, openDialog) {
         ];
 
         const rows = doctorPlans.map((plan) => ({
+          id: plan.id,
           doctor: (
             <MDTypography variant="caption" fontWeight="medium">
               {plan.doctor.full_name}
@@ -61,7 +62,8 @@ export default function useDoctorPlanData(apiPath, openDialog) {
           delete: (
             <IconButton
               color="secondary"
-              onClick={async () => {
+              onClick={async (event) => {
+                event.stopPropagation(); // Stop the row click event from being triggered
                 try {
                   await axiosInstance.delete(
                     `https://it-club.uz/dd/delete-doctor-plan/${plan.id}`,
