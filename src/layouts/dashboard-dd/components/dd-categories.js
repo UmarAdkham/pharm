@@ -24,7 +24,7 @@ function DeputyDirectorCategories() {
               <DeputyDirectorTable
                 path={"common/get-category"}
                 tableType="categories"
-                title="Категории"
+                title="Категории врачей"
                 navigatePath="/dd/add-category"
               />
             </Grid>

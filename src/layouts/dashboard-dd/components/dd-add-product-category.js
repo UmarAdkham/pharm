@@ -80,7 +80,7 @@ function DeputyDirectorAddProductCategory() {
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Название категории продукта"
+                label="Hазвание категории продукта"
                 fullWidth
                 value={name}
                 onChange={(e) => setName(e.target.value)}

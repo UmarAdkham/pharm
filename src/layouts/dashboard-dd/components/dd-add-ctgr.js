@@ -71,7 +71,7 @@ function DeputyDirectorAddCategory() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Добавить категорию
+            Добавить категорию врача
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -80,7 +80,7 @@ function DeputyDirectorAddCategory() {
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Название категории продукта"
+                label="Название категории"
                 fullWidth
                 value={name}
                 onChange={(e) => setName(e.target.value)}

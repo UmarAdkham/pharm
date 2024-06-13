@@ -19,7 +19,7 @@ import DeputyDirectorAddRegionalManager from "layouts/dashboard-dd/components/dd
 import DeputyDirectorAddMedicalRepresentative from "layouts/dashboard-dd/components/dd-add-mr";
 import DeputyDirectorMrs from "layouts/dashboard-dd/components/dd-mrs";
 import DeputyDirectorAddNotification from "layouts/dashboard-dd/components/dd-add-ntfc";
-import DeputyDirectorAddProductCategory from "layouts/dashboard-dd/components/dd-add-ctgr";
+import DeputyDirectorAddProductCategory from "layouts/dashboard-dd/components/dd-add-product-category";
 import DeputyDirectorCategories from "layouts/dashboard-dd/components/dd-categories";
 import DeputyDirectorManufacturerCompanies from "layouts/dashboard-dd/components/dd-mnfcts";
 import DeputyDirectorAddManufacturerCompany from "layouts/dashboard-dd/components/dd-add-mnfct";
@@ -124,7 +124,7 @@ const roleBasedRoutes = [
         name: "Производственные компании",
         key: "dd-manufacturer-companies",
         icon: <Icon fontSize="small">business</Icon>,
-        route: "product-categories",
+        route: "manufacturer-companies",
       },
       {
         type: "collapse",
@@ -143,7 +143,7 @@ const roleBasedRoutes = [
       {
         type: "collapse",
         name: "Категории врачей",
-        key: "dd-add-category",
+        key: "dd-categories",
         icon: <Icon fontSize="small">category</Icon>,
         route: "categories",
       },
@@ -152,7 +152,7 @@ const roleBasedRoutes = [
         name: "Категории продуктов",
         key: "dd-product-categories",
         icon: <Icon fontSize="small">business</Icon>,
-        route: "manufacturer-companies",
+        route: "product-categories",
       },
       {
         type: "collapse",

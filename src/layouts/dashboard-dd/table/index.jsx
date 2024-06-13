@@ -28,6 +28,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import VisitDialog from "../modal/visit-dialog";
 import SelectCategory from "../components/category";
+import useProductCategoryData from "./data/product-category-data";
 
 function DeputyDirectorTable({
   path,
@@ -105,6 +106,9 @@ function DeputyDirectorTable({
   switch (tableType) {
     case "categories":
       data = useCategoryData(path) || data;
+      break;
+    case "product-categories":
+      data = useProductCategoryData(path) || data;
       break;
     case "manufacturer-companies":
       data = useManufacturerCompanyData(path) || data;
