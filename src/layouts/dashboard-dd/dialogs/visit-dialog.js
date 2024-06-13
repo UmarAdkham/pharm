@@ -7,6 +7,7 @@ import {
   Button,
   Box,
   Typography,
+  IconButton,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import axios from "axios";
@@ -71,6 +72,13 @@ const VisitDialog = React.memo(({ open, onClose, visitId, visitType }) => {
       <StyledDialogContent>
         <DialogTitle align="center">
           Посещение {visitType === "doctor" ? "доктора" : "аптеки"}
+          <IconButton
+            aria-label="close"
+            onClick={onClose}
+            sx={{ position: "absolute", right: 8, top: 8 }}
+          >
+            X
+          </IconButton>
         </DialogTitle>
         <Typography variant="subtitle1" align="center">
           Запланированная дата:{" "}
@@ -119,12 +127,6 @@ const VisitDialog = React.memo(({ open, onClose, visitId, visitType }) => {
           </Typography>
         </StyledTextField>
       </StyledDialogContent>
-
-      <DialogActions>
-        <StyledButton variant="contained" color="success" onClick={onClose}>
-          ЗАКРЫТЬ
-        </StyledButton>
-      </DialogActions>
     </Dialog>
   );
 });

@@ -32,7 +32,7 @@ const SearchControl = ({ setLatitude, setLongitude, setAddress }) => {
       const { x, y, label } = result.location;
       setLatitude(y);
       setLongitude(x);
-      setAddress(label);
+      setAddress(label); // Ensure setAddress is called
     });
 
     return () => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -37,6 +37,7 @@ function DeputyDirectorAddDoctor() {
   const { accessToken } = useSelector((state) => state.auth);
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
+  const [address, setAddress] = useState(""); // New state for address
   const [categoryId, setCategoryId] = useState("");
   const [specialityId, setSpecialityId] = useState("");
   const [medicalOrganizationId, setMedicalOrganizationId] = useState("");
@@ -231,11 +232,11 @@ function DeputyDirectorAddDoctor() {
               </Grid>
               <Grid item xs={12} md={4}>
                 <FormControl fullWidth>
-                  <InputLabel id="categories-label">Категории</InputLabel>
+                  <InputLabel id="categories-label">Категория</InputLabel>
                   <Select
                     labelId="categories-label"
                     value={categoryId}
-                    label="Категории"
+                    label="Категория"
                     onChange={(e) => setCategoryId(e.target.value)}
                     sx={{ height: "45px" }}
                   >
@@ -249,11 +250,11 @@ function DeputyDirectorAddDoctor() {
               </Grid>
               <Grid item xs={12} md={4}>
                 <FormControl fullWidth>
-                  <InputLabel id="specialities-label">Специальности</InputLabel>
+                  <InputLabel id="specialities-label">Специальность</InputLabel>
                   <Select
                     labelId="specialities-label"
                     value={specialityId}
-                    label="Специальности"
+                    label="Специальность"
                     onChange={(e) => setSpecialityId(e.target.value)}
                     sx={{ height: "45px" }}
                   >
@@ -271,7 +272,7 @@ function DeputyDirectorAddDoctor() {
                   <Select
                     labelId="medical-organizations-label"
                     value={medicalOrganizationId}
-                    label="Медицинские Организации"
+                    label="Медицинская Организация"
                     onChange={(e) => setMedicalOrganizationId(e.target.value)}
                     sx={{ height: "45px" }}
                   >
@@ -294,7 +295,11 @@ function DeputyDirectorAddDoctor() {
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     />
-                    <SearchControl setLatitude={setLatitude} setLongitude={setLongitude} />
+                    <SearchControl
+                      setLatitude={setLatitude}
+                      setLongitude={setLongitude}
+                      setAddress={setAddress} // Pass setAddress as a prop
+                    />
                     <LocationMarker />
                   </MapContainer>
                 </MDBox>
@@ -304,6 +309,10 @@ function DeputyDirectorAddDoctor() {
               </Grid>
               <Grid item xs={12} md={6}>
                 <MDTypography variant="h6">Долгота: {longitude}</MDTypography>
+              </Grid>
+              <Grid item xs={12} md={12}>
+                <MDTypography variant="h6">Адрес: {address}</MDTypography>{" "}
+                {/* Display the address */}
               </Grid>
             </Grid>
             <MDBox mt={4} mb={1}>

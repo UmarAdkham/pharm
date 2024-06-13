@@ -26,9 +26,10 @@ import useNotificationData from "./data/notification-data";
 import userRoles from "constants/userRoles";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import VisitDialog from "../modal/visit-dialog";
+import VisitDialog from "../dialogs/visit-dialog";
 import SelectCategory from "../components/category";
 import useProductCategoryData from "./data/product-category-data";
+import DoctorInfoDialog from "../dialogs/doctor-info-dialog";
 
 function DeputyDirectorTable({
   path,
@@ -52,6 +53,8 @@ function DeputyDirectorTable({
   const [dialogOpen, setDialogOpen] = useState(false); // State to manage dialog open/close
   const [visitId, setVisitId] = useState(-1);
   const [visitType, setVisitType] = useState("");
+  const [doctorDialogOpen, setDoctorDialogOpen] = useState(false); // State to manage doctor info dialog
+  const [selectedDoctorId, setSelectedDoctorId] = useState(null); // State to store selected doctor ID
 
   const handleDialogOpen = useCallback((visitId, visitType) => {
     setVisitId(visitId);
@@ -63,6 +66,16 @@ function DeputyDirectorTable({
     setDialogOpen(false);
     setVisitId(-1); // Reset visitId
     setVisitType(""); // Reset visitType
+  }, []);
+
+  const handleDoctorDialogOpen = useCallback((doctorId) => {
+    setSelectedDoctorId(doctorId);
+    setDoctorDialogOpen(true);
+  }, []);
+
+  const handleDoctorDialogClose = useCallback(() => {
+    setDoctorDialogOpen(false);
+    setSelectedDoctorId(null);
   }, []);
 
   useEffect(() => {
@@ -141,7 +154,7 @@ function DeputyDirectorTable({
       data = usePharmacyData(path) || data;
       break;
     case "mr-doctors":
-      data = useDoctorData(path) || data;
+      data = useDoctorData(path, handleDoctorDialogOpen) || data; // Pass handleDoctorDialogOpen to useDoctorData
       break;
     case "notifications":
       data = useNotificationData(path) || data;
@@ -203,6 +216,12 @@ function DeputyDirectorTable({
         onClose={handleDialogClose}
         visitId={visitId}
         visitType={visitType}
+      />
+
+      <DoctorInfoDialog
+        open={doctorDialogOpen}
+        onClose={handleDoctorDialogClose}
+        doctorId={selectedDoctorId}
       />
     </Card>
   );

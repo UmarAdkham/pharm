@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
 
-export default function useDoctorData(apiPath) {
+export default function useDoctorData(apiPath, onRowClick) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -46,6 +46,7 @@ export default function useDoctorData(apiPath) {
               {doctor.category.name}
             </MDTypography>
           ),
+          onClick: () => onRowClick(doctor.id), // Add click handler to each row
         }));
 
         setData({ columns, rows });
@@ -55,7 +56,7 @@ export default function useDoctorData(apiPath) {
     }
 
     fetchDoctors();
-  }, [accessToken, apiPath]);
+  }, [accessToken, apiPath, onRowClick]);
 
   return data;
 }
