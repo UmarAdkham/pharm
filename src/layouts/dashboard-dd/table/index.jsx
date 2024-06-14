@@ -30,6 +30,7 @@ import VisitDialog from "../modal/visit-dialog";
 import SelectCategory from "../components/category";
 import useProductCategoryData from "./data/product-category-data";
 import ConfirmDialog from "../modal/confirm-dialog";
+import NotificationDialog from "../modal/notification-dialog";
 
 function DeputyDirectorTable({
   path,
@@ -55,7 +56,9 @@ function DeputyDirectorTable({
   const [visitType, setVisitType] = useState("");
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [planId, setPlanId] = useState("");
+  const [notificationId, setNotificationId] = useState(-1);
   const [planType, setPlanType] = useState("");
+  const [notificationOpen, setNotificationOpen] = useState(false);
 
   const handleDeleteDialogOpen = useCallback((planId, planType) => {
     setPlanType(planType);
@@ -70,6 +73,14 @@ function DeputyDirectorTable({
     setVisitId(visitId);
     setVisitType(visitType);
     setDialogOpen(true);
+  }, []);
+
+  const handleNotificationDialogOpen = useCallback((id) => {
+    setNotificationId(id);
+    setNotificationOpen(true);
+  }, []);
+  const handleVisitDialogClose = useCallback(() => {
+    setNotificationOpen(false);
   }, []);
 
   const handleDialogClose = useCallback(() => {
@@ -145,7 +156,7 @@ function DeputyDirectorTable({
       data = useMrData(path, status, navigatePath, onRowClick) || data;
       break;
     case "pharmacy-plan":
-      data = usePharmacyPlanData(path, handleDialogOpen) || data;
+      data = usePharmacyPlanData(path, handleDialogOpen, handleDeleteDialogOpen) || data;
       break;
     case "doctor-plan":
       data = useDoctorPlanData(path, handleDialogOpen, handleDeleteDialogOpen) || data; // Pass handleDialogOpen to useDoctorPlanData
@@ -157,7 +168,8 @@ function DeputyDirectorTable({
       data = useDoctorData(path) || data;
       break;
     case "notifications":
-      data = useNotificationData(path) || data;
+      data =
+        useNotificationData(path, handleDeleteDialogOpen, handleNotificationDialogOpen) || data;
       break;
     default:
       break;
@@ -223,6 +235,12 @@ function DeputyDirectorTable({
         planType={planType}
         isOpen={deleteDialog}
         onClose={handleDeleteDialogClose}
+      />
+
+      <NotificationDialog
+        open={notificationOpen}
+        onClose={handleVisitDialogClose}
+        notificationId={notificationId}
       />
     </Card>
   );

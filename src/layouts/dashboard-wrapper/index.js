@@ -100,7 +100,7 @@ function DashboardWrapper() {
         routes={roleRoutes ? roleRoutes.sideNav : []}
         onMouseEnter={handleOnMouseEnter}
         onMouseLeave={handleOnMouseLeave}
-        isVisible={isSidenavVisible}
+        isvisible={isSidenavVisible}
         onClose={handleSidenavToggle}
       />
       <Outlet />

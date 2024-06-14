@@ -70,6 +70,7 @@ export default function useDoctorPlanData(apiPath, openDialog, deleteDialogOpen)
             </IconButton>
           ),
           onClick: () => {
+            alert("assa");
             openDialog(plan.id, "doctor");
           }, // Open dialog on click
         }));

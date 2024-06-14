@@ -111,7 +111,7 @@ function Sidenav({ color, brand, brandName, routes, isVisible, onClose, ...rest 
       {...rest}
       variant="permanent"
       ownerState={{ transparentSidenav, whiteSidenav, miniSidenav, darkMode }}
-      isVisible={isVisible} // Pass the isVisible prop to SidenavRoot
+      isisible={isVisible} // Pass the isVisible prop to SidenavRoot
     >
       <MDBox pt={3} pb={1} px={4} textAlign="center">
         <MDBox

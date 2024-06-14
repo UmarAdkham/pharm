@@ -6,7 +6,11 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { format } from "date-fns";
 
-export default function useNotificationData(apiPath) {
+export default function useNotificationData(
+  apiPath,
+  handleDeleteDialogOpen,
+  handleNotificationDialogOpen
+) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -20,7 +24,7 @@ export default function useNotificationData(apiPath) {
         });
 
         const notifications = response.data;
-
+        console.log(notifications);
         const columns = [
           { Header: "Тема", accessor: "theme", align: "left" },
           { Header: "Дата", accessor: "date", align: "left" },
@@ -47,6 +51,7 @@ export default function useNotificationData(apiPath) {
           }
 
           return {
+            id: notification.id,
             theme: (
               <MDTypography variant="caption" fontWeight="medium">
                 {notification.theme}
@@ -97,30 +102,18 @@ export default function useNotificationData(apiPath) {
             ),
             delete: (
               <IconButton
-                color="secondary"
-                onClick={async () => {
-                  try {
-                    await axiosInstance.delete(
-                      `https://it-club.uz/dd/delete-notofications/${notification.id}`,
-                      {
-                        headers: {
-                          Authorization: `Bearer ${accessToken}`,
-                        },
-                      }
-                    );
-                    setData((prevData) => ({
-                      ...prevData,
-                      rows: prevData.rows.filter((row) => row.id !== notification.id),
-                    }));
-                  } catch (error) {
-                    console.error("Failed to delete notification:", error);
-                  }
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteDialogOpen(notification.id, "");
                 }}
+                color="secondary"
               >
                 <DeleteIcon style={{ color: "red" }} />
               </IconButton>
             ),
-            id: notification.id,
+            onClick: () => {
+              handleNotificationDialogOpen(notification.id);
+            },
           };
         });
 

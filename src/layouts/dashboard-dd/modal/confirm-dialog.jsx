@@ -12,14 +12,20 @@ const ConfirmDialog = React.memo(({ isOpen, onClose, planId, planType }) => {
   const accessToken = useSelector((state) => state.auth.accessToken);
 
   const deleted = async (event) => {
-    if (isOpen && planId && planType) {
+    if (planId) {
       event.stopPropagation(); // Stop the row click event from being triggered
+      alert(planId);
       try {
-        await axiosInstance.delete(`https://it-club.uz/dd/delete-${planType}-plan/${planId}`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        await axiosInstance.delete(
+          `https://it-club.uz/dd/delete-${
+            planType !== "" ? `${planType}-plan` : "notofications"
+          }/${planId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
         location.reload();
         onClose();
       } catch (error) {

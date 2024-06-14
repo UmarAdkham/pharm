@@ -12,8 +12,7 @@ import { styled } from "@mui/system";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
-import doctorImage from "assets/images/doctor.png";
-import pharmacyImage from "assets/images/pharmacy.png";
+import axiosInstance from "services/axiosInstance";
 
 const StyledDialogContent = styled(DialogContent)({
   borderRadius: "15px",
@@ -30,7 +29,7 @@ const StyledBox = styled(Box)({
   justifyContent: "space-between",
   alignItems: "center",
   padding: "10px",
-  backgroundColor: "#f0f0f0",
+  // backgroundColor: "#f0f0f0",
   borderRadius: "10px",
   marginBottom: "10px",
 });
@@ -40,24 +39,23 @@ const StyledTextField = styled(Box)({
 });
 
 // eslint-disable-next-line react/prop-types
-const VisitDialog = React.memo(({ open, onClose, visitId, visitType }) => {
+const NotificationDialog = React.memo(({ open, onClose, notificationId }) => {
   const [visitData, setVisitData] = useState(null);
   const accessToken = useSelector((state) => state.auth.accessToken);
 
   useEffect(() => {
-    if (open && visitId !== -1 && visitType) {
+    if (open && notificationId) {
       const fetchVisitData = async () => {
         try {
-          const response = await axios.get(
-            `https://it-club.uz/mr/get-${visitType}-visit-plan/${visitId}`,
+          const { data } = await axiosInstance.get(
+            `https://it-club.uz/common/get-notofication/${notificationId}`,
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
               },
             }
           );
-          console.log(response.data);
-          setVisitData(response.data);
+          setVisitData(data);
         } catch (error) {
           console.error("Failed to fetch visit data:", error);
         }
@@ -65,58 +63,49 @@ const VisitDialog = React.memo(({ open, onClose, visitId, visitType }) => {
 
       fetchVisitData();
     }
-  }, [open, visitId, visitType, accessToken]);
+  }, [open, notificationId, accessToken]);
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <StyledDialogContent>
-        <DialogTitle align="center">
-          Посещение {visitType === "doctor" ? "доктора" : "аптеки"}
-        </DialogTitle>
-        <Typography variant="subtitle1" align="center">
-          Запланированная дата:{" "}
-          {visitData?.date ? format(new Date(visitData.date), "MM-dd-yy HH:mm") : "N/A"}
+        <DialogTitle align="center">Уведомления</DialogTitle>
+        <Typography variant="subtitle1" align="end">
+          дата создании:{" "}
+          {visitData?.date ? format(new Date(visitData?.date), "MM-dd-yy HH:mm") : "N/A"}
         </Typography>
 
         <StyledBox>
           <Box display="flex" alignItems="center">
-            <Box mr={2}>
+            {/* <Box mr={2}>
               <img
                 src={visitType === "doctor" ? doctorImage : pharmacyImage}
                 alt="Doctor"
                 width="80"
                 height="80"
               />
-            </Box>
+            </Box> */}
             <Box>
-              <Typography>
-                {visitType === "doctor"
-                  ? visitData?.doctor?.full_name
-                  : visitData?.pharmacy?.company_name || "N/A"}
-              </Typography>
+              <Typography>Author: {visitData?.author}</Typography>
               <Typography variant="caption">
-                {visitType === "doctor"
-                  ? visitData?.doctor?.medical_organization?.name
-                  : visitData?.pharmacy?.contact1 || "N/A"}
+                {visitData?.doctor
+                  ? `Доктор: ${visitData?.doctor.full_name}`
+                  : visitData?.pharmacy
+                  ? `Аптека: ${visitData?.pharmacy?.company_name}`
+                  : `Оптовая компания: ${visitData?.wholesale?.company_name}`}
               </Typography>
             </Box>
           </Box>
         </StyledBox>
 
         <StyledTextField>
-          <Typography variant="subtitle2">Тема посещения</Typography>
+          <Typography variant="subtitle2">Тема:</Typography>
           <Typography variant="body1">{visitData?.theme || "N/A"}</Typography>
         </StyledTextField>
 
         <StyledTextField>
           <Typography variant="subtitle2">Описание</Typography>
-          <Typography variant="body1">{visitData?.description || "N/A"}</Typography>
-        </StyledTextField>
-
-        <StyledTextField>
-          <Typography variant="subtitle2">Статус:</Typography>
-          <Typography variant="body1">
-            {visitData?.status ? "Сделано" : visitData?.postpone ? "Отложено" : "В очереди"}
+          <Typography sx={{ backgroundColor: "white" }} variant="body1">
+            {visitData?.description || "N/A"}
           </Typography>
         </StyledTextField>
       </StyledDialogContent>
@@ -130,4 +119,4 @@ const VisitDialog = React.memo(({ open, onClose, visitId, visitType }) => {
   );
 });
 
-export default VisitDialog;
+export default NotificationDialog;
