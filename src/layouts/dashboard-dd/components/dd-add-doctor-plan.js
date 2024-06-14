@@ -43,7 +43,7 @@ function DeputyDirectorAddDoctorPlan() {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await axios.get(`https://it-club.uz/mr/get-doctors`, {
+        const response = await axios.get(`https://it-club.uz/mr/get-doctors-by-med-rep/${id}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
