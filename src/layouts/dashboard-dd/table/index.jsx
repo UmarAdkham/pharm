@@ -29,6 +29,7 @@ import axios from "axios";
 import VisitDialog from "../modal/visit-dialog";
 import SelectCategory from "../components/category";
 import useProductCategoryData from "./data/product-category-data";
+import ConfirmDialog from "../modal/confirm-dialog";
 
 function DeputyDirectorTable({
   path,
@@ -52,6 +53,18 @@ function DeputyDirectorTable({
   const [dialogOpen, setDialogOpen] = useState(false); // State to manage dialog open/close
   const [visitId, setVisitId] = useState(-1);
   const [visitType, setVisitType] = useState("");
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [planId, setPlanId] = useState("");
+  const [planType, setPlanType] = useState("");
+
+  const handleDeleteDialogOpen = useCallback((planId, planType) => {
+    setPlanType(planType);
+    setPlanId(planId);
+    setDeleteDialog(true);
+  }, []);
+  const handleDeleteDialogClose = useCallback(() => {
+    setDeleteDialog(false);
+  }, []);
 
   const handleDialogOpen = useCallback((visitId, visitType) => {
     setVisitId(visitId);
@@ -135,7 +148,7 @@ function DeputyDirectorTable({
       data = usePharmacyPlanData(path, handleDialogOpen) || data;
       break;
     case "doctor-plan":
-      data = useDoctorPlanData(path, handleDialogOpen) || data; // Pass handleDialogOpen to useDoctorPlanData
+      data = useDoctorPlanData(path, handleDialogOpen, handleDeleteDialogOpen) || data; // Pass handleDialogOpen to useDoctorPlanData
       break;
     case "mr-pharmacies":
       data = usePharmacyData(path) || data;
@@ -203,6 +216,13 @@ function DeputyDirectorTable({
         onClose={handleDialogClose}
         visitId={visitId}
         visitType={visitType}
+      />
+
+      <ConfirmDialog
+        planId={planId}
+        planType={planType}
+        isOpen={deleteDialog}
+        onClose={handleDeleteDialogClose}
       />
     </Card>
   );
