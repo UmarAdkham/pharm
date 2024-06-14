@@ -32,6 +32,7 @@ L.Icon.Default.mergeOptions({
 function DeputyDirectorAddMedOrganization() {
   const navigate = useNavigate();
   const { accessToken } = useSelector((state) => state.auth);
+  const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
@@ -87,6 +88,7 @@ function DeputyDirectorAddMedOrganization() {
       const response = await axios.post(
         "https://it-club.uz/common/add-medical-organization",
         {
+          name,
           address,
           latitude: latitude.toString(),
           longitude: longitude.toString(),
@@ -161,6 +163,15 @@ function DeputyDirectorAddMedOrganization() {
         <MDBox pt={4} pb={3} px={3}>
           {message.content && <Alert severity={message.color}>{message.content}</Alert>}
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
+            <MDBox mb={2}>
+              <MDInput
+                type="text"
+                label="Название"
+                fullWidth
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </MDBox>
             <MDBox mb={2}>
               <FormControl fullWidth>
                 <InputLabel id="medical-representatives-label">
