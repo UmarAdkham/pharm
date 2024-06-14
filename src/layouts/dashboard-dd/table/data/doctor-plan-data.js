@@ -6,20 +6,18 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { format } from "date-fns";
 
-export default function useDoctorPlanData(apiPath, openDialog) {
+export default function useDoctorPlanData(apiPath, openDialog, deleteDialogOpen) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
 
   useEffect(() => {
     async function fetchDoctorPlans() {
       try {
-        const response = await axiosInstance.get(apiPath, {
+        const { data } = await axiosInstance.get(apiPath, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-
-        const doctorPlans = response.data;
 
         const columns = [
           { Header: "Врач", accessor: "doctor", align: "left" },
@@ -28,7 +26,7 @@ export default function useDoctorPlanData(apiPath, openDialog) {
           { Header: "Удалить", accessor: "delete", align: "center" },
         ];
 
-        const rows = doctorPlans.map((plan) => ({
+        const rows = data.map((plan) => ({
           id: plan.id,
           doctor: (
             <MDTypography variant="caption" fontWeight="medium">
@@ -62,24 +60,9 @@ export default function useDoctorPlanData(apiPath, openDialog) {
           delete: (
             <IconButton
               color="secondary"
-              onClick={async (event) => {
-                event.stopPropagation(); // Stop the row click event from being triggered
-                try {
-                  await axiosInstance.delete(
-                    `https://it-club.uz/dd/delete-doctor-plan/${plan.id}`,
-                    {
-                      headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                      },
-                    }
-                  );
-                  setData((prevData) => ({
-                    ...prevData,
-                    rows: prevData.rows.filter((row) => row.id !== plan.id),
-                  }));
-                } catch (error) {
-                  console.error("Failed to delete doctor plan:", error);
-                }
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteDialogOpen(plan.id, "doctor");
               }}
             >
               <DeleteIcon style={{ color: "red" }} />
@@ -98,6 +81,5 @@ export default function useDoctorPlanData(apiPath, openDialog) {
 
     fetchDoctorPlans();
   }, [accessToken, apiPath, openDialog]);
-
   return data;
 }
