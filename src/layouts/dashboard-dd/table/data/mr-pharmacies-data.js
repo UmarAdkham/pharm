@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
 
-export default function usePharmacyData(apiPath) {
+export default function usePharmacyData(apiPath, onRowClick) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -40,6 +40,7 @@ export default function usePharmacyData(apiPath) {
               {pharmacy.pharmacy_director}
             </MDTypography>
           ),
+          onClick: () => onRowClick(pharmacy.id), // Add click handler to each row
         }));
 
         setData({ columns, rows });

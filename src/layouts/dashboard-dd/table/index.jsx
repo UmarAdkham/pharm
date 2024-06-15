@@ -30,6 +30,7 @@ import VisitDialog from "../dialogs/visit-dialog";
 import SelectCategory from "../components/category";
 import useProductCategoryData from "./data/product-category-data";
 import DoctorInfoDialog from "../dialogs/doctor-info-dialog";
+import PharmacyInfoDialog from "../dialogs/pharmacy-info-dialog";
 import ConfirmDialog from "../dialogs/confirm-dialog";
 
 function DeputyDirectorTable({
@@ -51,33 +52,35 @@ function DeputyDirectorTable({
   const [selectedRM, setSelectedRM] = useState(null); // State to track the selected Regional Manager
   const [fieldForceManagers, setFieldForceManagers] = useState([]);
   const [regionalManagers, setRegionalManagers] = useState([]); // State to store the list of Regional Managers
-  const [dialogOpen, setDialogOpen] = useState(false); // State to manage dialog open/close
+  const [visitDialogOpen, setVisitDialogOpen] = useState(false); // State to manage visit dialog open/close
   const [visitId, setVisitId] = useState(-1);
   const [visitType, setVisitType] = useState("");
   const [doctorDialogOpen, setDoctorDialogOpen] = useState(false); // State to manage doctor info dialog
   const [selectedDoctorId, setSelectedDoctorId] = useState(null); // State to store selected doctor ID
-  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [pharmacyDialogOpen, setPharmacyDialogOpen] = useState(false); // State to manage pharmacy info dialog
+  const [selectedPharmacyId, setSelectedPharmacyId] = useState(null); // State to store selected pharmacy ID
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [planId, setPlanId] = useState("");
   const [planType, setPlanType] = useState("");
 
   const handleDeleteDialogOpen = useCallback((planId, planType) => {
     setPlanType(planType);
     setPlanId(planId);
-    setDeleteDialog(true);
+    setDeleteDialogOpen(true);
   }, []);
 
   const handleDeleteDialogClose = useCallback(() => {
-    setDeleteDialog(false);
+    setDeleteDialogOpen(false);
   }, []);
 
-  const handleDialogOpen = useCallback((visitId, visitType) => {
+  const handleVisitDialogOpen = useCallback((visitId, visitType) => {
     setVisitId(visitId);
     setVisitType(visitType);
-    setDialogOpen(true);
+    setVisitDialogOpen(true);
   }, []);
 
-  const handleDialogClose = useCallback(() => {
-    setDialogOpen(false);
+  const handleVisitDialogClose = useCallback(() => {
+    setVisitDialogOpen(false);
     setVisitId(-1); // Reset visitId
     setVisitType(""); // Reset visitType
   }, []);
@@ -90,6 +93,16 @@ function DeputyDirectorTable({
   const handleDoctorDialogClose = useCallback(() => {
     setDoctorDialogOpen(false);
     setSelectedDoctorId(null);
+  }, []);
+
+  const handlePharmacyDialogOpen = useCallback((pharmacyId) => {
+    setSelectedPharmacyId(pharmacyId);
+    setPharmacyDialogOpen(true);
+  }, []);
+
+  const handlePharmacyDialogClose = useCallback(() => {
+    setPharmacyDialogOpen(false);
+    setSelectedPharmacyId(null);
   }, []);
 
   useEffect(() => {
@@ -159,13 +172,13 @@ function DeputyDirectorTable({
       data = useMrData(path, status, navigatePath, onRowClick) || data;
       break;
     case "pharmacy-plan":
-      data = usePharmacyPlanData(path, handleDialogOpen) || data;
+      data = usePharmacyPlanData(path, handleVisitDialogOpen) || data;
       break;
     case "doctor-plan":
-      data = useDoctorPlanData(path, handleDialogOpen, handleDeleteDialogOpen) || data; // Pass handleDialogOpen to useDoctorPlanData
+      data = useDoctorPlanData(path, handleVisitDialogOpen, handleDeleteDialogOpen) || data; // Pass handleVisitDialogOpen to useDoctorPlanData
       break;
     case "mr-pharmacies":
-      data = usePharmacyData(path) || data;
+      data = usePharmacyData(path, handlePharmacyDialogOpen) || data;
       break;
     case "mr-doctors":
       data = useDoctorData(path, handleDoctorDialogOpen) || data; // Pass handleDoctorDialogOpen to useDoctorData
@@ -226,8 +239,8 @@ function DeputyDirectorTable({
       </MDBox>
 
       <VisitDialog
-        open={dialogOpen}
-        onClose={handleDialogClose}
+        open={visitDialogOpen}
+        onClose={handleVisitDialogClose}
         visitId={visitId}
         visitType={visitType}
       />
@@ -238,10 +251,16 @@ function DeputyDirectorTable({
         doctorId={selectedDoctorId}
       />
 
+      <PharmacyInfoDialog
+        open={pharmacyDialogOpen}
+        onClose={handlePharmacyDialogClose}
+        pharmacyId={selectedPharmacyId}
+      />
+
       <ConfirmDialog
         planId={planId}
         planType={planType}
-        isOpen={deleteDialog}
+        isOpen={deleteDialogOpen}
         onClose={handleDeleteDialogClose}
       />
     </Card>

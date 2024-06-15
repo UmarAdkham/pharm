@@ -14,19 +14,21 @@ import {
 } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import CloseIcon from "@mui/icons-material/Close";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import OrganizationIcon from "@mui/icons-material/Business";
 import doctorImage from "assets/images/doctor.png";
 import axios from "axios";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import CustomTooltip from "services/customTooltip";
+import AttachedProductsTable from "../table/doctor-attached-products";
+import AttachedPharmaciesTable from "../table/doctor-attached-pharmacies";
 
 // Fix for marker icons not showing in Leaflet
 import L from "leaflet";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
-import AttachedProductsTable from "../table/doctor-attached-products";
-import AttachedPharmaciesTable from "../table/doctor-attached-pharmacies";
 
 let DefaultIcon = L.icon({
   iconUrl: markerIcon,
@@ -39,6 +41,8 @@ const DoctorInfoDialog = ({ open, onClose, doctorId }) => {
   const [tabValue, setTabValue] = useState(0);
   const [doctor, setDoctor] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const [tooltipContent, setTooltipContent] = useState(null);
 
   useEffect(() => {
     if (doctorId && open) {
@@ -60,16 +64,30 @@ const DoctorInfoDialog = ({ open, onClose, doctorId }) => {
     setTabValue(newValue);
   };
 
+  const handleTooltipOpen = (content) => {
+    setTooltipContent(content);
+    setTooltipOpen(true);
+  };
+
+  const handleTooltipClose = () => {
+    setTooltipOpen(false);
+  };
+
+  const handleDialogClose = () => {
+    handleTooltipClose();
+    onClose();
+  };
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    <Dialog open={open} onClose={handleDialogClose} maxWidth="md" fullWidth>
       <DialogTitle>
-        {doctor ? doctor.full_name : "Loading..."}
+        {doctor ? "Доктор" : "Loading..."}
         <IconButton
           aria-label="close"
-          onClick={onClose}
+          onClick={handleDialogClose}
           sx={{ position: "absolute", right: 8, top: 8 }}
         >
-          X
+          <CloseIcon />
         </IconButton>
       </DialogTitle>
       <DialogContent>
@@ -93,6 +111,38 @@ const DoctorInfoDialog = ({ open, onClose, doctorId }) => {
                   </Typography>
                 </Box>
                 <Box display="flex" alignItems="center" mt={2}>
+                  <LocationOnIcon />
+                  <Typography
+                    variant="body1"
+                    ml={1}
+                    onClick={() =>
+                      handleTooltipOpen(
+                        <>
+                          <Typography variant="body1" fontWeight="bold" mb={2}>
+                            Location
+                          </Typography>
+                          <MapContainer
+                            center={[doctor.latitude, doctor.longitude]}
+                            zoom={13}
+                            style={{ height: "300px", width: "100%" }}
+                          >
+                            <TileLayer
+                              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            />
+                            <Marker position={[doctor.latitude, doctor.longitude]}>
+                              <Popup>{doctor.full_name}</Popup>
+                            </Marker>
+                          </MapContainer>
+                        </>
+                      )
+                    }
+                    sx={{ textDecoration: "underline", cursor: "pointer" }}
+                  >
+                    Location
+                  </Typography>
+                </Box>
+                <Box display="flex" alignItems="center" mt={2}>
                   <MedicalServicesIcon />
                   <Typography variant="body1" ml={1}>
                     {doctor.category.name}
@@ -104,28 +154,16 @@ const DoctorInfoDialog = ({ open, onClose, doctorId }) => {
                     {doctor.medical_organization.name}
                   </Typography>
                 </Box>
-                {doctor.latitude && doctor.longitude && (
-                  <Box mt={2} style={{ height: "300px" }}>
-                    <MapContainer
-                      center={[doctor.latitude, doctor.longitude]}
-                      zoom={13}
-                      style={{ height: "90%", width: "100%" }}
-                    >
-                      <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                      />
-                      <Marker position={[doctor.latitude, doctor.longitude]}>
-                        <Popup>{doctor.full_name}</Popup>
-                      </Marker>
-                    </MapContainer>
-                  </Box>
-                )}
+                <CustomTooltip
+                  open={tooltipOpen}
+                  onClose={handleTooltipClose}
+                  content={tooltipContent}
+                />
               </Grid>
             </Grid>
             <Tabs value={tabValue} onChange={handleTabChange} aria-label="tabs">
-              <Tab label="Attached Products List" />
-              <Tab label="Attached Pharmacy List" />
+              <Tab label="Лист Продуктов" />
+              <Tab label="Лист Аптек" />
             </Tabs>
             <TabPanel value={tabValue} index={0}>
               <AttachedProductsTable doctorId={doctorId} />
