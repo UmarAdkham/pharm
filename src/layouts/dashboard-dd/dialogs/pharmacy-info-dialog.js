@@ -27,6 +27,8 @@ import L from "leaflet";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import CustomTooltip from "services/customTooltip";
+import PharmacyBalanceInStockTable from "../table/pharmacy-balance-table";
+import PharmacyDoctorsListTable from "../table/pharmacy-doctors-table";
 // import AttachedProductsTable from "../table/pharmacy-attached-products";
 // import AttachedDoctorsTable from "../table/pharmacy-attached-doctors";
 
@@ -215,13 +217,13 @@ const PharmacyInfoDialog = ({ open, onClose, pharmacyId }) => {
               <Tab label="Balance in Stock" />
             </Tabs>
             <TabPanel value={tabValue} index={0}>
-              {/* <AttachedProductsTable pharmacyId={pharmacyId} /> */}
+              <Typography variant="body1">В разработке.</Typography>
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-              {/* <AttachedDoctorsTable pharmacyId={pharmacyId} /> */}
+              <PharmacyDoctorsListTable pharmacyId={pharmacyId} />
             </TabPanel>
             <TabPanel value={tabValue} index={2}>
-              <Typography variant="body1">Balance in Stock information goes here.</Typography>
+              <PharmacyBalanceInStockTable pharmacyId={pharmacyId} />
             </TabPanel>
           </>
         ) : (

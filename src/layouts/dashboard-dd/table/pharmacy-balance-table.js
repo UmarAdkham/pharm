@@ -4,42 +4,43 @@ import { Box, Typography, CircularProgress } from "@mui/material";
 import axios from "axios";
 import DataTable from "examples/Tables/DataTable";
 
-const AttachedProductsTable = ({ doctorId }) => {
-  const [products, setProducts] = useState([]);
+const PharmacyBalanceInStockTable = ({ pharmacyId }) => {
+  const [balanceInStock, setBalanceInStock] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (doctorId) {
+    console.log(pharmacyId);
+    if (pharmacyId) {
       setLoading(true);
       axios
-        .get(`https://it-club.uz/mr/doctor-attached-products/${doctorId}`)
+        .get(`https://it-club.uz/mr/get-balnce-in-stock/${pharmacyId}`)
         .then((response) => {
-          setProducts(response.data);
+          setBalanceInStock(response.data);
           setLoading(false);
         })
         .catch((error) => {
-          console.error("Failed to fetch attached products:", error);
+          console.error("Failed to fetch balance in stock:", error);
           setLoading(false);
         });
     }
-  }, [doctorId]);
+  }, [pharmacyId]);
 
   const columns = [
-    { Header: "Product Name", accessor: "product.name", align: "center" },
-    { Header: "Category Name", accessor: "product.category.name", align: "center" },
+    { Header: "Название продукта", accessor: "product.name", align: "center" },
+    { Header: "Сумма", accessor: "amount", align: "center" },
   ];
 
-  const data = products.map((item) => ({
+  const data = balanceInStock.map((item) => ({
     ...item,
     "product.name": item.product.name,
-    "product.category.name": item.product.category.name,
+    amount: item.amount,
   }));
 
   return loading ? (
     <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
       <CircularProgress />
     </Box>
-  ) : products.length === 0 ? (
+  ) : balanceInStock.length === 0 ? (
     <Typography variant="body1">Лист пуст</Typography>
   ) : (
     <DataTable
@@ -52,8 +53,8 @@ const AttachedProductsTable = ({ doctorId }) => {
   );
 };
 
-AttachedProductsTable.propTypes = {
-  doctorId: PropTypes.number.isRequired,
+PharmacyBalanceInStockTable.propTypes = {
+  pharmacyId: PropTypes.number.isRequired,
 };
 
-export default AttachedProductsTable;
+export default PharmacyBalanceInStockTable;

@@ -25,8 +25,8 @@ const AttachedPharmaciesTable = ({ doctorId }) => {
   }, [doctorId]);
 
   const columns = [
-    { Header: "Company Name", accessor: "company_name", align: "center" },
-    { Header: "Brand Name", accessor: "brand_name", align: "center" },
+    { Header: "Название компании", accessor: "company_name", align: "center" },
+    { Header: "Бренд", accessor: "brand_name", align: "center" },
   ];
 
   const data = pharmacies.map((pharmacy) => ({

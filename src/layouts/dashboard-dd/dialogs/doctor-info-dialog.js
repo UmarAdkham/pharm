@@ -22,8 +22,8 @@ import axios from "axios";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import CustomTooltip from "services/customTooltip";
-import AttachedProductsTable from "../table/doctor-attached-products";
-import AttachedPharmaciesTable from "../table/doctor-attached-pharmacies";
+import AttachedProductsTable from "../table/doctor-products-table";
+import AttachedPharmaciesTable from "../table/doctor-pharmacies-table";
 
 // Fix for marker icons not showing in Leaflet
 import L from "leaflet";
