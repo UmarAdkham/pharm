@@ -66,32 +66,12 @@ export default function usePharmacyPlanData(apiPath, openDialog, deleteDialogOpe
                 e.stopPropagation();
                 deleteDialogOpen(plan.id, "pharmacy");
               }}
-              // onClick={async (event) => {
-              //   event.stopPropagation(); // Stop the row click event from being triggered
-              //   try {
-              //     await axiosInstance.delete(
-              //       `https://it-club.uz/dd/delete-pharmacy-plan/${plan.id}`,
-              //       {
-              //         headers: {
-              //           Authorization: `Bearer ${accessToken}`,
-              //         },
-              //       }
-              //     );
-              //     setData((prevData) => ({
-              //       ...prevData,
-              //       rows: prevData.rows.filter((row) => row.id !== plan.id),
-              //     }));
-              //   } catch (error) {
-              //     console.error("Failed to delete pharmacy plan:", error);
-              //   }
-              // }}
             >
               <DeleteIcon style={{ color: "red" }} />
             </IconButton>
           ),
           onClick: () => {
-            alert("Delete plan");
-            // openDialog(plan.id, "pharmacy");
+            openDialog(plan.id, "pharmacy");
           },
         }));
 
@@ -102,7 +82,14 @@ export default function usePharmacyPlanData(apiPath, openDialog, deleteDialogOpe
     }
 
     fetchPharmacyPlans();
-  }, [accessToken, apiPath, openDialog]);
+  }, [accessToken, apiPath, openDialog, deleteDialogOpen]);
 
-  return data;
+  const deletePharmacyPlan = (planId) => {
+    setData((prevData) => ({
+      columns: prevData.columns,
+      rows: prevData.rows.filter((row) => row.id !== planId),
+    }));
+  };
+
+  return { data, deletePharmacyPlan };
 }

@@ -40,7 +40,7 @@ const StyledTextField = styled(Box)({
 
 // eslint-disable-next-line react/prop-types
 const NotificationDialog = React.memo(({ open, onClose, notificationId }) => {
-  const [visitData, setVisitData] = useState(null);
+  const [notificationData, setNotificationData] = useState(null);
   const accessToken = useSelector((state) => state.auth.accessToken);
 
   useEffect(() => {
@@ -55,9 +55,9 @@ const NotificationDialog = React.memo(({ open, onClose, notificationId }) => {
               },
             }
           );
-          setVisitData(data);
+          setNotificationData(data);
         } catch (error) {
-          console.error("Failed to fetch visit data:", error);
+          console.error("Failed to fetch notification data:", error);
         }
       };
 
@@ -71,27 +71,21 @@ const NotificationDialog = React.memo(({ open, onClose, notificationId }) => {
         <DialogTitle align="center">Уведомления</DialogTitle>
         <Typography variant="subtitle1" align="end">
           дата создании:{" "}
-          {visitData?.date ? format(new Date(visitData?.date), "MM-dd-yy HH:mm") : "N/A"}
+          {notificationData?.date
+            ? format(new Date(notificationData?.date), "MM-dd-yy HH:mm")
+            : "N/A"}
         </Typography>
 
         <StyledBox>
-          <Box display="flex" alignItems="center">
-            {/* <Box mr={2}>
-              <img
-                src={visitType === "doctor" ? doctorImage : pharmacyImage}
-                alt="Doctor"
-                width="80"
-                height="80"
-              />
-            </Box> */}
+          <Box display="flex">
             <Box>
-              <Typography>Author: {visitData?.author}</Typography>
-              <Typography variant="caption">
-                {visitData?.doctor
-                  ? `Доктор: ${visitData?.doctor.full_name}`
-                  : visitData?.pharmacy
-                  ? `Аптека: ${visitData?.pharmacy?.company_name}`
-                  : `Оптовая компания: ${visitData?.wholesale?.company_name}`}
+              <Typography>Автор: {notificationData?.author}</Typography>
+              <Typography variant="subtitle2">
+                {notificationData?.doctor
+                  ? `Доктор: ${notificationData?.doctor.full_name}`
+                  : notificationData?.pharmacy
+                  ? `Аптека: ${notificationData?.pharmacy?.company_name}`
+                  : `Оптовая компания: ${notificationData?.wholesale?.company_name}`}
               </Typography>
             </Box>
           </Box>
@@ -99,13 +93,13 @@ const NotificationDialog = React.memo(({ open, onClose, notificationId }) => {
 
         <StyledTextField>
           <Typography variant="subtitle2">Тема:</Typography>
-          <Typography variant="body1">{visitData?.theme || "N/A"}</Typography>
+          <Typography variant="body1">{notificationData?.theme || "N/A"}</Typography>
         </StyledTextField>
 
         <StyledTextField>
           <Typography variant="subtitle2">Описание</Typography>
           <Typography sx={{ backgroundColor: "white" }} variant="body1">
-            {visitData?.description || "N/A"}
+            {notificationData?.description || "N/A"}
           </Typography>
         </StyledTextField>
       </StyledDialogContent>

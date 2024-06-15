@@ -1,4 +1,5 @@
 import * as React from "react";
+import PropTypes from "prop-types";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -7,18 +8,16 @@ import DialogContentText from "@mui/material/DialogContentText";
 import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 
-// eslint-disable-next-line react/prop-types
-const ConfirmDialog = React.memo(({ isOpen, onClose, planId, planType }) => {
+const ConfirmDialog = React.memo(({ isOpen, onClose, planId, planType, onDelete }) => {
   const accessToken = useSelector((state) => state.auth.accessToken);
 
   const deleted = async (event) => {
     if (planId) {
       event.stopPropagation(); // Stop the row click event from being triggered
-      alert(planId);
       try {
         await axiosInstance.delete(
           `https://it-club.uz/dd/delete-${
-            planType !== "" ? `${planType}-plan` : "notofications"
+            planType !== "" ? `${planType}-plan` : "notifications"
           }/${planId}`,
           {
             headers: {
@@ -26,7 +25,7 @@ const ConfirmDialog = React.memo(({ isOpen, onClose, planId, planType }) => {
             },
           }
         );
-        location.reload();
+        onDelete(planId);
         onClose();
       } catch (error) {
         console.error("Failed to delete doctor plan:", error);
@@ -37,30 +36,35 @@ const ConfirmDialog = React.memo(({ isOpen, onClose, planId, planType }) => {
   };
 
   return (
-    <React.Fragment>
-      <Dialog
-        open={isOpen}
-        onClose={onClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        {/* <DialogTitle id="alert-dialog-title">{"Вы уверены что хотите удалить?"}</DialogTitle> */}
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Вы уверены что хотите удалить?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="contained" color="success" onClick={deleted}>
-            Yes
-          </Button>
-          <Button variant="contained" color="success" onClick={onClose} autoFocus>
-            No
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </React.Fragment>
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          Вы уверены что хотите удалить?
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button variant="contained" color="success" onClick={deleted}>
+          Да
+        </Button>
+        <Button variant="contained" color="success" onClick={onClose} autoFocus>
+          Нет
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 });
+
+ConfirmDialog.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  planId: PropTypes.number,
+  planType: PropTypes.string,
+  onDelete: PropTypes.func.isRequired,
+};
 
 export default ConfirmDialog;

@@ -2,10 +2,6 @@ import { useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
@@ -54,19 +50,18 @@ function DeputyDirectorTable({
   const [dialogOpen, setDialogOpen] = useState(false); // State to manage dialog open/close
   const [visitId, setVisitId] = useState(-1);
   const [visitType, setVisitType] = useState("");
-  const [deleteDialog, setDeleteDialog] = useState(false);
-  const [planId, setPlanId] = useState("");
+  const [deleteDialog, setDeleteDialog] = useState({ isOpen: false, planId: null, planType: "" });
   const [notificationId, setNotificationId] = useState(-1);
-  const [planType, setPlanType] = useState("");
   const [notificationOpen, setNotificationOpen] = useState(false);
+  const [deleteDoctorPlan, setDeleteDoctorPlan] = useState(() => () => {});
+  const [deletePharmacyPlan, setDeletePharmacyPlan] = useState(() => () => {});
 
   const handleDeleteDialogOpen = useCallback((planId, planType) => {
-    setPlanType(planType);
-    setPlanId(planId);
-    setDeleteDialog(true);
+    setDeleteDialog({ isOpen: true, planId, planType });
   }, []);
+
   const handleDeleteDialogClose = useCallback(() => {
-    setDeleteDialog(false);
+    setDeleteDialog({ isOpen: false, planId: null, planType: "" });
   }, []);
 
   const handleDialogOpen = useCallback((visitId, visitType) => {
@@ -79,6 +74,7 @@ function DeputyDirectorTable({
     setNotificationId(id);
     setNotificationOpen(true);
   }, []);
+
   const handleVisitDialogClose = useCallback(() => {
     setNotificationOpen(false);
   }, []);
@@ -126,55 +122,66 @@ function DeputyDirectorTable({
     fetchRegionalManagers();
   }, [accessToken]);
 
-  let data = { columns: [], rows: [] }; // Default structure
+  let tableData = { columns: [], rows: [] };
+  let deletePharmacyPlanFunction = () => {};
+  let deleteDoctorPlanFunction = () => {};
+
   switch (tableType) {
     case "categories":
-      data = useCategoryData(path) || data;
+      tableData = useCategoryData(path) || tableData;
       break;
     case "product-categories":
-      data = useProductCategoryData(path) || data;
+      tableData = useProductCategoryData(path) || tableData;
       break;
     case "manufacturer-companies":
-      data = useManufacturerCompanyData(path) || data;
+      tableData = useManufacturerCompanyData(path) || tableData;
       break;
     case "products":
-      data = useProductData(path, selectDatas?.[0]?.categori, selectDatas?.[1]?.categori) || data;
+      tableData =
+        useProductData(path, selectDatas?.[0]?.categori, selectDatas?.[1]?.categori) || tableData;
       break;
     case "regions":
-      data = useRegionData(path) || data;
+      tableData = useRegionData(path) || tableData;
       break;
     case "medical-organizations":
-      data = useMedicalOrganizationData(path) || data;
+      tableData = useMedicalOrganizationData(path) || tableData;
       break;
     case "specialities":
-      data = useSpecialityData(path) || data;
+      tableData = useSpecialityData(path) || tableData;
       break;
     case "pms":
-      data = usePmData(path, status, navigatePath, onRowClick, rowPath) || data;
+      tableData = usePmData(path, status, navigatePath, onRowClick, rowPath) || tableData;
       break;
     case "mrs":
-      data = useMrData(path, status, navigatePath, onRowClick) || data;
+      tableData = useMrData(path, status, navigatePath, onRowClick) || tableData;
       break;
     case "pharmacy-plan":
-      data = usePharmacyPlanData(path, handleDialogOpen, handleDeleteDialogOpen) || data;
+      const pharmacyPlanData =
+        usePharmacyPlanData(path, handleDialogOpen, handleDeleteDialogOpen) || {};
+      tableData = pharmacyPlanData.data || tableData;
+      deletePharmacyPlanFunction = pharmacyPlanData.deletePharmacyPlan || (() => {});
       break;
     case "doctor-plan":
-      data = useDoctorPlanData(path, handleDialogOpen, handleDeleteDialogOpen) || data; // Pass handleDialogOpen to useDoctorPlanData
+      const doctorPlanData =
+        useDoctorPlanData(path, handleDialogOpen, handleDeleteDialogOpen) || {};
+      tableData = doctorPlanData.data || tableData;
+      deleteDoctorPlanFunction = doctorPlanData.deleteDoctorPlan || (() => {});
       break;
     case "mr-pharmacies":
-      data = usePharmacyData(path) || data;
+      tableData = usePharmacyData(path) || tableData;
       break;
     case "mr-doctors":
-      data = useDoctorData(path) || data;
+      tableData = useDoctorData(path) || tableData;
       break;
     case "notifications":
-      data =
-        useNotificationData(path, handleDeleteDialogOpen, handleNotificationDialogOpen) || data;
+      tableData =
+        useNotificationData(path, handleDeleteDialogOpen, handleNotificationDialogOpen) ||
+        tableData;
       break;
     default:
       break;
   }
-  const { columns, rows } = data;
+  const { columns, rows } = tableData;
 
   return (
     <Card>
@@ -231,10 +238,15 @@ function DeputyDirectorTable({
       />
 
       <ConfirmDialog
-        planId={planId}
-        planType={planType}
-        isOpen={deleteDialog}
+        isOpen={deleteDialog.isOpen}
         onClose={handleDeleteDialogClose}
+        planId={deleteDialog.planId}
+        planType={deleteDialog.planType}
+        onDelete={
+          deleteDialog.planType === "pharmacy"
+            ? deletePharmacyPlanFunction
+            : deleteDoctorPlanFunction
+        }
       />
 
       <NotificationDialog

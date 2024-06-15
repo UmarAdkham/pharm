@@ -5,7 +5,6 @@ import MDTypography from "components/MDTypography";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { format } from "date-fns";
-import ConfirmDialog from "layouts/dashboard-dd/modal/confirm-dialog";
 
 export default function useDoctorPlanData(apiPath, openDialog, deleteDialogOpen) {
   const [data, setData] = useState({ columns: [], rows: [] });
@@ -70,9 +69,8 @@ export default function useDoctorPlanData(apiPath, openDialog, deleteDialogOpen)
             </IconButton>
           ),
           onClick: () => {
-            alert("assa");
             openDialog(plan.id, "doctor");
-          }, // Open dialog on click
+          },
         }));
 
         setData({ columns, rows });
@@ -83,5 +81,13 @@ export default function useDoctorPlanData(apiPath, openDialog, deleteDialogOpen)
 
     fetchDoctorPlans();
   }, [accessToken, apiPath, openDialog]);
-  return data;
+
+  const deleteDoctorPlan = async (planId) => {
+    setData((prevData) => ({
+      columns: prevData.columns,
+      rows: prevData.rows.filter((row) => row.id !== planId),
+    }));
+  };
+
+  return { data, deleteDoctorPlan };
 }
