@@ -25,6 +25,8 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import AttachedProductsTable from "../table/doctor-attached-products";
+import AttachedPharmaciesTable from "../table/doctor-attached-pharmacies";
 
 let DefaultIcon = L.icon({
   iconUrl: markerIcon,
@@ -126,26 +128,10 @@ const DoctorInfoDialog = ({ open, onClose, doctorId }) => {
               <Tab label="Attached Pharmacy List" />
             </Tabs>
             <TabPanel value={tabValue} index={0}>
-              <Box mt={2} p={2} bgcolor="#FFBF00">
-                <Grid container>
-                  <Grid item xs={6}>
-                    <Typography variant="body1" fontWeight="bold">
-                      Product name
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="body1" fontWeight="bold">
-                      Category
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Box>
-              {/* Add more rows here as needed */}
+              <AttachedProductsTable doctorId={doctorId} />
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-              <Box mt={2} p={2}>
-                {/* Content for Attached Pharmacy List */}
-              </Box>
+              <AttachedPharmaciesTable doctorId={doctorId} />
             </TabPanel>
           </>
         ) : (
