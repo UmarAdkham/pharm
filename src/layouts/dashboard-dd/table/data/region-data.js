@@ -87,6 +87,7 @@ export default function useRegionData(apiPath) {
                 handleClose={handleClose}
                 handleSubmit={handleSubmit}
                 regionToUpdate={regionToUpdate}
+                setRegionToUpdate={setRegionToUpdate}
               />
             </div>
           ),

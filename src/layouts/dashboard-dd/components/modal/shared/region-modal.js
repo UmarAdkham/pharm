@@ -12,7 +12,7 @@ function RegionModal({ open, handleClose, handleSubmit, regionToUpdate }) {
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    const updatedName = event.target.region.value;
+    const updatedName = event.target.value;
     const updatedRegion = { id: regionToUpdate.id, name: updatedName };
     handleSubmit(updatedRegion);
     handleClose();
@@ -20,7 +20,7 @@ function RegionModal({ open, handleClose, handleSubmit, regionToUpdate }) {
 
   const body = (
     <MDBox>
-      <form onSubmit={handleFormSubmit}>
+      <form>
         <TextField
           style={{ marginBottom: 20 }}
           name="region"
@@ -41,7 +41,7 @@ function RegionModal({ open, handleClose, handleSubmit, regionToUpdate }) {
           <Button onClick={handleClose} size="small" variant="outlined">
             <MDTypography variant="button">Отмена</MDTypography>
           </Button>
-          <Button size="small" variant="contained" type="submit">
+          <Button onClick={handleFormSubmit} size="small" variant="contained" type="submit">
             <MDTypography style={{ color: "white" }} variant="button">
               Сохранить
             </MDTypography>
