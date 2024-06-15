@@ -28,10 +28,7 @@ export default function useRegionData(apiPath) {
   const handleSubmit = async (updatedRegion) => {
     try {
       const response = await axiosInstance.put(
-        `https://it-club.uz/common/update-region/${updatedRegion.id}`,
-        {
-          name: updatedRegion.name,
-        },
+        `https://it-club.uz/common/update-region/${updatedRegion.id}?name=${updatedRegion.name}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -58,11 +55,11 @@ export default function useRegionData(apiPath) {
           },
         });
 
-        const regions = response.data;
+        const regions = response.data.sort((a, b) => a.id - b.id);
 
         const columns = [
           { Header: "Название", accessor: "name", align: "left" },
-          { Header: "ДЕЙСТВИЯ", accessor: "action", align: "right" },
+          { Header: "Действия", accessor: "action", align: "right" },
         ];
 
         const rows = regions.map((region) => ({
