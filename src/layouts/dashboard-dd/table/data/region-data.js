@@ -1,4 +1,3 @@
-// Inside region-data.js
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
@@ -7,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
 
 import MDTypography from "components/MDTypography";
-import RegionModal from "../../components/modal/shared/region-modal";
+import RegionModal from "../../dialogs/modal/shared/region-modal";
 
 export default function useRegionData(apiPath) {
   const [data, setData] = useState({ columns: [], rows: [] });
@@ -84,7 +83,6 @@ export default function useRegionData(apiPath) {
                 handleClose={handleClose}
                 handleSubmit={handleSubmit}
                 regionToUpdate={regionToUpdate}
-                setRegionToUpdate={setRegionToUpdate}
               />
             </div>
           ),

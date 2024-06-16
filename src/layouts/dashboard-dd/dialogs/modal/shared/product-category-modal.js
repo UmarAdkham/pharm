@@ -1,38 +1,38 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import ModalOpen from "../";
+import ModalOpen from "../modal";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import MDTypography from "components/MDTypography";
-import MDBox from "../../../../../components/MDBox";
+import MDBox from "components/MDBox";
 
-function RegionModal({ open, handleClose, handleSubmit, regionToUpdate }) {
+function ProductCategoryModal({ open, handleClose, handleSubmit, categoryToUpdate }) {
   const [updatedName, setUpdatedName] = useState("");
 
   useEffect(() => {
-    if (regionToUpdate) {
-      setUpdatedName(regionToUpdate.name);
+    if (categoryToUpdate) {
+      setUpdatedName(categoryToUpdate.name);
     }
-  }, [regionToUpdate]);
+  }, [categoryToUpdate]);
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    const updatedRegion = { id: regionToUpdate.id, name: updatedName };
-    handleSubmit(updatedRegion);
+    const updatedCategory = { id: categoryToUpdate.id, name: updatedName };
+    handleSubmit(updatedCategory);
     handleClose();
   };
 
   return (
     <ModalOpen
       open={open}
-      header={<MDTypography>Обновить регион</MDTypography>}
+      header={<MDTypography>Обновить продукть категорий</MDTypography>}
       body={
         <MDBox>
           <form onSubmit={handleFormSubmit}>
             <TextField
               style={{ marginBottom: 20 }}
               name="region"
-              label="Регион"
+              label="Продукть категория"
               variant="outlined"
               margin="normal"
               fullWidth
@@ -63,14 +63,14 @@ function RegionModal({ open, handleClose, handleSubmit, regionToUpdate }) {
   );
 }
 
-RegionModal.propTypes = {
+ProductCategoryModal.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
-  regionToUpdate: PropTypes.shape({
-    id: PropTypes.string,
+  categoryToUpdate: PropTypes.shape({
+    id: PropTypes.number,
     name: PropTypes.string,
   }),
 };
 
-export default RegionModal;
+export default ProductCategoryModal;

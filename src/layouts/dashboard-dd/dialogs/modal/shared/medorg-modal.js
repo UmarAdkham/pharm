@@ -1,0 +1,232 @@
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import ModalOpen from "../modal";
+import Button from "@mui/material/Button";
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import SearchControl from "../../../../../services/geoSearchController";
+
+// Material Dashboard 2 React components
+import MDBox from "components/MDBox";
+import MDTypography from "components/MDTypography";
+import MDInput from "components/MDInput";
+
+// Authentication layout components
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import axiosInstance from "services/axiosInstance";
+import { useSelector } from "react-redux";
+
+function MedorgModal({ open, handleClose, handleSubmit, medorgToUpdate }) {
+  const [updatedName, setUpdatedName] = useState("");
+  const [address, setAddress] = useState("");
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
+  const [medRepId, setMedRepId] = useState("");
+  const [regionId, setRegionId] = useState("");
+  const [medReps, setMedReps] = useState([]);
+  const [regions, setRegions] = useState([]);
+  const accessToken = useSelector((state) => state.auth.accessToken);
+
+  useEffect(() => {
+    if (medorgToUpdate) {
+      setUpdatedName(medorgToUpdate.name);
+      setAddress(medorgToUpdate.medOrgAdress);
+      setLatitude(medorgToUpdate.latitude);
+      setLongitude(medorgToUpdate.longitude);
+      setMedRepId(medorgToUpdate.medOrgRep);
+      setRegionId(medorgToUpdate.medOrgregion);
+    }
+  }, [medorgToUpdate]);
+
+  const fetchRegionsAndReps = async () => {
+    try {
+      const [repsResponse, regionsResponse] = await Promise.all([
+        axiosInstance.get("https://it-club.uz/common/get-users", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }),
+        axiosInstance.get("https://it-club.uz/common/get-regions", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }),
+      ]);
+      setMedReps(repsResponse.data);
+      setRegions(regionsResponse.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRegionsAndReps();
+  }, [accessToken]);
+
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    const updatedMedorg = {
+      id: medorgToUpdate.id,
+      name: updatedName,
+      medOrgAdress: address,
+      latitude,
+      longitude,
+      medOrgregion: regionId,
+      medOrgRep: medRepId,
+    };
+    handleSubmit(updatedMedorg);
+    handleClose();
+  };
+
+  function LocationMarker() {
+    const map = useMapEvents({
+      click(e) {
+        setLatitude(e.latlng.lat);
+        setLongitude(e.latlng.lng);
+      },
+      move() {
+        setLatitude(map.getCenter().lat);
+        setLongitude(map.getCenter().lng);
+      },
+    });
+
+    return latitude !== 0 && longitude !== 0 ? (
+      <Marker
+        position={[latitude, longitude]}
+        draggable={true}
+        eventHandlers={{
+          dragend(e) {
+            const marker = e.target;
+            const position = marker.getLatLng();
+            setLatitude(position.lat);
+            setLongitude(position.lng);
+          },
+        }}
+      ></Marker>
+    ) : null;
+  }
+
+  return (
+    <ModalOpen
+      open={open}
+      header={<MDTypography>Обновить производственные компании</MDTypography>}
+      body={
+        <MDBox>
+          <form onSubmit={handleFormSubmit}>
+            <MDBox mb={2}>
+              <MDInput
+                type="text"
+                label="Название"
+                fullWidth
+                value={updatedName}
+                onChange={(e) => setUpdatedName(e.target.value)}
+              />
+            </MDBox>
+            <MDBox mb={2}>
+              <FormControl fullWidth>
+                <InputLabel id="medical-representatives-label">
+                  Медицинские Представители
+                </InputLabel>
+                <Select
+                  labelId="medical-representatives-label"
+                  value={medRepId}
+                  label="Медицинские Представители"
+                  onChange={(e) => setMedRepId(e.target.value)}
+                  sx={{ height: "45px" }}
+                >
+                  {medReps.map((mr) => (
+                    <MenuItem key={mr.id} value={mr.id}>
+                      {mr.full_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </MDBox>
+            <MDBox mb={2}>
+              <FormControl fullWidth>
+                <InputLabel id="regions-label">Регионы</InputLabel>
+                <Select
+                  labelId="regions-label"
+                  value={regionId}
+                  label="Регионы"
+                  onChange={(e) => setRegionId(e.target.value)}
+                  sx={{ height: "45px" }}
+                >
+                  {regions.map((region) => (
+                    <MenuItem key={region.id} value={region.id}>
+                      {region.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </MDBox>
+            <MDBox mb={2} style={{ height: "200px" }}>
+              <MapContainer
+                center={[51.505, -0.09]}
+                zoom={13}
+                style={{ height: "100%", width: "100%" }}
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+                <SearchControl
+                  setLatitude={setLatitude}
+                  setLongitude={setLongitude}
+                  setAddress={setAddress}
+                />
+                <LocationMarker />
+              </MapContainer>
+            </MDBox>
+            <MDBox mb={2}>
+              <MDTypography variant="h6">Широта: {latitude}</MDTypography>
+              <MDTypography variant="h6">Долгота: {longitude}</MDTypography>
+            </MDBox>
+            <MDBox mb={2}>
+              <MDInput
+                type="text"
+                label="Адрес"
+                fullWidth
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+              />
+            </MDBox>
+            <MDBox
+              component="div"
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Button onClick={handleClose} size="small" variant="outlined">
+                <MDTypography variant="button">Отмена</MDTypography>
+              </Button>
+              <Button size="small" variant="contained" type="submit">
+                <MDTypography style={{ color: "white" }} variant="button">
+                  Сохранить
+                </MDTypography>
+              </Button>
+            </MDBox>
+          </form>
+        </MDBox>
+      }
+    />
+  );
+}
+
+MedorgModal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  handleClose: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  medorgToUpdate: PropTypes.shape({
+    id: PropTypes.number,
+    name: PropTypes.string,
+    medOrgAdress: PropTypes.string,
+    latitude: PropTypes.string,
+    longitude: PropTypes.string,
+    medOrgregion: PropTypes.number,
+    medOrgRep: PropTypes.number,
+  }),
+};
+
+export default MedorgModal;
