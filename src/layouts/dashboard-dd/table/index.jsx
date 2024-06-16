@@ -9,7 +9,7 @@ import useCategoryData from "./data/category-data";
 import useManufacturerCompanyData from "./data/manufacturer-company-data";
 import useProductData from "./data/product-data";
 import useRegionData from "./data/region-data";
-import useMedicalOrganizationData from "./data/medorg.-data";
+import useMedicalOrganizationData from "./data/medorg-data";
 import useSpecialityData from "./data/speciality-data";
 import { useNavigate } from "react-router-dom";
 import usePmData from "./data/pm-data";

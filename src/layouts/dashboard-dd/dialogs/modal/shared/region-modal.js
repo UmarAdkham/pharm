@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import ModalOpen from "../";
+import ModalOpen from "../modal";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import MDTypography from "components/MDTypography";
-import MDBox from "../../../../../components/MDBox";
+import MDBox from "components/MDBox";
 
 function RegionModal({ open, handleClose, handleSubmit, regionToUpdate }) {
   const [updatedName, setUpdatedName] = useState("");
@@ -20,6 +20,8 @@ function RegionModal({ open, handleClose, handleSubmit, regionToUpdate }) {
     const updatedRegion = { id: regionToUpdate.id, name: updatedName };
     handleSubmit(updatedRegion);
     handleClose();
+    // Trigger a refresh of data
+    location.reload();
   };
 
   return (
@@ -68,7 +70,7 @@ RegionModal.propTypes = {
   handleClose: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   regionToUpdate: PropTypes.shape({
-    id: PropTypes.string,
+    id: PropTypes.number,
     name: PropTypes.string,
   }),
 };
