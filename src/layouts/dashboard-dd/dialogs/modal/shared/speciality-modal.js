@@ -20,6 +20,8 @@ function SpecialityModal({ open, handleClose, handleSubmit, specialityToUpdate }
     const updatedSpeciality = { id: specialityToUpdate.id, name: updatedName };
     handleSubmit(updatedSpeciality);
     handleClose();
+    // Trigger a refresh of data
+    location.reload();
   };
 
   return (

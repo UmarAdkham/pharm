@@ -35,9 +35,6 @@ export default function useProductCategoryData(apiPath) {
         }
       );
 
-      // Assuming response.data contains the updated region data
-      const updatedRegionData = response.datasort((a, b) => a.id - b.id);
-
       // Optionally update state or trigger a refresh of data
       fetchRegions(); // Example: Refresh data after update
     } catch (error) {
@@ -55,7 +52,7 @@ export default function useProductCategoryData(apiPath) {
           },
         });
 
-        const categories = response.data;
+        const categories = response.data.sort((a, b) => a.id - b.id);
 
         const columns = [
           { Header: "Название", accessor: "name", align: "left" },

@@ -20,6 +20,8 @@ function ProductCategoryModal({ open, handleClose, handleSubmit, categoryToUpdat
     const updatedCategory = { id: categoryToUpdate.id, name: updatedName };
     handleSubmit(updatedCategory);
     handleClose();
+    // Trigger a refresh of data
+    location.reload();
   };
 
   return (

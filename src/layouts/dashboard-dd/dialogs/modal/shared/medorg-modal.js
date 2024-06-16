@@ -14,28 +14,32 @@ import MDInput from "components/MDInput";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import axiosInstance from "services/axiosInstance";
 import { useSelector } from "react-redux";
+import userRoles from "constants/userRoles";
 
 function MedorgModal({ open, handleClose, handleSubmit, medorgToUpdate }) {
-  const [updatedName, setUpdatedName] = useState("");
+  const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
-  const [medRepId, setMedRepId] = useState("");
-  const [regionId, setRegionId] = useState("");
+  const [med_rep_id, setMedRepId] = useState(medorgToUpdate?.med_rep_id || "");
+  const [region_id, setRegionId] = useState(medorgToUpdate?.region_id || "");
   const [medReps, setMedReps] = useState([]);
   const [regions, setRegions] = useState([]);
   const accessToken = useSelector((state) => state.auth.accessToken);
 
   useEffect(() => {
-    if (medorgToUpdate) {
-      setUpdatedName(medorgToUpdate.name);
-      setAddress(medorgToUpdate.medOrgAdress);
-      setLatitude(medorgToUpdate.latitude);
-      setLongitude(medorgToUpdate.longitude);
-      setMedRepId(medorgToUpdate.medOrgRep);
-      setRegionId(medorgToUpdate.medOrgregion);
+    if (open) {
+      if (medorgToUpdate) {
+        setName(medorgToUpdate.name);
+        setAddress(medorgToUpdate.address);
+        setLatitude(medorgToUpdate.latitude);
+        setLongitude(medorgToUpdate.longitude);
+        setMedRepId(medorgToUpdate.med_rep_id);
+        setRegionId(medorgToUpdate.region_id);
+      }
+      fetchRegionsAndReps();
     }
-  }, [medorgToUpdate]);
+  }, [medorgToUpdate, open]);
 
   const fetchRegionsAndReps = async () => {
     try {
@@ -51,30 +55,30 @@ function MedorgModal({ open, handleClose, handleSubmit, medorgToUpdate }) {
           },
         }),
       ]);
-      setMedReps(repsResponse.data);
+      setMedReps(
+        repsResponse.data.filter((user) => user.status == userRoles.MEDICAL_REPRESENTATIVE)
+      );
       setRegions(regionsResponse.data);
     } catch (error) {
       console.error(error);
     }
   };
 
-  useEffect(() => {
-    fetchRegionsAndReps();
-  }, [accessToken]);
-
   const handleFormSubmit = (event) => {
     event.preventDefault();
     const updatedMedorg = {
       id: medorgToUpdate.id,
-      name: updatedName,
-      medOrgAdress: address,
-      latitude,
-      longitude,
-      medOrgregion: regionId,
-      medOrgRep: medRepId,
+      name,
+      address,
+      latitude: latitude.toString(),
+      longitude: longitude.toString(),
+      region_id,
+      med_rep_id,
     };
     handleSubmit(updatedMedorg);
     handleClose();
+    // Trigger a refresh of data
+    location.reload();
   };
 
   function LocationMarker() {
@@ -117,8 +121,8 @@ function MedorgModal({ open, handleClose, handleSubmit, medorgToUpdate }) {
                 type="text"
                 label="Название"
                 fullWidth
-                value={updatedName}
-                onChange={(e) => setUpdatedName(e.target.value)}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </MDBox>
             <MDBox mb={2}>
@@ -128,9 +132,11 @@ function MedorgModal({ open, handleClose, handleSubmit, medorgToUpdate }) {
                 </InputLabel>
                 <Select
                   labelId="medical-representatives-label"
-                  value={medRepId}
+                  value={med_rep_id}
                   label="Медицинские Представители"
-                  onChange={(e) => setMedRepId(e.target.value)}
+                  onChange={(e) => {
+                    setMedRepId(e.target.value);
+                  }}
                   sx={{ height: "45px" }}
                 >
                   {medReps.map((mr) => (
@@ -146,7 +152,7 @@ function MedorgModal({ open, handleClose, handleSubmit, medorgToUpdate }) {
                 <InputLabel id="regions-label">Регионы</InputLabel>
                 <Select
                   labelId="regions-label"
-                  value={regionId}
+                  value={region_id}
                   label="Регионы"
                   onChange={(e) => setRegionId(e.target.value)}
                   sx={{ height: "45px" }}
@@ -221,11 +227,12 @@ MedorgModal.propTypes = {
   medorgToUpdate: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
-    medOrgAdress: PropTypes.string,
+    address: PropTypes.string,
     latitude: PropTypes.string,
     longitude: PropTypes.string,
-    medOrgregion: PropTypes.number,
-    medOrgRep: PropTypes.number,
+    region_id: PropTypes.number,
+    med_rep_id: PropTypes.number,
+    med_rep_name: PropTypes.string,
   }),
 };
 

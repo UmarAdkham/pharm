@@ -20,6 +20,8 @@ function ManufacturerCompanyModal({ open, handleClose, handleSubmit, campanyToUp
     const updatedMnfct = { id: campanyToUpdate.id, name: updatedName };
     handleSubmit(updatedMnfct);
     handleClose();
+    // Trigger a refresh of data
+    location.reload();
   };
 
   return (

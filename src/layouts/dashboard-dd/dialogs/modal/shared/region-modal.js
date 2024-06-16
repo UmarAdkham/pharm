@@ -20,6 +20,8 @@ function RegionModal({ open, handleClose, handleSubmit, regionToUpdate }) {
     const updatedRegion = { id: regionToUpdate.id, name: updatedName };
     handleSubmit(updatedRegion);
     handleClose();
+    // Trigger a refresh of data
+    location.reload();
   };
 
   return (

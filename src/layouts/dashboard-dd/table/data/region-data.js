@@ -35,10 +35,6 @@ export default function useRegionData(apiPath) {
         }
       );
 
-      // Assuming response.data contains the updated region data
-      const updatedRegionData = response.data;
-
-      // Optionally update state or trigger a refresh of data
       fetchRegions(); // Example: Refresh data after update
     } catch (error) {
       console.error("Error updating region:", error);

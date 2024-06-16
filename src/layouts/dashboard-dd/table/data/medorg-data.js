@@ -28,38 +28,19 @@ export default function useMedicalOrganizationData(apiPath) {
 
   const handleClose = () => {
     setOpen(false);
-    setMedorgToUpdate({
-      id: null,
-      name: "",
-      medOrgAdress: "",
-      latitude: "",
-      longitude: "",
-      medOrgregion: null,
-      medOrgRep: null,
-    });
   };
 
-  const handleSubmit = async (updatedMedorg) => {
+  const handleSubmit = async (updatedMedOrg) => {
     try {
       const response = await axiosInstance.put(
-        `https://it-club.uz/common/update-medical-organization/${updatedMedorg.id}`,
-        {
-          name: updatedMedorg.name,
-          address: updatedMedorg.medOrgAdress,
-          latitude: updatedMedorg.latitude,
-          longitude: updatedMedorg.longitude,
-          region_id: updatedMedorg.medOrgregion,
-          med_rep_id: updatedMedorg.medOrgRep,
-        },
+        `https://it-club.uz/common/update-medical-organization/${updatedMedOrg.id}`,
+        updatedMedOrg,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         }
       );
-
-      // Optionally update state or trigger a refresh of data
-      fetchMedicalOrganizations(); // Refresh data after update
     } catch (error) {
       console.error("Error updating medical organization:", error);
     }
@@ -112,11 +93,12 @@ export default function useMedicalOrganizationData(apiPath) {
                 setMedorgToUpdate({
                   id: medOrg.id,
                   name: medOrg.name,
-                  medOrgAdress: medOrg.address,
+                  address: medOrg.address,
                   latitude: medOrg.latitude,
                   longitude: medOrg.longitude,
-                  medOrgregion: medOrg.region_id,
-                  medOrgRep: medOrg.med_rep_id,
+                  region_id: medOrg.region.id,
+                  med_rep_id: medOrg.med_rep.id,
+                  med_rep_name: medOrg.med_rep.full_name,
                 });
               }}
               aria-label="update"
