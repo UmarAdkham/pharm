@@ -57,6 +57,7 @@ const VisitDialog = React.memo(({ open, onClose, visitId, visitType }) => {
               },
             }
           );
+          console.log(response.data);
           setVisitData(response.data);
         } catch (error) {
           console.error("Failed to fetch visit data:", error);

@@ -62,7 +62,7 @@ export default function useDoctorPlanData(apiPath, openDialog, deleteDialogOpen)
               color="secondary"
               onClick={(e) => {
                 e.stopPropagation();
-                deleteDialogOpen(plan.id, "doctor");
+                deleteDialogOpen(plan.id, "doctor-plan");
               }}
             >
               <DeleteIcon style={{ color: "red" }} />
@@ -70,7 +70,7 @@ export default function useDoctorPlanData(apiPath, openDialog, deleteDialogOpen)
           ),
           onClick: () => {
             openDialog(plan.id, "doctor");
-          }, // Open dialog on click
+          },
         }));
 
         setData({ columns, rows });
@@ -81,5 +81,13 @@ export default function useDoctorPlanData(apiPath, openDialog, deleteDialogOpen)
 
     fetchDoctorPlans();
   }, [accessToken, apiPath, openDialog]);
-  return data;
+
+  const deleteDoctorPlan = async (planId) => {
+    setData((prevData) => ({
+      columns: prevData.columns,
+      rows: prevData.rows.filter((row) => row.id !== planId),
+    }));
+  };
+
+  return { data, deleteDoctorPlan };
 }

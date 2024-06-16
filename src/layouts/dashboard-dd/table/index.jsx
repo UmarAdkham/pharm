@@ -2,10 +2,6 @@ import { useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
@@ -29,9 +25,10 @@ import axios from "axios";
 import VisitDialog from "../dialogs/visit-dialog";
 import SelectCategory from "../components/category";
 import useProductCategoryData from "./data/product-category-data";
-import DoctorInfoDialog from "../dialogs/doctor-info-dialog";
 import PharmacyInfoDialog from "../dialogs/pharmacy-info-dialog";
+import DoctorInfoDialog from "../dialogs/doctor-info-dialog";
 import ConfirmDialog from "../dialogs/confirm-dialog";
+import NotificationDialog from "../dialogs/notification-dialog";
 
 function DeputyDirectorTable({
   path,
@@ -48,29 +45,27 @@ function DeputyDirectorTable({
 }) {
   const { accessToken } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-  const [selectedFFM, setSelectedFFM] = useState(null);
-  const [selectedRM, setSelectedRM] = useState(null); // State to track the selected Regional Manager
-  const [fieldForceManagers, setFieldForceManagers] = useState([]);
-  const [regionalManagers, setRegionalManagers] = useState([]); // State to store the list of Regional Managers
   const [visitDialogOpen, setVisitDialogOpen] = useState(false); // State to manage visit dialog open/close
   const [visitId, setVisitId] = useState(-1);
   const [visitType, setVisitType] = useState("");
   const [doctorDialogOpen, setDoctorDialogOpen] = useState(false); // State to manage doctor info dialog
+  const [deleteDialog, setDeleteDialog] = useState({ isOpen: false, planId: null, planType: "" });
   const [selectedDoctorId, setSelectedDoctorId] = useState(null); // State to store selected doctor ID
   const [pharmacyDialogOpen, setPharmacyDialogOpen] = useState(false); // State to manage pharmacy info dialog
   const [selectedPharmacyId, setSelectedPharmacyId] = useState(null); // State to store selected pharmacy ID
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [planId, setPlanId] = useState("");
-  const [planType, setPlanType] = useState("");
+  // const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  // const [deleteDoctorPlan, setDeleteDoctorPlan] = useState(() => () => {});
+  // const [deletePharmacyPlan, setDeletePharmacyPlan] = useState(() => () => {});
+  // const [planId, setPlanId] = useState("");
+  const [notificationId, setNotificationId] = useState(-1);
+  const [notificationOpen, setNotificationOpen] = useState(false);
 
   const handleDeleteDialogOpen = useCallback((planId, planType) => {
-    setPlanType(planType);
-    setPlanId(planId);
-    setDeleteDialogOpen(true);
+    setDeleteDialog({ isOpen: true, planId, planType });
   }, []);
 
   const handleDeleteDialogClose = useCallback(() => {
-    setDeleteDialogOpen(false);
+    setDeleteDialog({ isOpen: false, planId: null, planType: "" });
   }, []);
 
   const handleVisitDialogOpen = useCallback((visitId, visitType) => {
@@ -83,6 +78,15 @@ function DeputyDirectorTable({
     setVisitDialogOpen(false);
     setVisitId(-1); // Reset visitId
     setVisitType(""); // Reset visitType
+  }, []);
+
+  const handleNotificationDialogOpen = useCallback((id) => {
+    setNotificationId(id);
+    setNotificationOpen(true);
+  }, []);
+
+  const handleNotificationDialogClose = useCallback(() => {
+    setNotificationOpen(false);
   }, []);
 
   const handleDoctorDialogOpen = useCallback((doctorId) => {
@@ -142,54 +146,68 @@ function DeputyDirectorTable({
     fetchRegionalManagers();
   }, [accessToken]);
 
-  let data = { columns: [], rows: [] }; // Default structure
+  let tableData = { columns: [], rows: [] };
+  let deletePharmacyPlanFunction = () => {};
+  let deleteDoctorPlanFunction = () => {};
+  let deleteNotificationFunction = () => {};
+
   switch (tableType) {
     case "categories":
-      data = useCategoryData(path) || data;
+      tableData = useCategoryData(path) || tableData;
       break;
     case "product-categories":
-      data = useProductCategoryData(path) || data;
+      tableData = useProductCategoryData(path) || tableData;
       break;
     case "manufacturer-companies":
-      data = useManufacturerCompanyData(path) || data;
+      tableData = useManufacturerCompanyData(path) || tableData;
       break;
     case "products":
-      data = useProductData(path, selectDatas?.[0]?.categori, selectDatas?.[1]?.categori) || data;
+      tableData =
+        useProductData(path, selectDatas?.[0]?.categori, selectDatas?.[1]?.categori) || tableData;
       break;
     case "regions":
-      data = useRegionData(path) || data;
+      tableData = useRegionData(path) || tableData;
       break;
     case "medical-organizations":
-      data = useMedicalOrganizationData(path) || data;
+      tableData = useMedicalOrganizationData(path) || tableData;
       break;
     case "specialities":
-      data = useSpecialityData(path) || data;
+      tableData = useSpecialityData(path) || tableData;
       break;
     case "pms":
-      data = usePmData(path, status, navigatePath, onRowClick, rowPath) || data;
+      tableData = usePmData(path, status, navigatePath, onRowClick, rowPath) || tableData;
       break;
     case "mrs":
-      data = useMrData(path, status, navigatePath, onRowClick) || data;
+      tableData = useMrData(path, status, navigatePath, onRowClick) || tableData;
       break;
     case "pharmacy-plan":
-      data = usePharmacyPlanData(path, handleVisitDialogOpen) || data;
+      const pharmacyPlanData =
+        usePharmacyPlanData(path, handleVisitDialogOpen, handleDeleteDialogOpen) || {};
+      tableData = pharmacyPlanData.data || tableData;
+      deletePharmacyPlanFunction = pharmacyPlanData.deletePharmacyPlan || (() => {});
       break;
     case "doctor-plan":
-      data = useDoctorPlanData(path, handleVisitDialogOpen, handleDeleteDialogOpen) || data; // Pass handleVisitDialogOpen to useDoctorPlanData
+      const doctorPlanData =
+        useDoctorPlanData(path, handleVisitDialogOpen, handleDeleteDialogOpen) || {};
+      tableData = doctorPlanData.data || tableData;
+      deleteDoctorPlanFunction = doctorPlanData.deleteDoctorPlan || (() => {});
       break;
     case "mr-pharmacies":
-      data = usePharmacyData(path, handlePharmacyDialogOpen) || data;
+      tableData = usePharmacyData(path, handlePharmacyDialogOpen) || tableData;
       break;
     case "mr-doctors":
-      data = useDoctorData(path, handleDoctorDialogOpen) || data; // Pass handleDoctorDialogOpen to useDoctorData
+      tableData = useDoctorData(path, handleDoctorDialogOpen) || tableData;
       break;
     case "notifications":
-      data = useNotificationData(path) || data;
+      const notificationData =
+        useNotificationData(path, handleDeleteDialogOpen, handleNotificationDialogOpen) || {};
+      tableData = notificationData.data || tableData;
+      deleteNotificationFunction = notificationData.deleteNotification || (() => {});
       break;
     default:
       break;
   }
-  const { columns, rows } = data;
+  const { columns, rows } = tableData;
 
   return (
     <Card>
@@ -258,10 +276,23 @@ function DeputyDirectorTable({
       />
 
       <ConfirmDialog
-        planId={planId}
-        planType={planType}
-        isOpen={deleteDialogOpen}
+        isOpen={deleteDialog.isOpen}
         onClose={handleDeleteDialogClose}
+        planId={deleteDialog.planId}
+        planType={deleteDialog.planType}
+        onDelete={
+          deleteDialog.planType === "pharmacy-plan"
+            ? deletePharmacyPlanFunction
+            : deleteDialog.planType === "doctor-plan"
+            ? deleteDoctorPlanFunction
+            : deleteNotificationFunction
+        }
+      />
+
+      <NotificationDialog
+        open={notificationOpen}
+        onClose={handleNotificationDialogClose}
+        notificationId={notificationId}
       />
     </Card>
   );
