@@ -11,6 +11,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 // Dashboard components
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import DeputyDirectorTable from "../table";
+import ProductPlanTable from "../table/mr-product-plan-table";
 
 function DeputyDirectorMRInfo() {
   const location = useLocation();
@@ -57,7 +58,7 @@ function DeputyDirectorMRInfo() {
                 navigateState={user}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} md={6}>
               <DeputyDirectorTable
                 path={`dd/notofications/${user.id}`}
                 tableType="notifications"
@@ -65,6 +66,9 @@ function DeputyDirectorMRInfo() {
                 navigatePath="/dd/add-notification"
                 navigateState={user}
               />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <ProductPlanTable medRepId={user.id} />
             </Grid>
           </Grid>
         </MDBox>
