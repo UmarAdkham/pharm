@@ -46,7 +46,7 @@ export default function useNotificationData(
             entityBgColor = "#81c784"; // Light green
           } else {
             entityType = "wholesale";
-            entityName = "Оптовая компания";
+            entityName = notification.wholesale.name;
             entityBgColor = "#f2cc45"; // Light yellow
           }
 

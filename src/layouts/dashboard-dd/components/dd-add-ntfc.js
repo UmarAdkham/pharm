@@ -32,6 +32,7 @@ function DeputyDirectorAddNotification() {
   const [notificationType, setNotificationType] = useState("pharmacy");
   const [pharmacies, setPharmacies] = useState([]);
   const [doctors, setDoctors] = useState([]);
+  const [wholesales, setWholesales] = useState([]);
   const [notificationData, setNotificationData] = useState({
     author: "",
     theme: "",
@@ -59,7 +60,7 @@ function DeputyDirectorAddNotification() {
 
     const fetchDoctors = async () => {
       try {
-        const response = await axios.get(`https://it-club.uz/mr/get-doctors`, {
+        const response = await axios.get(`https://it-club.uz/mr/get-doctors-by-med-rep/${id}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -70,8 +71,22 @@ function DeputyDirectorAddNotification() {
       }
     };
 
+    const fetchWsCompanies = async () => {
+      try {
+        const response = await axios.get(`https://it-club.uz/ws/get-wholesales`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setWholesales(response.data);
+      } catch (error) {
+        console.error("Не удалось получить оптовые компании:", error);
+      }
+    };
+
     fetchPharmacies();
     fetchDoctors();
+    fetchWsCompanies();
   }, [accessToken, id]);
 
   const handleSubmit = async (event) => {
@@ -233,14 +248,23 @@ function DeputyDirectorAddNotification() {
               )}
               {notificationType === "wholesale" && (
                 <Grid item xs={12} md={6}>
-                  <MDInput
-                    type="text"
-                    label="Оптовая компания"
-                    fullWidth
-                    name="wholesale_id"
-                    value={notificationData.wholesale_id}
-                    onChange={handleChange}
-                  />
+                  <FormControl fullWidth>
+                    <InputLabel id="wholesale-label">Оптовая компания</InputLabel>
+                    <Select
+                      labelId="wholesale-label"
+                      value={notificationData.wholesale_id}
+                      label="Оптовая компания"
+                      onChange={handleChange}
+                      sx={{ height: "45px" }}
+                      name="wholesale_id"
+                    >
+                      {wholesales.map((wholesale) => (
+                        <MenuItem key={wholesale.id} value={wholesale.id}>
+                          {wholesale.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </Grid>
               )}
             </Grid>
