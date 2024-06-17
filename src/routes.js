@@ -38,6 +38,9 @@ import DeputyDirectorAddPharmacy from "layouts/dashboard-dd/components/dd-add-ph
 import DeputyDirectorAddDoctor from "layouts/dashboard-dd/components/dd-add-doctor";
 import DeputyDirectorAddCategory from "layouts/dashboard-dd/components/dd-add-ctgr";
 import DeputyDirectorProductCategories from "layouts/dashboard-dd/components/dd-product-categories";
+import WholesaleManagerDashboard from "layouts/dashboard-ws";
+import WholesaleManagerCompanies from "layouts/dashboard-ws/components/ws-companies";
+import WholesaleManagerAddCompany from "layouts/dashboard-ws/components/ws-company-add";
 
 const roleBasedRoutes = [
   {
@@ -299,19 +302,20 @@ const roleBasedRoutes = [
     ],
   },
   {
-    role: "sabrina",
-    path: "sabrina",
+    role: userRoles.WHOLESALE_MANAGER,
+    path: "ws",
     routes: [
-      { path: "dashboard", component: <ProductManagerDashboard /> },
-      { path: "dashboard", component: <ProductManagerDashboard /> },
+      { path: "dashboard", component: <WholesaleManagerDashboard /> },
+      { path: "companies", component: <WholesaleManagerCompanies /> },
+      { path: "add-company", component: <WholesaleManagerAddCompany /> },
     ],
     sideNav: [
       {
         type: "collapse",
-        name: "Панель управления",
-        key: "dashboard-sabrina",
+        name: "Оптовые компании",
+        key: "companies",
         icon: <Icon fontSize="small">dashboard</Icon>,
-        route: "dashboard",
+        route: "companies",
       },
     ],
   },

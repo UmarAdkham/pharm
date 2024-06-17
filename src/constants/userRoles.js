@@ -5,6 +5,7 @@ const userRoles = Object.freeze({
   FIELD_FORCE_MANAGER: "ff_manager",
   REGIONAL_MANAGER: "regional_manager",
   MEDICAL_REPRESENTATIVE: "medical_representative",
+  WHOLESALE_MANAGER: "wholesale_manager",
 });
 
 export default userRoles;

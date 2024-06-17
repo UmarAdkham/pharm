@@ -5,5 +5,8 @@ export const isTokenExpired = (token) => {
   const expiry = decodedToken.exp;
   const now = Date.now() / 1000;
 
+  console.log(`NOW: ${now}`);
+  console.log(`EXPIRY: ${expiry}`);
+
   return now > expiry;
 };

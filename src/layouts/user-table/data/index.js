@@ -32,7 +32,7 @@ export default function useUserData(apiPath, status, navigatePath, onRowClick) {
         const rows = users.map((user) => ({
           username: (
             <MDTypography variant="caption" fontWeight="medium">
-              {user.username}
+              {user.id}
             </MDTypography>
           ),
           full_name: (
