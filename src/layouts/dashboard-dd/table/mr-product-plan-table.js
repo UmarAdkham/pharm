@@ -14,23 +14,31 @@ import {
   Paper,
   Typography,
   Card,
+  Button,
 } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import { useNavigate } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
 const ProductPlanTable = ({ medRepId }) => {
   const [data, setData] = useState([]);
   const [month, setMonth] = useState(1);
+  const navigate = useNavigate();
 
   const fetchData = async (month) => {
     try {
-      const response = await axios.get(
-        `https://it-club.uz/dd/get-med-rep-product-plan-by-month-id/${medRepId}?month_number=${month}`
+      const response = await axiosInstance.get(
+        `https://it-club.uz/dd/get-med-rep-product-plan-by-month-id/${medRepId}?month_number=${month}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
       );
       setData(response.data);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Не удалось получить данные:", error);
     }
   };
 
@@ -70,6 +78,18 @@ const ProductPlanTable = ({ medRepId }) => {
               ))}
             </Select>
           </FormControl>
+        </MDBox>
+        <MDBox>
+          <Button
+            variant="contained"
+            color="success"
+            sx={{ color: "white" }}
+            onClick={() => {
+              navigate("/dd/add-product-plan", { state: medRepId });
+            }}
+          >
+            Добавить
+          </Button>
         </MDBox>
       </MDBox>
       <MDBox>

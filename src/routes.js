@@ -41,6 +41,7 @@ import DeputyDirectorProductCategories from "layouts/dashboard-dd/components/dd-
 import WholesaleManagerDashboard from "layouts/dashboard-ws";
 import WholesaleManagerCompanies from "layouts/dashboard-ws/components/ws-companies";
 import WholesaleManagerAddCompany from "layouts/dashboard-ws/components/ws-company-add";
+import DeputyDirectorAddProductPlan from "layouts/dashboard-dd/components/dd-add-product-plan";
 
 const roleBasedRoutes = [
   {
@@ -96,6 +97,7 @@ const roleBasedRoutes = [
       { path: "add-speciality", component: <DeputyDirectorAddSpeciality /> },
       { path: "add-doctor-plan", component: <DeputyDirectorAddDoctorPlan /> },
       { path: "add-pharmacy-plan", component: <DeputyDirectorAddPharmacyPlan /> },
+      { path: "add-product-plan", component: <DeputyDirectorAddProductPlan /> },
       { path: "add-pharmacy", component: <DeputyDirectorAddPharmacy /> },
       { path: "add-doctor", component: <DeputyDirectorAddDoctor /> },
       { path: "mr-info", component: <DeputyDirectorMRInfo /> },
