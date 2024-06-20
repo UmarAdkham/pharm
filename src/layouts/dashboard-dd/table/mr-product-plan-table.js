@@ -31,7 +31,7 @@ const ProductPlanTable = ({ medRepId }) => {
   const fetchData = async (month) => {
     try {
       const response = await axiosInstance.get(
-        `https://it-club.uz/dd/get-med-rep-product-plan-by-month-id/8?month_number=6`,
+        `https://it-club.uz/dd/get-med-rep-product-plan-by-month-id/${medRepId}?month_number=${month}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
