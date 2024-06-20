@@ -5,6 +5,7 @@ import axiosInstance from "services/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import MDTypography from "components/MDTypography";
 import RegionalManagerDashboard from "layouts/dashboard-rm";
+import userRoles from "constants/userRoles";
 
 export default function useUserData(apiPath, status, navigatePath, onRowClick) {
   const [data, setData] = useState({ columns: [], rows: [] });
@@ -51,7 +52,9 @@ export default function useUserData(apiPath, status, navigatePath, onRowClick) {
             </MDTypography>
           ),
           onClick: () => {
-            onRowClick(navigatePath, user);
+            if (status == userRoles.MEDICAL_REPRESENTATIVE) {
+              navigate("/dd/mr-info", { state: user });
+            }
           }, // Use onRowClick handler
         }));
 

@@ -105,7 +105,6 @@ const DeputyDirectorSinglePM = () => {
                     path={`common/get-users-by-username?username=${user.username}`}
                     status={status}
                     title={`${getFullStatusName(status)}s`}
-                    onRowClick={() => alert("Привет")}
                   />
                 </CardContent>
               </Card>
