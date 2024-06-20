@@ -8,13 +8,11 @@ import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 
 // Authentication layout components
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { Button, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import axiosInstance from "services/axiosInstance";
 import { useSelector } from "react-redux";
-import MDButton from "components/MDButton";
 
 function ProductModal({ open, handleClose, handleSubmit, productToUpdate }) {
-  console.log("OPEN: " + open);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [discount_price, setDiscountPrice] = useState("");
@@ -25,22 +23,25 @@ function ProductModal({ open, handleClose, handleSubmit, productToUpdate }) {
   const accessToken = useSelector((state) => state.auth.accessToken);
 
   useEffect(() => {
-    if (open) {
-      if (productToUpdate) {
-        setName(productToUpdate.name);
-        setPrice(productToUpdate.price);
-        setDiscountPrice(productToUpdate.discount_price);
-        setCategoryId(productToUpdate.category_id);
-        setManufacturerCompanyId(productToUpdate.man_company_id);
-      }
-      fetchManCompAndCategories();
+    if (open && productToUpdate) {
+      setName(productToUpdate.name);
+      setPrice(productToUpdate.price);
+      setDiscountPrice(productToUpdate.discount_price);
+      setCategoryId(productToUpdate.category_id);
+      setManufacturerCompanyId(productToUpdate.man_company_id);
     }
   }, [productToUpdate, open]);
+
+  useEffect(() => {
+    if (open) {
+      fetchManCompAndCategories();
+    }
+  }, [open]);
 
   const fetchManCompAndCategories = async () => {
     try {
       const [manCompanies, categories] = await Promise.all([
-        axiosInstance.get("`https://it-club.uz/common/get-manufactured-company`", {
+        axiosInstance.get("https://it-club.uz/common/get-manufactured-company", {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -63,15 +64,14 @@ function ProductModal({ open, handleClose, handleSubmit, productToUpdate }) {
     const updatedProduct = {
       id: productToUpdate.id,
       name,
-      address,
-      latitude: latitude.toString(),
-      longitude: longitude.toString(),
-      region_id,
-      med_rep_id,
+      price,
+      discount_price,
+      category_id,
+      man_company_id,
     };
     handleSubmit(updatedProduct);
     handleClose();
-    // Trigger a refresh of data
+    // Optionally, trigger a refresh of data
     location.reload();
   };
 
@@ -147,10 +147,22 @@ function ProductModal({ open, handleClose, handleSubmit, productToUpdate }) {
                 </FormControl>
               </MDBox>
 
-              <MDBox mt={4} mb={1}>
-                <MDButton variant="gradient" color="info" fullWidth type="submit">
-                  Добавить
-                </MDButton>
+              <MDBox
+                component="div"
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Button onClick={handleClose} size="small" variant="outlined">
+                  <MDTypography variant="button">Отмена</MDTypography>
+                </Button>
+                <Button size="small" variant="contained" type="submit">
+                  <MDTypography style={{ color: "white" }} variant="button">
+                    Сохранить
+                  </MDTypography>
+                </Button>
               </MDBox>
             </MDBox>
           </MDBox>

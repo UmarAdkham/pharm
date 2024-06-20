@@ -21,7 +21,6 @@ export default function useProductData(apiPath, id1, id2) {
   });
 
   const handleOpen = () => {
-    console.log(open);
     setOpen(true);
   };
 
@@ -32,7 +31,7 @@ export default function useProductData(apiPath, id1, id2) {
   const handleSubmit = async (udpatedProduct) => {
     try {
       const response = await axiosInstance.put(
-        `https://it-club.uz/common/update-product/${updatedProduct.id}`,
+        `https://it-club.uz/common/update-product/${udpatedProduct.id}`,
         udpatedProduct,
         {
           headers: {
@@ -48,7 +47,7 @@ export default function useProductData(apiPath, id1, id2) {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const { data } = await axiosInstance.get(apiPath, {
+        const { data: fetchedData } = await axiosInstance.get(apiPath, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -63,10 +62,9 @@ export default function useProductData(apiPath, id1, id2) {
           { Header: "Действия", accessor: "action", align: "right" },
         ];
 
-        const rows = data
+        const rows = fetchedData
           .filter((prct) => (id1 === 0 && prct) || prct.man_company.id === id1)
           .filter((prct) => (id2 === 0 && prct) || prct.category.id === id2)
-
           .map((product) => ({
             name: (
               <MDTypography variant="caption" fontWeight="medium">
@@ -128,7 +126,7 @@ export default function useProductData(apiPath, id1, id2) {
     }
 
     fetchProducts();
-  }, [accessToken, apiPath, id1, id2]);
+  }, [accessToken, apiPath, open, id1, id2]);
 
   return data;
 }
