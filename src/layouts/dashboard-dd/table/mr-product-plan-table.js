@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import {
   Table,
   TableBody,
@@ -19,17 +18,20 @@ import {
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "services/axiosInstance";
+import { useSelector } from "react-redux";
 
 // eslint-disable-next-line react/prop-types
 const ProductPlanTable = ({ medRepId }) => {
   const [data, setData] = useState([]);
   const [month, setMonth] = useState(1);
+  const { accessToken } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
   const fetchData = async (month) => {
     try {
       const response = await axiosInstance.get(
-        `https://it-club.uz/dd/get-med-rep-product-plan-by-month-id/${medRepId}?month_number=${month}`,
+        `https://it-club.uz/dd/get-med-rep-product-plan-by-month-id/8?month_number=6`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
