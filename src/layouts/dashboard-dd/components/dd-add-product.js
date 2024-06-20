@@ -153,7 +153,7 @@ function DeputyDirectorAddProduct() {
             <MDBox mb={2}>
               <MDInput
                 type="number"
-                label="Цена со скидкой"
+                label="Цена производителя"
                 fullWidth
                 value={discount_price}
                 onChange={(e) => setDiscountPrice(e.target.value)}
