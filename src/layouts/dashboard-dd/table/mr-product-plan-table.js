@@ -4,14 +4,12 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
   Select,
   MenuItem,
   FormControl,
   InputLabel,
   Paper,
-  Typography,
   Card,
   Button,
 } from "@mui/material";
@@ -21,10 +19,17 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "services/axiosInstance";
 import { useSelector } from "react-redux";
 
+// Function to get month names in Russian
+const getRussianMonthNames = () => {
+  return Array.from({ length: 12 }, (_, index) =>
+    new Date(0, index).toLocaleString("ru-RU", { month: "long" })
+  );
+};
+
 // eslint-disable-next-line react/prop-types
 const ProductPlanTable = ({ medRepId }) => {
   const [data, setData] = useState([]);
-  const [month, setMonth] = useState(1);
+  const [month, setMonth] = useState(new Date().getMonth() + 1); // Current month
   const { accessToken } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
@@ -53,29 +58,31 @@ const ProductPlanTable = ({ medRepId }) => {
   };
 
   const getRowColor = (index) => {
-    return index % 2 == 0 ? "#90EE90" : "#FF8C00";
+    return index % 2 === 0 ? "#90EE90" : "#FF8C00";
   };
+
+  const russianMonthNames = getRussianMonthNames();
 
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            Plan by Product
+            План по продукту
           </MDTypography>
         </MDBox>
         <MDBox>
           <FormControl variant="outlined">
-            <InputLabel>Month</InputLabel>
+            <InputLabel>Месяц</InputLabel>
             <Select
               value={month}
               onChange={handleMonthChange}
-              label="Filter by month"
+              label="Фильтр по месяцу"
               sx={{ height: "45px", width: "200px" }}
             >
-              {Array.from({ length: 12 }, (_, index) => (
+              {russianMonthNames.map((monthName, index) => (
                 <MenuItem key={index + 1} value={index + 1}>
-                  {new Date(0, index).toLocaleString("default", { month: "long" })}
+                  {monthName}
                 </MenuItem>
               ))}
             </Select>
@@ -102,20 +109,20 @@ const ProductPlanTable = ({ medRepId }) => {
                 <React.Fragment key={index}>
                   <TableRow key={index} style={{ backgroundColor: getRowColor(index) }}>
                     <TableCell>{product.product}</TableCell>
-                    <TableCell>Plan {product.amount}</TableCell>
+                    <TableCell>План {product.amount}</TableCell>
                     <TableCell>
-                      Fact {product.doctor_plans.reduce((acc, curr) => acc + curr.fact, 0)}
+                      Факт {product.doctor_plans.reduce((acc, curr) => acc + curr.fact, 0)}
                     </TableCell>
                   </TableRow>
                   {product.doctor_plans.map((doctor, idx) => (
                     <TableRow key={idx} style={{ backgroundColor: getRowColor(index) }}>
-                      <TableCell>Doctor name ({doctor.doctor_name})</TableCell>
+                      <TableCell>Имя доктора ({doctor.doctor_name})</TableCell>
                       <TableCell>{doctor.monthly_plan}</TableCell>
                       <TableCell>{doctor.fact}</TableCell>
                     </TableRow>
                   ))}
                   <TableRow style={{ backgroundColor: getRowColor(index) }}>
-                    <TableCell>Vakant</TableCell>
+                    <TableCell>Вакант</TableCell>
                     <TableCell>{product.vakant}</TableCell>
                     <TableCell></TableCell>
                   </TableRow>
