@@ -18,9 +18,10 @@ import {
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
-const ProductPlanTable = (medRepId) => {
+// eslint-disable-next-line react/prop-types
+const ProductPlanTable = ({ medRepId }) => {
   const [data, setData] = useState([]);
-  const [month, setMonth] = useState(6);
+  const [month, setMonth] = useState(1);
 
   const fetchData = async (month) => {
     try {

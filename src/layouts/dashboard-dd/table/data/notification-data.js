@@ -24,7 +24,6 @@ export default function useNotificationData(
         });
 
         const notifications = response.data;
-        console.log(notifications);
         const columns = [
           { Header: "Тема", accessor: "theme", align: "left" },
           { Header: "Дата", accessor: "date", align: "left" },

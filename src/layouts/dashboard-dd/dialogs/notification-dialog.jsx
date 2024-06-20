@@ -79,7 +79,7 @@ const NotificationDialog = React.memo(({ open, onClose, notificationId }) => {
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <Typography variant="subtitle1" align="end">
+        <Typography variant="subtitle1" align="right">
           дата создании:{" "}
           {notificationData?.date
             ? format(new Date(notificationData?.date), "MM-dd-yy HH:mm")

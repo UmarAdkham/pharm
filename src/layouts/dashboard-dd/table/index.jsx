@@ -109,43 +109,6 @@ function DeputyDirectorTable({
     setSelectedPharmacyId(null);
   }, []);
 
-  useEffect(() => {
-    const fetchFieldForceManagers = async () => {
-      try {
-        const response = await axios.get(`https://it-club.uz/common/get-users`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        const fieldForceManagers = response.data.filter(
-          (user) => user.status === userRoles.FIELD_FORCE_MANAGER
-        );
-        setFieldForceManagers(fieldForceManagers);
-      } catch (error) {
-        console.error("Не удалось получить пользователей:", error);
-      }
-    };
-
-    const fetchRegionalManagers = async () => {
-      try {
-        const response = await axios.get(`https://it-club.uz/common/get-users`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        const regionalManagers = response.data.filter(
-          (user) => user.status === userRoles.REGIONAL_MANAGER
-        );
-        setRegionalManagers(regionalManagers);
-      } catch (error) {
-        console.error("Не удалось получить пользователей:", error);
-      }
-    };
-
-    fetchFieldForceManagers();
-    fetchRegionalManagers();
-  }, [accessToken]);
-
   let tableData = { columns: [], rows: [] };
   let deletePharmacyPlanFunction = () => {};
   let deleteDoctorPlanFunction = () => {};
