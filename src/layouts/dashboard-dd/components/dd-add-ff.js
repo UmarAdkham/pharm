@@ -37,7 +37,7 @@ function DeputyDirectorAddFieldForce() {
       username,
       password,
       product_manager_id: user.id,
-      region_id: user.region_id,
+      region_id: user.region.id,
       status: userRoles.FIELD_FORCE_MANAGER,
     };
 

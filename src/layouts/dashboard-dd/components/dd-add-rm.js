@@ -69,7 +69,7 @@ function DeputyDirectorAddRegionalManager() {
       password,
       ffm_id,
       product_manager_id: user.id,
-      region_id: user.region_id,
+      region_id: user.region.id,
       status: userRoles.REGIONAL_MANAGER,
     };
 

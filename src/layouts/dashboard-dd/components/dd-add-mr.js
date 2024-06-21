@@ -98,7 +98,7 @@ function DeputyDirectorAddMedicalRepresentative() {
       ffm_id: selectedFFM.id,
       product_manager_id: user.id,
       region_manager_id,
-      region_id: user.region_id,
+      region_id: user.region.id,
       status: userRoles.MEDICAL_REPRESENTATIVE,
     };
 
