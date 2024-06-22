@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
+import { useNavigate } from "react-router-dom";
 
 export default function useWholesaleCompanyData(apiPath) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchWsCompanies() {
@@ -40,6 +42,7 @@ export default function useWholesaleCompanyData(apiPath) {
               {wsc.region.name}
             </MDTypography>
           ),
+          onClick: () => navigate(`/ws/company-info/${wsc.id}`),
         }));
 
         setData({ columns, rows });
