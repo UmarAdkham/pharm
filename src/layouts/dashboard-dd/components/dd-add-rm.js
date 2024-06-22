@@ -95,7 +95,8 @@ function DeputyDirectorAddRegionalManager() {
         color: "error",
         content:
           "Не удалось зарегистрировать пользователя. " +
-          (error.response?.data?.detail || "Проверьте правильность введенных данных и попробуйте снова."),
+          (error.response?.data?.detail ||
+            "Проверьте правильность введенных данных и попробуйте снова."),
       });
     }
   };
