@@ -69,7 +69,7 @@ function DeputyDirectorAddRegionalManager() {
       password,
       ffm_id,
       product_manager_id: user.id,
-      region_id: user.region_id,
+      region_id: user.region.id,
       status: userRoles.REGIONAL_MANAGER,
     };
 
@@ -95,7 +95,8 @@ function DeputyDirectorAddRegionalManager() {
         color: "error",
         content:
           "Не удалось зарегистрировать пользователя. " +
-          (error.response?.data?.detail || "Проверьте правильность введенных данных и попробуйте снова."),
+          (error.response?.data?.detail ||
+            "Проверьте правильность введенных данных и попробуйте снова."),
       });
     }
   };

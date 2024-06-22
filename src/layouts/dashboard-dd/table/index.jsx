@@ -29,6 +29,8 @@ import PharmacyInfoDialog from "../dialogs/pharmacy-info-dialog";
 import DoctorInfoDialog from "../dialogs/doctor-info-dialog";
 import ConfirmDialog from "../dialogs/confirm-dialog";
 import NotificationDialog from "../dialogs/notification-dialog";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import ManagersMenu from "../components/managers-menu";
 
 function DeputyDirectorTable({
   path,
@@ -53,12 +55,11 @@ function DeputyDirectorTable({
   const [selectedDoctorId, setSelectedDoctorId] = useState(null); // State to store selected doctor ID
   const [pharmacyDialogOpen, setPharmacyDialogOpen] = useState(false); // State to manage pharmacy info dialog
   const [selectedPharmacyId, setSelectedPharmacyId] = useState(null); // State to store selected pharmacy ID
-  // const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  // const [deleteDoctorPlan, setDeleteDoctorPlan] = useState(() => () => {});
-  // const [deletePharmacyPlan, setDeletePharmacyPlan] = useState(() => () => {});
-  // const [planId, setPlanId] = useState("");
   const [notificationId, setNotificationId] = useState(-1);
   const [notificationOpen, setNotificationOpen] = useState(false);
+
+  const [region, setRegion] = useState("");
+  const [ff_manager, setFf_manager] = useState("");
 
   const handleDeleteDialogOpen = useCallback((planId, planType) => {
     setDeleteDialog({ isOpen: true, planId, planType });
@@ -109,43 +110,6 @@ function DeputyDirectorTable({
     setSelectedPharmacyId(null);
   }, []);
 
-  useEffect(() => {
-    const fetchFieldForceManagers = async () => {
-      try {
-        const response = await axios.get(`https://it-club.uz/common/get-users`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        const fieldForceManagers = response.data.filter(
-          (user) => user.status === userRoles.FIELD_FORCE_MANAGER
-        );
-        setFieldForceManagers(fieldForceManagers);
-      } catch (error) {
-        console.error("Не удалось получить пользователей:", error);
-      }
-    };
-
-    const fetchRegionalManagers = async () => {
-      try {
-        const response = await axios.get(`https://it-club.uz/common/get-users`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        const regionalManagers = response.data.filter(
-          (user) => user.status === userRoles.REGIONAL_MANAGER
-        );
-        setRegionalManagers(regionalManagers);
-      } catch (error) {
-        console.error("Не удалось получить пользователей:", error);
-      }
-    };
-
-    fetchFieldForceManagers();
-    fetchRegionalManagers();
-  }, [accessToken]);
-
   let tableData = { columns: [], rows: [] };
   let deletePharmacyPlanFunction = () => {};
   let deleteDoctorPlanFunction = () => {};
@@ -178,7 +142,8 @@ function DeputyDirectorTable({
       tableData = usePmData(path, status, navigatePath, onRowClick, rowPath) || tableData;
       break;
     case "mrs":
-      tableData = useMrData(path, status, navigatePath, onRowClick) || tableData;
+      tableData =
+        useMrData(path, status, navigatePath, onRowClick, region, ff_manager) || tableData;
       break;
     case "pharmacy-plan":
       const pharmacyPlanData =
@@ -222,6 +187,15 @@ function DeputyDirectorTable({
             <>
               {selectDatas?.[0] && <SelectCategory selectDatas={selectDatas[0]} />}
               {selectDatas?.[1] && <SelectCategory selectDatas={selectDatas[1]} />}
+
+              {!selectDatas?.[0] && !selectDatas?.[1] && (
+                <ManagersMenu
+                  setFf_manager={setFf_manager}
+                  setRegion={setRegion}
+                  ff_manager={ff_manager}
+                  region={region}
+                />
+              )}
             </>
           )}
 

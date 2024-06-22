@@ -9,21 +9,36 @@ import NotificationIcon from "@mui/icons-material/Notifications";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
 
-export default function useMrData(apiPath, status, navigatePath, onRowClick) {
+export default function useMrData(apiPath, status, navigatePath, onRowClick, region, ff_manager) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
   const navigate = useNavigate();
 
   useEffect(() => {
+    let mrs;
     async function fetchUsers() {
       try {
-        const response = await axiosInstance.get(apiPath, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        if (region === "" && ff_manager === "") {
+          const response = await axiosInstance.get(apiPath, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
 
-        const mrs = response.data.filter((user) => user.status === status);
+          const data = response.data.filter((user) => user.status === status);
+
+          mrs = data;
+        } else if (region !== "") {
+          const { data } = await axiosInstance.get(
+            `https://it-club.uz/common/get-users-by-username?username=${region}`
+          );
+          mrs = data;
+        } else if (ff_manager !== "") {
+          const { data } = await axiosInstance.get(
+            `https://it-club.uz/common/get-users-by-username?username=${ff_manager}`
+          );
+          mrs = data;
+        }
 
         const columns = [
           { Header: "Имя пользователя", accessor: "username", align: "left" },
@@ -100,7 +115,7 @@ export default function useMrData(apiPath, status, navigatePath, onRowClick) {
     }
 
     fetchUsers();
-  }, [accessToken, apiPath, onRowClick]);
+  }, [accessToken, apiPath, onRowClick, region, ff_manager]);
 
   return data;
 }
