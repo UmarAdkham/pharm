@@ -42,6 +42,8 @@ import WholesaleManagerDashboard from "layouts/dashboard-ws";
 import WholesaleManagerCompanies from "layouts/dashboard-ws/components/ws-companies";
 import WholesaleManagerAddCompany from "layouts/dashboard-ws/components/ws-company-add";
 import DeputyDirectorAddProductPlan from "layouts/dashboard-dd/components/dd-add-product-plan";
+import WholesaleManagerProducts from "./layouts/dashboard-ws/components/ws-produtcs";
+import WholesaleManagerAddProduct from "./layouts/dashboard-ws/components/ws-add-product";
 
 const roleBasedRoutes = [
   {
@@ -310,6 +312,8 @@ const roleBasedRoutes = [
       { path: "dashboard", component: <WholesaleManagerDashboard /> },
       { path: "companies", component: <WholesaleManagerCompanies /> },
       { path: "add-company", component: <WholesaleManagerAddCompany /> },
+      { path: "company-info/:wholesale_id", component: <WholesaleManagerProducts /> },
+      { path: "add-produtc/:wholesale_id", component: <WholesaleManagerAddProduct /> },
     ],
     sideNav: [
       {
