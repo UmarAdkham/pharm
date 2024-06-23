@@ -38,7 +38,7 @@ export default function useMrData(apiPath, status, navigatePath, onRowClick, reg
           const { data } = await axiosInstance.get(
             `https://it-club.uz/common/get-users-by-username?username=${ff_manager}`
           );
-          mrs = data.filter((e) => e.status == userRoles.MEDICAL_REPRESENTATIVE);;
+          mrs = data.filter((e) => e.status == userRoles.MEDICAL_REPRESENTATIVE);
         }
 
         const columns = [
