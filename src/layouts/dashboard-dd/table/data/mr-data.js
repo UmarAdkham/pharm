@@ -8,6 +8,7 @@ import Tooltip from "@mui/material/Tooltip";
 import NotificationIcon from "@mui/icons-material/Notifications";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
+import userRoles from "constants/userRoles";
 
 export default function useMrData(apiPath, status, navigatePath, onRowClick, region, ff_manager) {
   const [data, setData] = useState({ columns: [], rows: [] });
@@ -37,7 +38,7 @@ export default function useMrData(apiPath, status, navigatePath, onRowClick, reg
           const { data } = await axiosInstance.get(
             `https://it-club.uz/common/get-users-by-username?username=${ff_manager}`
           );
-          mrs = data;
+          mrs = data.filter((e) => e.status == userRoles.MEDICAL_REPRESENTATIVE);;
         }
 
         const columns = [

@@ -67,7 +67,7 @@ export default function ManagersMenu({ setRegion, setFf_manager, region, ff_mana
   return (
     <>
       <FormControl sx={{ m: 1, minWidth: 200 }}>
-        <InputLabel id="demo-simple-select-label">{"Field Force"}</InputLabel>
+        <InputLabel id="demo-simple-select-label">{"Field Force Managers"}</InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
@@ -84,7 +84,7 @@ export default function ManagersMenu({ setRegion, setFf_manager, region, ff_mana
         </Select>
       </FormControl>
       <FormControl sx={{ m: 1, minWidth: 200 }}>
-        <InputLabel id="demo-simple-select-label">{"Regional Force"}</InputLabel>
+        <InputLabel id="demo-simple-select-label">{"Regional Managers"}</InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"

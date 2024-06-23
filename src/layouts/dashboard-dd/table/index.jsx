@@ -23,7 +23,7 @@ import userRoles from "constants/userRoles";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import VisitDialog from "../dialogs/visit-dialog";
-import SelectCategory from "../components/category";
+import SelectCategory from "../components/category-menu";
 import useProductCategoryData from "./data/product-category-data";
 import PharmacyInfoDialog from "../dialogs/pharmacy-info-dialog";
 import DoctorInfoDialog from "../dialogs/doctor-info-dialog";

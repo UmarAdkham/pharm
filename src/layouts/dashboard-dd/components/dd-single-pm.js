@@ -57,7 +57,6 @@ const DeputyDirectorSinglePM = () => {
                       }}
                       onClick={() => {
                         setStatus(userRoles.FIELD_FORCE_MANAGER);
-                        console.log(userRoles.FIELD_FORCE_MANAGER);
                       }}
                     >
                       Менеджеры полевых персоналов
@@ -70,7 +69,6 @@ const DeputyDirectorSinglePM = () => {
                       }}
                       onClick={() => {
                         setStatus(userRoles.REGIONAL_MANAGER);
-                        console.log(userRoles.REGIONAL_MANAGER);
                       }}
                     >
                       Региональные менеджеры
