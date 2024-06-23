@@ -187,8 +187,11 @@ function DataTable({
               <TableRow
                 key={key}
                 {...row.getRowProps()}
-                onClick={row.original.onClick} // Add onClick handler
-                style={{ cursor: "pointer" }} // Add cursor style
+                onClick={row.original.onClick}
+                style={{
+                  cursor: "pointer",
+                  backgroundColor: row.original.isHighlighted ? "#f0f0f0" : "transparent",
+                }}
               >
                 {row.cells.map((cell, idx) => (
                   <DataTableBodyCell

@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
 
-export default function useManufacturerCompanyData(apiPath, handleRowClick) {
+export default function useManufacturerCompanyData(apiPath, handleRowClick, selectedFactoryId) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -27,9 +27,9 @@ export default function useManufacturerCompanyData(apiPath, handleRowClick) {
             </MDTypography>
           ),
           onClick: () => {
-            console.log(mnfct.id);
-            handleRowClick(mnfct.id);
+            handleRowClick(mnfct);
           },
+          isHighlighted: mnfct.id === selectedFactoryId, // highlight the current factory row
         }));
 
         setData({ columns, rows });
@@ -39,7 +39,7 @@ export default function useManufacturerCompanyData(apiPath, handleRowClick) {
     }
 
     fetchManufacturerCompanies();
-  }, [accessToken, apiPath]);
+  }, [accessToken, apiPath, selectedFactoryId]);
 
   return data;
 }

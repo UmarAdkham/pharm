@@ -5,10 +5,11 @@ import DataTable from "examples/Tables/DataTable";
 import useManufacturerCompanyData from "./data/factories-data";
 import PropTypes from "prop-types";
 
-function FactoriesTable({ handleRowClick }) {
+function FactoriesTable({ handleRowClick, selectedFactoryId }) {
   const { columns, rows } = useManufacturerCompanyData(
     "common/get-manufactured-company",
-    handleRowClick
+    handleRowClick,
+    selectedFactoryId
   );
 
   return (
@@ -38,6 +39,7 @@ function FactoriesTable({ handleRowClick }) {
 
 FactoriesTable.propTypes = {
   handleRowClick: PropTypes.func,
+  selectedFactoryId: PropTypes.number.isRequired,
 };
 
 export default FactoriesTable;

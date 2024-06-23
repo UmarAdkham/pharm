@@ -30,7 +30,7 @@ function HeadofOrdersAddWarehouseData() {
   const [product_id, setProductId] = useState("");
   const [products, setProducts] = useState([]);
   const [message, setMessage] = useState({ color: "", content: "" });
-  const factory_id = location.state || {};
+  const { factoryId, factoryName } = location.state || {};
 
   useEffect(() => {
     const getProducts = async () => {
@@ -55,7 +55,7 @@ function HeadofOrdersAddWarehouseData() {
 
     // Define the request payload
     const warehouseData = {
-      factory_id,
+      factory_id: factoryId,
       product_id,
       quantity,
     };
@@ -106,7 +106,7 @@ function HeadofOrdersAddWarehouseData() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Добавить продукт в склад
+            Добавить продукт в склад {factoryName}
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>

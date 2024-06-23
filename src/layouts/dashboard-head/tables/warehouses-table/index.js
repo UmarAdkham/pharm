@@ -8,7 +8,7 @@ import useWarehouseData from "./data/warehouse-data";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-function WarehousesTable({ factoryId }) {
+function WarehousesTable({ factoryId, factoryName }) {
   const { columns, rows } = useWarehouseData(`head/get-current-factory-warehouse/${factoryId}`);
   const navigate = useNavigate();
 
@@ -17,7 +17,7 @@ function WarehousesTable({ factoryId }) {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            В складе
+            В складе {factoryName}
           </MDTypography>
         </MDBox>
         <MDBox>
@@ -26,7 +26,7 @@ function WarehousesTable({ factoryId }) {
             color="success"
             sx={{ color: "white" }}
             onClick={() => {
-              navigate("/head/add-warehouse-data", { state: factoryId });
+              navigate("/head/add-warehouse-data", { state: { factoryId, factoryName } });
             }}
           >
             Добавить
@@ -51,6 +51,7 @@ function WarehousesTable({ factoryId }) {
 
 WarehousesTable.propTypes = {
   factoryId: PropTypes.number.isRequired,
+  factoryName: PropTypes.string.isRequired,
 };
 
 export default WarehousesTable;

@@ -3,21 +3,22 @@ import Grid from "@mui/material/Grid";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
+import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 
 // Dashboard components
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import FactoriesTable from "../tables/factories-table";
 import { useState } from "react";
 import WarehousesTable from "../tables/warehouses-table";
 
 function HeadOfOrdersFactoryWarehouses() {
-  const [selectedFactoryId, setSelectedFactoryId] = useState(1); // display ZUMA by default
+  const [selectedFactory, setSelectedFactory] = useState({}); // initially an empty object
 
   const handleRowClick = (selectedRowValue) => {
-    setSelectedFactoryId(selectedRowValue);
+    setSelectedFactory(selectedRowValue);
   };
 
   return (
@@ -26,10 +27,22 @@ function HeadOfOrdersFactoryWarehouses() {
         <MDBox>
           <Grid container spacing={3}>
             <Grid item xs={3}>
-              <FactoriesTable handleRowClick={handleRowClick} />
+              <FactoriesTable
+                handleRowClick={handleRowClick}
+                selectedFactoryId={selectedFactory.id}
+              />
             </Grid>
             <Grid item xs={8}>
-              <WarehousesTable factoryId={selectedFactoryId} />
+              {selectedFactory.id ? (
+                <WarehousesTable
+                  factoryId={selectedFactory.id}
+                  factoryName={selectedFactory.name}
+                />
+              ) : (
+                <MDTypography variant="h6" gutterBottom>
+                  Выберите производственную компанию
+                </MDTypography>
+              )}
             </Grid>
           </Grid>
         </MDBox>
