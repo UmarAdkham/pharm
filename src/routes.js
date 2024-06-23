@@ -44,6 +44,8 @@ import WholesaleManagerAddCompany from "layouts/dashboard-ws/components/ws-compa
 import DeputyDirectorAddProductPlan from "layouts/dashboard-dd/components/dd-add-product-plan";
 import WholesaleManagerProducts from "./layouts/dashboard-ws/components/ws-produtcs";
 import WholesaleManagerAddProduct from "./layouts/dashboard-ws/components/ws-add-product";
+import HeadOfOrdersDashboard from "layouts/dashboard-head";
+import HeadOfOrdersFactoryWarehouses from "layouts/dashboard-head/components/factory-warehouses";
 
 const roleBasedRoutes = [
   {
@@ -292,16 +294,19 @@ const roleBasedRoutes = [
     ],
   },
   {
-    role: "head_of_co",
-    path: "hoc",
-    routes: [{ path: "dashboard", component: <ProductManagerDashboard /> }],
+    role: userRoles.HEAD_OF_ORDERS,
+    path: "head",
+    routes: [
+      { path: "dashboard", component: <HeadOfOrdersDashboard /> },
+      { path: "factory-warehouses", component: <HeadOfOrdersFactoryWarehouses /> },
+    ],
     sideNav: [
       {
         type: "collapse",
-        name: "Панель управления",
-        key: "dashboard-hoc",
+        name: "Производственные компании",
+        key: "head-factory-warehouses",
         icon: <Icon fontSize="small">dashboard</Icon>,
-        route: "dashboard",
+        route: "factory-warehouses",
       },
     ],
   },

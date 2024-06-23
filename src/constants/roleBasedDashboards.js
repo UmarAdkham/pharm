@@ -9,6 +9,7 @@ const roleBasedRedirect = Object.freeze({
   [userRoles.REGIONAL_MANAGER]: "/rm/dashboard",
   [userRoles.MEDICAL_REPRESENTATIVE]: "/mr/dashboard",
   [userRoles.WHOLESALE_MANAGER]: "/ws/dashboard",
+  [userRoles.HEAD_OF_ORDERS]: "/head/dashboard",
 });
 
 export default roleBasedRedirect;
