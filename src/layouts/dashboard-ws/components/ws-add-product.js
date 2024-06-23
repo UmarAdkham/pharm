@@ -23,6 +23,8 @@ function WholesaleManagerAddProduct() {
   const [quantity, setQuantity] = useState("");
   const [product_id, setProductId] = useState("");
   const [products, setProducts] = useState([]);
+  const [factory_id, setFactoryId] = useState("");
+  const [factories, setFactories] = useState([]);
   const [message, setMessage] = useState({ color: "", content: "" });
   const user = location.state || {};
 
@@ -44,12 +46,30 @@ function WholesaleManagerAddProduct() {
     fetchProducts();
   }, [accessToken]);
 
+  useEffect(() => {
+    const fetchFactories = async () => {
+      try {
+        const response = await axios.get(`https://it-club.uz/common/get-manufactured-company`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        const manufacturerCompanies = response.data;
+        setFactories(manufacturerCompanies);
+      } catch (error) {
+        console.error("Не удалось получить производителей:", error);
+      }
+    };
+
+    fetchFactories();
+  }, [accessToken]);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     const productData = {
       product_id,
-      factory_id: 0,
+      factory_id,
       quantity,
       price,
     };
@@ -65,7 +85,7 @@ function WholesaleManagerAddProduct() {
         }
       );
 
-      setMessage({ color: "success", content: "Продукт успешно добавлен" });
+      setMessage({ color: "success", content: "Данные успешно добавлены" });
 
       setTimeout(() => {
         navigate(-1);
@@ -75,7 +95,7 @@ function WholesaleManagerAddProduct() {
       setMessage({
         color: "error",
         content:
-          "Не удалось добавить продукт. " +
+          "Не удалось добавить данные. " +
           (error.response?.data?.detail ||
             "Проверьте правильность введенных данных и попробуйте снова."),
       });
@@ -105,17 +125,35 @@ function WholesaleManagerAddProduct() {
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <MDBox mb={2}>
               <FormControl fullWidth>
-                <InputLabel id="manufactuer-companies-label">Производители</InputLabel>
+                <InputLabel id="product-label">Продукт</InputLabel>
                 <Select
-                  labelId="manufactuer-companies-label"
+                  labelId="product-label"
                   value={product_id}
-                  label="Производители"
+                  label="Продукт"
                   onChange={(e) => setProductId(e.target.value)}
                   sx={{ height: "45px" }}
                 >
                   {products.map((product) => (
                     <MenuItem key={product.id} value={product.id}>
                       {product.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </MDBox>
+            <MDBox mb={2}>
+              <FormControl fullWidth>
+                <InputLabel id="factory-label">Производственные компании</InputLabel>
+                <Select
+                  labelId="factory-label"
+                  value={factory_id}
+                  label="Производственные компании"
+                  onChange={(e) => setFactoryId(e.target.value)}
+                  sx={{ height: "45px" }}
+                >
+                  {factories.map((factory) => (
+                    <MenuItem key={factory.id} value={factory.id}>
+                      {factory.name}
                     </MenuItem>
                   ))}
                 </Select>
