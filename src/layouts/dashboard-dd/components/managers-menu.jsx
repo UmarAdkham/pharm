@@ -32,12 +32,10 @@ export default function ManagersMenu({ setRegion, setFf_manager, region, ff_mana
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        console.log(response.data);
         const fieldForceManagers = response.data.filter(
           (user) => user.status === userRoles.FIELD_FORCE_MANAGER
         );
         setFf_managers([{ username: "", full_name: "All" }, ...fieldForceManagers]);
-        console.log(fieldForceManagers);
       } catch (error) {
         console.error("Не удалось получить пользователей:", error);
       }
@@ -53,7 +51,6 @@ export default function ManagersMenu({ setRegion, setFf_manager, region, ff_mana
         const regionalManagers = response.data.filter(
           (user) => user.status === userRoles.REGIONAL_MANAGER
         );
-        console.log(regionalManagers);
         setRegions([{ username: "", full_name: "All" }, ...regionalManagers]);
       } catch (error) {
         console.error("Не удалось получить пользователей:", error);

@@ -28,14 +28,30 @@ function DeputyDirectorAddProductPlan() {
   const { accessToken } = useSelector((state) => state.auth);
   const [amount, setAmount] = useState();
   const [product_id, setProductId] = useState();
+  const [month, setMonth] = useState();
   const [products, setProducts] = useState([]);
   const [message, setMessage] = useState({ color: "", content: "" });
   const med_rep_id = location.state;
 
+  const months = [
+    { id: 1, name: "Январь" },
+    { id: 2, name: "Февраль" },
+    { id: 3, name: "Март" },
+    { id: 4, name: "Апрель" },
+    { id: 5, name: "Май" },
+    { id: 6, name: "Июнь" },
+    { id: 7, name: "Июль" },
+    { id: 8, name: "Август" },
+    { id: 9, name: "Сентябрь" },
+    { id: 10, name: "Октябрь" },
+    { id: 11, name: "Ноябрь" },
+    { id: 12, name: "Декабрь" }
+  ];
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axiosInstance.get(`https://it-club.uz/common/get-product`, {
+        const response = await axiosInstance.get(`common/get-product`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -57,6 +73,7 @@ function DeputyDirectorAddProductPlan() {
     const productPlanData = {
       product_id,
       amount,
+      month,
       med_rep_id,
     };
 
@@ -65,7 +82,7 @@ function DeputyDirectorAddProductPlan() {
     try {
       // Call the API with authorization header
       const response = await axiosInstance.post(
-        "https://it-club.uz/dd/add-user-product-plan",
+        "dd/add-user-product-plan",
         productPlanData,
         {
           headers: {
@@ -141,7 +158,24 @@ function DeputyDirectorAddProductPlan() {
                 </Select>
               </FormControl>
             </MDBox>
-
+            <MDBox mb={2}>
+              <FormControl fullWidth>
+                <InputLabel id="month-label">Месяц</InputLabel>
+                <Select
+                  labelId="month-label"
+                  value={month}
+                  label="Месяц"
+                  onChange={(e) => setMonth(e.target.value)}
+                  sx={{ height: "45px" }}
+                >
+                  {months.map((month) => (
+                    <MenuItem key={month.id} value={month.id}>
+                      {month.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
                 Добавить
