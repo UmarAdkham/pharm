@@ -46,6 +46,7 @@ import WholesaleManagerProducts from "./layouts/dashboard-ws/components/ws-produ
 import WholesaleManagerAddProduct from "./layouts/dashboard-ws/components/ws-add-product";
 import HeadOfOrdersDashboard from "layouts/dashboard-head";
 import HeadOfOrdersFactoryWarehouses from "layouts/dashboard-head/components/factory-warehouses";
+import HeadofOrdersAddWarehouseData from "layouts/dashboard-head/components/head-add-warehouse-data";
 
 const roleBasedRoutes = [
   {
@@ -299,6 +300,7 @@ const roleBasedRoutes = [
     routes: [
       { path: "dashboard", component: <HeadOfOrdersDashboard /> },
       { path: "factory-warehouses", component: <HeadOfOrdersFactoryWarehouses /> },
+      { path: "add-warehouse-data", component: <HeadofOrdersAddWarehouseData /> },
     ],
     sideNav: [
       {

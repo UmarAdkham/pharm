@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
 
-export default function useManufacturerCompanyData(apiPath) {
+export default function useManufacturerCompanyData(apiPath, handleRowClick) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -26,6 +26,10 @@ export default function useManufacturerCompanyData(apiPath) {
               {mnfct.name}
             </MDTypography>
           ),
+          onClick: () => {
+            console.log(mnfct.id);
+            handleRowClick(mnfct.id);
+          },
         }));
 
         setData({ columns, rows });

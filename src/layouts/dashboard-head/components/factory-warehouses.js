@@ -10,26 +10,26 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 // Dashboard components
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import FactoriesTable from "../tables/factories-table";
+import { useState } from "react";
+import WarehousesTable from "../tables/warehouses-table";
 
 function HeadOfOrdersFactoryWarehouses() {
-  const location = useLocation();
-  const user = location.state || {};
+  const [selectedFactoryId, setSelectedFactoryId] = useState(1); // display ZUMA by default
+
+  const handleRowClick = (selectedRowValue) => {
+    setSelectedFactoryId(selectedRowValue);
+  };
+
   return (
     <DashboardLayout>
       <MDBox py={3}>
         <MDBox>
           <Grid container spacing={3}>
             <Grid item xs={3}>
-              <FactoriesTable />
+              <FactoriesTable handleRowClick={handleRowClick} />
             </Grid>
             <Grid item xs={8}>
-              {/* <DeputyDirectorTable
-                path={`mr/get-pharmacy-visit-plan?user_id=${user.id}`}
-                tableType="pharmacy-plan"
-                title="Планы аптек"
-                navigatePath="/dd/add-pharmacy-plan"
-                navigateState={user}
-              /> */}
+              <WarehousesTable factoryId={selectedFactoryId} />
             </Grid>
           </Grid>
         </MDBox>
