@@ -33,7 +33,7 @@ export default function useDoctorData(apiPath, onRowClick) {
           ),
           speciality: (
             <MDTypography variant="caption" fontWeight="medium">
-              {doctor.id}
+              {doctor.speciality.name}
             </MDTypography>
           ),
           medical_organization: (
