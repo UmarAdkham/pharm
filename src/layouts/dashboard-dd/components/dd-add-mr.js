@@ -90,6 +90,9 @@ function DeputyDirectorAddMedicalRepresentative() {
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission
 
+    const region_manager_region = regionalManagers.find((rm) => rm.id == region_manager_id).region
+      .id;
+
     // Define the request payload
     const userData = {
       full_name,
@@ -98,7 +101,7 @@ function DeputyDirectorAddMedicalRepresentative() {
       ffm_id: selectedFFM.id,
       product_manager_id: user.id,
       region_manager_id,
-      region_id: user.region.id,
+      region_id: region_manager_region,
       status: userRoles.MEDICAL_REPRESENTATIVE,
     };
 
