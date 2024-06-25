@@ -31,12 +31,13 @@ function DeputyDirectorAddRegionalManager() {
   const [password, setPassword] = useState("");
   const [ffm_id, setFieldForceManagerId] = useState("");
   const [fieldForceManagers, setFieldForceManagers] = useState([]);
+  const [region_id, setRegionId] = useState("");
+  const [regions, setRegions] = useState([]);
   const [message, setMessage] = useState({ color: "", content: "" });
   const user = location.state || {};
 
   useEffect(() => {
     const fetchFieldForceManagers = async () => {
-      console.log(user.username);
       try {
         const response = await axios.get(
           `https://it-club.uz/common/get-users-by-username?username=${user.username}`,
@@ -59,6 +60,27 @@ function DeputyDirectorAddRegionalManager() {
     fetchFieldForceManagers();
   }, [accessToken]);
 
+  useEffect(() => {
+    const fetchRegions = async () => {
+      try {
+        const response = await axios.get(
+          `https://it-club.uz/common/get-regions`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        const regions = response.data;
+        setRegions(regions);
+      } catch (error) {
+        console.error("Не удалось получить регионы:", error);
+      }
+    };
+
+    fetchRegions();
+  }, [accessToken]);
+
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission
 
@@ -69,7 +91,7 @@ function DeputyDirectorAddRegionalManager() {
       password,
       ffm_id,
       product_manager_id: user.id,
-      region_id: user.region.id,
+      region_id,
       status: userRoles.REGIONAL_MANAGER,
     };
 
@@ -162,6 +184,24 @@ function DeputyDirectorAddRegionalManager() {
                   {fieldForceManagers.map((ffm) => (
                     <MenuItem key={ffm.id} value={ffm.id}>
                       {ffm.full_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </MDBox>
+            <MDBox mb={2}>
+              <FormControl fullWidth>
+                <InputLabel id="region-label">Регион</InputLabel>
+                <Select
+                  labelId="region-label"
+                  value={region_id}
+                  label="Регион"
+                  onChange={(e) => setRegionId(e.target.value)}
+                  sx={{ height: "45px" }}
+                >
+                  {regions.map((region) => (
+                    <MenuItem key={region.id} value={region.id}>
+                      {region.name}
                     </MenuItem>
                   ))}
                 </Select>

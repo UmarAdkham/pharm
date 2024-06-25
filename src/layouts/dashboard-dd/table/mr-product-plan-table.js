@@ -49,7 +49,6 @@ const ProductPlanTable = ({ medRepId }) => {
     }
   };
 
-  console.log(data);
   useEffect(() => {
     fetchData(month);
   }, [month]);
