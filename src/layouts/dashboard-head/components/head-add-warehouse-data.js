@@ -40,7 +40,7 @@ function HeadofOrdersAddWarehouseData() {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        const products = response.data;
+        const products = response.data.filter((product) => product.man_company.id == factoryId);
         setProducts(products);
       } catch (error) {
         console.error("Не удалось получить регионы:", error);
