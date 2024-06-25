@@ -1,6 +1,5 @@
 // @mui material components
-import { Box } from "@mui/material";
-import Grid from "@mui/material/Grid";
+import { Box, Grid, Typography } from "@mui/material";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -21,6 +20,9 @@ function DeputyDirectorMRInfo() {
     <DashboardLayout>
       <MDBox py={3}>
         <MDBox>
+          <Typography variant="h5" component="h2" fontWeight="medium" gutterBottom>
+            {user.full_name}
+          </Typography>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
               <DeputyDirectorTable
