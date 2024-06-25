@@ -45,8 +45,9 @@ import DeputyDirectorAddProductPlan from "layouts/dashboard-dd/components/dd-add
 import WholesaleManagerProducts from "./layouts/dashboard-ws/components/ws-produtcs";
 import WholesaleManagerAddProduct from "./layouts/dashboard-ws/components/ws-add-product";
 import HeadOfOrdersDashboard from "layouts/dashboard-head";
-import HeadOfOrdersFactoryWarehouses from "layouts/dashboard-head/components/factory-warehouses";
+import HeadOfOrdersFactoryWarehouses from "layouts/dashboard-head/components/head-factory-warehouses";
 import HeadofOrdersAddWarehouseData from "layouts/dashboard-head/components/head-add-warehouse-data";
+import HeadReservations from "layouts/dashboard-head/components/head-reservations";
 
 const roleBasedRoutes = [
   {
@@ -301,6 +302,7 @@ const roleBasedRoutes = [
       { path: "dashboard", component: <HeadOfOrdersDashboard /> },
       { path: "factory-warehouses", component: <HeadOfOrdersFactoryWarehouses /> },
       { path: "add-warehouse-data", component: <HeadofOrdersAddWarehouseData /> },
+      { path: "reservations", component: <HeadReservations /> },
     ],
     sideNav: [
       {
@@ -309,6 +311,13 @@ const roleBasedRoutes = [
         key: "head-factory-warehouses",
         icon: <Icon fontSize="small">dashboard</Icon>,
         route: "factory-warehouses",
+      },
+      {
+        type: "collapse",
+        name: "Резервирование",
+        key: "head-reservation",
+        icon: <Icon fontSize="small">book_online</Icon>,
+        route: "reservations",
       },
     ],
   },
