@@ -35,12 +35,12 @@ function HeadofOrdersAddWarehouseData() {
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const response = await axios.get(`https://it-club.uz/common/get-product`, {
+        const response = await axios.get(`https://it-club.uz/common/filter-product?man_company_id=${factoryId}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        const products = response.data.filter((product) => product.man_company.id == factoryId);
+        const products = response.data;
         setProducts(products);
       } catch (error) {
         console.error("Не удалось получить регионы:", error);
