@@ -106,7 +106,7 @@ const ProductPlanTable = ({ medRepId }) => {
         <TableContainer component={Paper}>
           <Table>
             <TableBody>
-              {data.plan &&
+              {data.plan && data.plan.length > 0 ? (
                 data.plan.map((product, index) => (
                   <React.Fragment key={index}>
                     <TableRow key={index} style={{ backgroundColor: getRowColor(index) }}>
@@ -127,7 +127,12 @@ const ProductPlanTable = ({ medRepId }) => {
                       <TableCell></TableCell>
                     </TableRow>
                   </React.Fragment>
-                ))}
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell>Планов на {russianMonthNames[month - 1]} пока нет</TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
