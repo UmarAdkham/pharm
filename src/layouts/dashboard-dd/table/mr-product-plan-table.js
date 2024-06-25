@@ -49,6 +49,7 @@ const ProductPlanTable = ({ medRepId }) => {
     }
   };
 
+  console.log(data);
   useEffect(() => {
     fetchData(month);
   }, [month]);
@@ -105,29 +106,28 @@ const ProductPlanTable = ({ medRepId }) => {
         <TableContainer component={Paper}>
           <Table>
             <TableBody>
-              {data.map((product, index) => (
-                <React.Fragment key={index}>
-                  <TableRow key={index} style={{ backgroundColor: getRowColor(index) }}>
-                    <TableCell>{product.product}</TableCell>
-                    <TableCell>План {product.amount}</TableCell>
-                    <TableCell>
-                      Факт {product.doctor_plans.reduce((acc, curr) => acc + curr.fact, 0)}
-                    </TableCell>
-                  </TableRow>
-                  {product.doctor_plans.map((doctor, idx) => (
-                    <TableRow key={idx} style={{ backgroundColor: getRowColor(index) }}>
-                      <TableCell>Имя доктора ({doctor.doctor_name})</TableCell>
-                      <TableCell>{doctor.monthly_plan}</TableCell>
-                      <TableCell>{doctor.fact}</TableCell>
+              {data.plan &&
+                data.plan.map((product, index) => (
+                  <React.Fragment key={index}>
+                    <TableRow key={index} style={{ backgroundColor: getRowColor(index) }}>
+                      <TableCell>{product.product}</TableCell>
+                      <TableCell>План {product.plan_amount}</TableCell>
+                      <TableCell>Факт {data.fact_price}</TableCell>
                     </TableRow>
-                  ))}
-                  <TableRow style={{ backgroundColor: getRowColor(index) }}>
-                    <TableCell>Вакант</TableCell>
-                    <TableCell>{product.vakant}</TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                </React.Fragment>
-              ))}
+                    {product.doctor_plans.map((doctor, idx) => (
+                      <TableRow key={idx} style={{ backgroundColor: getRowColor(index) }}>
+                        <TableCell>Имя доктора ({doctor.doctor_name})</TableCell>
+                        <TableCell>{doctor.monthly_plan}</TableCell>
+                        <TableCell>{doctor.fact}</TableCell>
+                      </TableRow>
+                    ))}
+                    <TableRow style={{ backgroundColor: getRowColor(index) }}>
+                      <TableCell>Вакант</TableCell>
+                      <TableCell>{product.vakant}</TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  </React.Fragment>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>
