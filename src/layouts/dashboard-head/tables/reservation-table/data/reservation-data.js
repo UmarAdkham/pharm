@@ -56,7 +56,7 @@ export default function useReservationData(apiPath) {
         ),
         total_payable: (
           <MDTypography variant="caption" fontWeight="medium">
-            {rsrv.total_payable}
+            {rsrv.total_payable_with_nds}
           </MDTypography>
         ),
         discount: (
