@@ -34,6 +34,4 @@ function ReservationTable() {
   );
 }
 
-ReservationTable.propTypes = {};
-
 export default ReservationTable;
