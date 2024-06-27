@@ -1,3 +1,4 @@
+import React from "react";
 import PropTypes from "prop-types";
 import Card from "@mui/material/Card";
 import MDBox from "components/MDBox";
@@ -9,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 function WholesaleCompanyTable({ path, navigatePath }) {
   const navigate = useNavigate();
-  const { columns, rows } = useWholesaleCompanyData(path);
+  const { columns, rows, EditWholesaleCompanyDialog } = useWholesaleCompanyData(path);
 
   return (
     <Card>
@@ -44,6 +45,7 @@ function WholesaleCompanyTable({ path, navigatePath }) {
           entriesPerPage={false}
         />
       </MDBox>
+      {EditWholesaleCompanyDialog}
     </Card>
   );
 }
