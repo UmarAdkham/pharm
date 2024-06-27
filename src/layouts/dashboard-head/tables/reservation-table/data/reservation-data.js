@@ -3,18 +3,59 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import MDTypography from "components/MDTypography";
 import { format } from "date-fns";
-import { IconButton, Switch } from "@mui/material";
+import { IconButton, Switch, Tooltip, Snackbar, Alert } from "@mui/material";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
-import CreditScore from "@mui/icons-material/CreditScore";
+import EditIcon from "@mui/icons-material/Edit";
 import axiosInstance from "services/axiosInstance";
+import ExpiryDateDialog from "layouts/dashboard-head/dialogs/edit-expiry-date-dialog";
 
 export default function useReservationData(apiPath) {
   const [data, setData] = useState({ columns: [], rows: [] });
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedReservation, setSelectedReservation] = useState(null);
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
   const accessToken = useSelector((state) => state.auth.accessToken);
 
   useEffect(() => {
     fetchReservations();
   }, [accessToken, apiPath]);
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
+  const handleOpenDialog = (reservation) => {
+    setSelectedReservation(reservation);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleUpdateExpiryDate = async (newDate) => {
+    try {
+      await axiosInstance.post(
+        `https://it-club.uz/head/update-reservation-expire-date/${selectedReservation.id}`,
+        { date: newDate },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      fetchReservations(); // Refresh the data
+      setSnackbar({
+        open: true,
+        message: "Срок истечения изменен!",
+        severity: "success",
+      });
+    } catch (error) {
+      console.error("Failed to update expiry date", error);
+      setSnackbar({ open: true, message: "Не удалось изменить срок истечения", severity: "error" });
+    }
+    handleCloseDialog();
+  };
 
   async function fetchReservations() {
     try {
@@ -29,11 +70,12 @@ export default function useReservationData(apiPath) {
       const columns = [
         { Header: "Аптека", accessor: "pharmacy_name", align: "left" },
         { Header: "Медицинский представитель", accessor: "med_rep_name", align: "left" },
-        { Header: "Дата", accessor: "date", align: "left" },
         { Header: "Сумма к оплате", accessor: "total_payable", align: "left" },
         { Header: "Скидка", accessor: "discount", align: "left" },
         { Header: "Статус", accessor: "status", align: "center" },
         { Header: "Проверить", accessor: "check", align: "center" },
+        { Header: "Дата", accessor: "date", align: "left" },
+        { Header: "Дата истечения", accessor: "expiry_date", align: "left" },
         { Header: "Скачать", accessor: "download", align: "center" },
       ];
 
@@ -49,11 +91,6 @@ export default function useReservationData(apiPath) {
             {rsrv.pharmacy.med_rep.full_name}
           </MDTypography>
         ),
-        date: (
-          <MDTypography variant="caption" fontWeight="medium">
-            {format(new Date(rsrv.date), "MM-dd-yyyy HH:mm")}
-          </MDTypography>
-        ),
         total_payable: (
           <MDTypography variant="caption" fontWeight="medium">
             {rsrv.total_payable_with_nds}
@@ -66,6 +103,30 @@ export default function useReservationData(apiPath) {
         ),
         status: getStatusIndicator(rsrv.checked),
         check: <Switch checked={rsrv.checked} onChange={() => confirmToggle(rsrv)} />,
+        date: (
+          <MDTypography variant="caption" fontWeight="medium">
+            {format(new Date(rsrv.date), "MM-dd-yyyy")}
+          </MDTypography>
+        ),
+        expiry_date: (
+          <>
+            <MDTypography variant="caption" fontWeight="medium">
+              {format(new Date(rsrv.expire_date), "MM-dd-yyyy")}
+            </MDTypography>
+            <Tooltip title="Изменить дату истечения">
+              <IconButton
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#e0f2f1",
+                  },
+                }}
+                onClick={() => handleOpenDialog(rsrv)}
+              >
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+          </>
+        ),
         download: (
           <IconButton
             sx={{
@@ -146,10 +207,19 @@ export default function useReservationData(apiPath) {
       },
     })
       .then((response) => {
+        const contentDisposition = response.headers["content-disposition"];
+        let filename = "";
+        if (contentDisposition) {
+          const matches = /filename\*?=['"]?utf-8['"]?''([^;\n]*)/.exec(contentDisposition);
+          if (matches != null && matches[1]) {
+            filename = decodeURIComponent(matches[1].replace(/\+/g, " "));
+          }
+        }
+
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", `report-${id}.xlsx`); // or any other extension
+        link.setAttribute("download", filename || `report-${id}.xlsx`);
         document.body.appendChild(link);
         link.click();
         link.parentNode.removeChild(link);
@@ -157,5 +227,27 @@ export default function useReservationData(apiPath) {
       .catch((error) => console.error("Download error", error));
   }
 
-  return data;
+  return {
+    ...data,
+    ExpiryDateDialogComponent: (
+      <ExpiryDateDialog
+        open={openDialog}
+        handleClose={handleCloseDialog}
+        handleSubmit={handleUpdateExpiryDate}
+        initialDate={selectedReservation?.expire_date}
+      />
+    ),
+    SnackbarComponent: (
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: "100%" }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    ),
+  };
 }

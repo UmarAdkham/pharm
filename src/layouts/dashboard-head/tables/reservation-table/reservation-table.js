@@ -20,7 +20,8 @@ function ReservationTable() {
   const [filteredRows, setFilteredRows] = useState([]);
   const accessToken = useSelector((state) => state.auth.accessToken);
 
-  const { columns, rows } = useReservationData(reservationApiPath);
+  const { columns, rows, ExpiryDateDialogComponent, SnackbarComponent } =
+    useReservationData(reservationApiPath);
 
   useEffect(() => {
     fetchMedicalReps();
@@ -137,6 +138,8 @@ function ReservationTable() {
           entriesPerPage={false}
         />
       </MDBox>
+      {ExpiryDateDialogComponent}
+      {SnackbarComponent}
     </Card>
   );
 }
