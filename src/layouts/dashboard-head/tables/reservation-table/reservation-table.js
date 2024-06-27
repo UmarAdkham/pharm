@@ -17,6 +17,7 @@ function ReservationTable() {
   const [selectedPharmacy, setSelectedPharmacy] = useState("all");
   const [selectedMedRep, setSelectedMedRep] = useState("all");
   const [reservationApiPath, setReservationApiPath] = useState("head/get-all-reservations");
+  const [filteredRows, setFilteredRows] = useState([]);
   const accessToken = useSelector((state) => state.auth.accessToken);
 
   const { columns, rows } = useReservationData(reservationApiPath);
@@ -26,13 +27,20 @@ function ReservationTable() {
     fetchPharmacies();
   }, []);
 
+  useEffect(() => {
+    filterRows();
+  }, [rows, selectedMedRep]);
+
   const fetchMedicalReps = async () => {
     try {
-      const response = await axiosInstance.get("https://it-club.uz/common/get-users", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axiosInstance.get(
+        "https://it-club.uz/common/get-medical-representatives",
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
       setMedReps(response.data);
     } catch (error) {
       console.error("Failed to fetch medical representatives", error);
@@ -63,7 +71,15 @@ function ReservationTable() {
   const handleMedRepChange = (event) => {
     const medRepId = event.target.value;
     setSelectedMedRep(medRepId);
-    // Update the API path based on the selected medical representative if necessary.
+  };
+
+  const filterRows = () => {
+    if (selectedMedRep === "all") {
+      setFilteredRows(rows);
+    } else {
+      const filtered = rows.filter((row) => row.pharmacy.med_rep.id === parseInt(selectedMedRep));
+      setFilteredRows(filtered);
+    }
   };
 
   return (
@@ -83,7 +99,7 @@ function ReservationTable() {
               value={selectedMedRep}
               onChange={handleMedRepChange}
             >
-              <MenuItem value="all">All</MenuItem>
+              <MenuItem value="all">Все</MenuItem>
               {medReps.map((rep) => (
                 <MenuItem key={rep.id} value={rep.id}>
                   {rep.full_name}
@@ -99,7 +115,7 @@ function ReservationTable() {
               onChange={handlePharmacyChange}
               label="Аптеки"
             >
-              <MenuItem value="all">All</MenuItem>
+              <MenuItem value="all">Все</MenuItem>
               {pharmacies.map((pharmacy) => (
                 <MenuItem key={pharmacy.id} value={pharmacy.id}>
                   {pharmacy.company_name}
@@ -113,7 +129,7 @@ function ReservationTable() {
         <DataTable
           table={{
             columns,
-            rows,
+            rows: filteredRows,
           }}
           showTotalEntries={false}
           isSorted={false}
