@@ -17,7 +17,7 @@ function WarehousesTable({ factoryId, factoryName }) {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            В складе {factoryName}
+            На складе {factoryName}
           </MDTypography>
         </MDBox>
         <MDBox>

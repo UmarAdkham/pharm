@@ -106,7 +106,7 @@ function HeadofOrdersAddWarehouseData() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Добавить продукт в склад {factoryName}
+            Добавить продукт на склад {factoryName}
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
