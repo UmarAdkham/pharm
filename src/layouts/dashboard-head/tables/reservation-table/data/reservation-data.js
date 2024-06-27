@@ -134,7 +134,7 @@ export default function useReservationData(apiPath) {
                 backgroundColor: "#e0f2f1",
               },
             }}
-            onClick={() => downloadReport(rsrv.id)}
+            onClick={() => downloadReport(rsrv)}
           >
             <CloudDownloadIcon />
           </IconButton>
@@ -197,9 +197,9 @@ export default function useReservationData(apiPath) {
     }
   }
 
-  function downloadReport(id) {
+  function downloadReport(rsrv) {
     axios({
-      url: `https://it-club.uz/mr/get-report/${id}`,
+      url: `https://it-club.uz/mr/get-report/${rsrv.id}`,
       method: "GET",
       responseType: "blob", // Important
       headers: {
@@ -207,19 +207,12 @@ export default function useReservationData(apiPath) {
       },
     })
       .then((response) => {
-        const contentDisposition = response.headers["content-disposition"];
-        let filename = "";
-        if (contentDisposition) {
-          const matches = /filename\*?=['"]?utf-8['"]?''([^;\n]*)/.exec(contentDisposition);
-          if (matches != null && matches[1]) {
-            filename = decodeURIComponent(matches[1].replace(/\+/g, " "));
-          }
-        }
+        let filename = `${rsrv.pharmacy.company_name}_${format(new Date(rsrv.date), "MM-dd-yyyy")}`;
 
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", filename || `report-${id}.xlsx`);
+        link.setAttribute("download", `${filename}.xlsx` || `report-${rsrv.id}.xlsx`);
         document.body.appendChild(link);
         link.click();
         link.parentNode.removeChild(link);
