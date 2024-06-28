@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
+import { useNavigate } from "react-router-dom";
 
 export default function useWholesaleReportData(wsCompanyId, month) {
+  const navigate = useNavigate();
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -55,6 +57,11 @@ export default function useWholesaleReportData(wsCompanyId, month) {
               {report.date}
             </MDTypography>
           ),
+          onClick: () => {
+            navigate("/ws/product-report", {
+              state: { products: report.products, pharmacyName: report.pharmacy.company_name },
+            });
+          },
         }));
 
         setData({ columns, rows });

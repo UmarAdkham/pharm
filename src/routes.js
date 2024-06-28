@@ -49,7 +49,10 @@ import HeadOfOrdersFactoryWarehouses from "layouts/dashboard-head/components/hea
 import HeadofOrdersAddWarehouseData from "layouts/dashboard-head/components/head-add-warehouse-data";
 import HeadReservations from "layouts/dashboard-head/components/head-reservations";
 import WholesaleReports from "layouts/dashboard-ws/components/ws-reports";
-import WholesaleReportDetails from "layouts/dashboard-ws/components/ws-pharmacies";
+import WholesaleReportDetails from "layouts/dashboard-ws/components/ws-report-details";
+import WholesaleAddSale from "layouts/dashboard-ws/components/ws-add-sale";
+import WholesaleAddPharmacy from "layouts/dashboard-ws/components/ws-add-pharmacy";
+import WholesaleProductDetails from "layouts/dashboard-ws/components/ws-product-report";
 
 const roleBasedRoutes = [
   {
@@ -334,6 +337,9 @@ const roleBasedRoutes = [
       { path: "add-produtc/:wholesale_id", component: <WholesaleManagerAddProduct /> },
       { path: "report", component: <WholesaleReports /> },
       { path: "report/:wholesale_id", component: <WholesaleReportDetails /> },
+      { path: "add-sale", component: <WholesaleAddSale /> },
+      { path: "add-pharmacy", component: <WholesaleAddPharmacy /> },
+      { path: "product-report", component: <WholesaleProductDetails /> },
     ],
     sideNav: [
       {

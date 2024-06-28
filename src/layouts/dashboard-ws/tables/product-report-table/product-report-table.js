@@ -4,21 +4,21 @@ import Card from "@mui/material/Card";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
-import useWholesalePharmacyData from "./report-data";
+import useProductReportData from "./product-report-data";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-function WholesaleReportTable({ wsCompanyName, wsCompanyId }) {
+function WholesaleProductReportTable({ pharmacyName, products }) {
   const navigate = useNavigate();
   const [month, setMonth] = useState(6);
-  const { columns, rows } = useWholesalePharmacyData(wsCompanyId, month);
+  const { columns, rows } = useProductReportData(products);
 
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            {wsCompanyName}
+            {pharmacyName}
           </MDTypography>
         </MDBox>
         <MDBox>
@@ -27,10 +27,10 @@ function WholesaleReportTable({ wsCompanyName, wsCompanyId }) {
             color="success"
             sx={{ color: "white" }}
             onClick={() => {
-              navigate("/ws/add-sale");
+              alert("In process");
             }}
           >
-            Добавить продажу
+            Добавить продукт
           </Button>
         </MDBox>
       </MDBox>
@@ -50,13 +50,9 @@ function WholesaleReportTable({ wsCompanyName, wsCompanyId }) {
   );
 }
 
-WholesaleReportTable.propTypes = {
-  wsCompanyName: PropTypes.string.isRequired,
-  wsCompanyId: PropTypes.number.isRequired,
+WholesaleProductReportTable.propTypes = {
+  pharmacyName: PropTypes.string.isRequired,
+  products: PropTypes.array.isRequired,
 };
 
-WholesaleReportTable.defaultProps = {
-  isReport: false,
-};
-
-export default WholesaleReportTable;
+export default WholesaleProductReportTable;
