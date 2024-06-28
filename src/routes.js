@@ -48,6 +48,8 @@ import HeadOfOrdersDashboard from "layouts/dashboard-head";
 import HeadOfOrdersFactoryWarehouses from "layouts/dashboard-head/components/head-factory-warehouses";
 import HeadofOrdersAddWarehouseData from "layouts/dashboard-head/components/head-add-warehouse-data";
 import HeadReservations from "layouts/dashboard-head/components/head-reservations";
+import WholesaleReports from "layouts/dashboard-ws/components/ws-reports";
+import WholesaleReportDetails from "layouts/dashboard-ws/components/ws-pharmacies";
 
 const roleBasedRoutes = [
   {
@@ -330,6 +332,8 @@ const roleBasedRoutes = [
       { path: "add-company", component: <WholesaleManagerAddCompany /> },
       { path: "company-info/:wholesale_id", component: <WholesaleManagerProducts /> },
       { path: "add-produtc/:wholesale_id", component: <WholesaleManagerAddProduct /> },
+      { path: "report", component: <WholesaleReports /> },
+      { path: "report/:wholesale_id", component: <WholesaleReportDetails /> },
     ],
     sideNav: [
       {
@@ -338,6 +342,13 @@ const roleBasedRoutes = [
         key: "companies",
         icon: <Icon fontSize="small">dashboard</Icon>,
         route: "companies",
+      },
+      {
+        type: "collapse",
+        name: "Отчеты",
+        key: "ws-reports",
+        icon: <Icon fontSize="small">summarize_icon</Icon>,
+        route: "report",
       },
     ],
   },

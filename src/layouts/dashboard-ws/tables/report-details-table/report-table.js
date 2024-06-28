@@ -1,38 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Card from "@mui/material/Card";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
-import useWholesaleCompanyData from "./data/company-data";
+import useWholesalePharmacyData from "./report-data";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-function WholesaleCompanyTable({ path, navigatePath, isReport }) {
+function WholesaleReportTable({ wsCompanyName, wsCompanyId }) {
   const navigate = useNavigate();
-  const { columns, rows, EditWholesaleCompanyDialog } = useWholesaleCompanyData(path, isReport);
+  const [month, setMonth] = useState(6);
+  const { columns, rows } = useWholesalePharmacyData(wsCompanyId, month);
 
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            Оптовыe компании
+            {wsCompanyName}
           </MDTypography>
         </MDBox>
         <MDBox>
-          {!isReport && (
-            <Button
-              variant="contained"
-              color="success"
-              sx={{ color: "white" }}
-              onClick={() => {
-                navigate(navigatePath);
-              }}
-            >
-              Добавить
-            </Button>
-          )}
+          <Button
+            variant="contained"
+            color="success"
+            sx={{ color: "white" }}
+            onClick={() => {
+              navigate(navigatePath);
+            }}
+          >
+            Добавить продажу
+          </Button>
         </MDBox>
       </MDBox>
       <MDBox>
@@ -47,19 +46,17 @@ function WholesaleCompanyTable({ path, navigatePath, isReport }) {
           entriesPerPage={false}
         />
       </MDBox>
-      {EditWholesaleCompanyDialog}
     </Card>
   );
 }
 
-WholesaleCompanyTable.propTypes = {
-  path: PropTypes.string.isRequired,
-  navigatePath: PropTypes.string,
-  isReport: PropTypes.bool,
+WholesaleReportTable.propTypes = {
+  wsCompanyName: PropTypes.string.isRequired,
+  wsCompanyId: PropTypes.number.isRequired,
 };
 
-WholesaleCompanyTable.defaultProps = {
+WholesaleReportTable.defaultProps = {
   isReport: false,
 };
 
-export default WholesaleCompanyTable;
+export default WholesaleReportTable;
