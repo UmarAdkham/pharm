@@ -1,4 +1,3 @@
-// App.js
 import { useEffect } from "react";
 import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
@@ -20,6 +19,33 @@ import { logout } from "./redux/auth/authSlice";
 import "leaflet/dist/leaflet.css";
 // import "react-leaflet-geosearch/lib/react-leaflet-geosearch.css";
 
+function useSuppressResizeObserverError() {
+  useEffect(() => {
+    const resizeObserverLoopErr = () => {
+      const resizeObserverErrDiv = document.createElement("div");
+      resizeObserverErrDiv.id = "resizeObserverErrDiv";
+      resizeObserverErrDiv.style.display = "none";
+      document.body.appendChild(resizeObserverErrDiv);
+
+      const resizeObserverErr = () => {
+        const loopErrorDiv = document.getElementById("resizeObserverErrDiv");
+        if (loopErrorDiv) {
+          loopErrorDiv.innerHTML += "ResizeObserver loop error detected";
+        }
+      };
+
+      window.addEventListener("error", (event) => {
+        if (event.message === "ResizeObserver loop limit exceeded") {
+          event.stopImmediatePropagation();
+          resizeObserverErr();
+        }
+      });
+    };
+
+    resizeObserverLoopErr();
+  }, []);
+}
+
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
   const { direction, layout, openConfigurator, darkMode } = controller;
@@ -28,6 +54,7 @@ export default function App() {
   const reduxDispatch = useDispatch();
 
   useAxiosInterceptor();
+  useSuppressResizeObserverError();
 
   useEffect(() => {
     document.body.setAttribute("dir", direction);

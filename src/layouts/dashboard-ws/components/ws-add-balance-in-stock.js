@@ -191,6 +191,7 @@ function WholesaleAddBalanceInStock({ wholesale_id }) {
                 fullWidth
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                InputProps={{ style: { resize: "none" } }}
               />
             </MDBox>
             <MDBox mt={1} mb={1} display="flex" justifyContent="space-between">
