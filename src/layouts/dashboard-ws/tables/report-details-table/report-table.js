@@ -18,7 +18,7 @@ function WholesaleReportTable({ wsCompanyName, wsCompanyId }) {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            {wsCompanyName}
+            Оптовая компания: &quot;{wsCompanyName}&quot;
           </MDTypography>
         </MDBox>
         <MDBox>

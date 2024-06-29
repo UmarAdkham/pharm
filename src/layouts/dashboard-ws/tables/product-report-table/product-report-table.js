@@ -50,7 +50,7 @@ function WholesaleProductReportTable({ pharmacyName, products, pharmacy_id, whol
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            {pharmacyName}
+            Аптека: &quot;{pharmacyName}&quot;
           </MDTypography>
         </MDBox>
         <MDBox>
@@ -59,10 +59,10 @@ function WholesaleProductReportTable({ pharmacyName, products, pharmacy_id, whol
             color="success"
             sx={{ color: "white" }}
             onClick={() => {
-              alert("In process");
+              navigate("/ws/add-balance-in-stock");
             }}
           >
-            Добавить продукт
+            Добавить баланс
           </Button>
         </MDBox>
       </MDBox>
@@ -101,7 +101,7 @@ function WholesaleProductReportTable({ pharmacyName, products, pharmacy_id, whol
 WholesaleProductReportTable.propTypes = {
   pharmacyName: PropTypes.string.isRequired,
   products: PropTypes.array.isRequired,
-  pharmacy_id: PropTypes.number.isRequired,
+  pharmacy_id: PropTypes.number,
   product_id: PropTypes.number.isRequired,
   wholesale_id: PropTypes.number.isRequired,
 };

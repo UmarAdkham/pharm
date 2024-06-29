@@ -53,6 +53,7 @@ import WholesaleReportDetails from "layouts/dashboard-ws/components/ws-report-de
 import WholesaleAddSale from "layouts/dashboard-ws/components/ws-add-sale";
 import WholesaleAddPharmacy from "layouts/dashboard-ws/components/ws-add-pharmacy";
 import WholesaleProductDetails from "layouts/dashboard-ws/components/ws-product-report";
+import WholesaleAddBalanceInStock from "layouts/dashboard-ws/components/ws-add-balance-in-stock";
 
 const roleBasedRoutes = [
   {
@@ -340,6 +341,7 @@ const roleBasedRoutes = [
       { path: "add-sale", component: <WholesaleAddSale /> },
       { path: "add-pharmacy", component: <WholesaleAddPharmacy /> },
       { path: "product-report", component: <WholesaleProductDetails /> },
+      { path: "add-balance-in-stock", component: <WholesaleAddBalanceInStock /> },
     ],
     sideNav: [
       {
