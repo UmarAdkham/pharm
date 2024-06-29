@@ -5,13 +5,45 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import useProductReportData from "./product-report-data";
-import { Button } from "@mui/material";
+import { Button, Snackbar, Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "services/axiosInstance";
+import EditProductQuantityDialog from "layouts/dashboard-ws/dialogs/edit-product-quantity-dialog";
 
-function WholesaleProductReportTable({ pharmacyName, products }) {
+function WholesaleProductReportTable({ pharmacyName, products, pharmacy_id, wholesale_id }) {
   const navigate = useNavigate();
-  const [month, setMonth] = useState(6);
-  const { columns, rows } = useProductReportData(products);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const { columns, rows } = useProductReportData(products, setSelectedProduct, setDialogOpen);
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
+  const handleQuantityUpdate = async (newQuantity) => {
+    try {
+      await axiosInstance.post(`https://it-club.uz/ws/return-product/${wholesale_id}`, {
+        pharmacy_id,
+        product_id: selectedProduct.product.id,
+        amount: newQuantity,
+      });
+      setSnackbar({ open: true, message: "Количество обновлено успешно!", severity: "success" });
+      // Optionally refresh data or update UI to reflect the changes
+      handleDialogClose();
+    } catch (error) {
+      console.error("Failed to update product quantity", error);
+      setSnackbar({
+        open: true,
+        message: error.response?.data?.detail || "Не удалось обновить количество.",
+        severity: "error",
+      });
+    }
+  };
 
   return (
     <Card>
@@ -46,6 +78,22 @@ function WholesaleProductReportTable({ pharmacyName, products }) {
           entriesPerPage={false}
         />
       </MDBox>
+      <EditProductQuantityDialog
+        open={dialogOpen}
+        handleClose={handleDialogClose}
+        handleSubmit={handleQuantityUpdate}
+        initialQuantity={selectedProduct?.quantity}
+      />
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbar.severity} sx={{ width: "100%" }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Card>
   );
 }
@@ -53,6 +101,9 @@ function WholesaleProductReportTable({ pharmacyName, products }) {
 WholesaleProductReportTable.propTypes = {
   pharmacyName: PropTypes.string.isRequired,
   products: PropTypes.array.isRequired,
+  pharmacy_id: PropTypes.number.isRequired,
+  product_id: PropTypes.number.isRequired,
+  wholesale_id: PropTypes.number.isRequired,
 };
 
 export default WholesaleProductReportTable;

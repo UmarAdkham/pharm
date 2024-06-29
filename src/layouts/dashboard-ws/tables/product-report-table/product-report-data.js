@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
-import { useNavigate } from "react-router-dom";
+import IconButton from "@mui/material/IconButton";
+import EditIcon from "@mui/icons-material/Edit";
 
-export default function useProductReportData(products) {
+export default function useProductReportData(products, setSelectedProduct, setDialogOpen) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -15,6 +15,7 @@ export default function useProductReportData(products) {
           { Header: "Продукт", accessor: "product_name", align: "left" },
           { Header: "Производственная компания", accessor: "man_company", align: "left" },
           { Header: "Количество", accessor: "quantity", align: "left" },
+          { Header: "Действия", accessor: "actions", align: "center" },
         ];
 
         const rows = products.map((element) => ({
@@ -30,8 +31,18 @@ export default function useProductReportData(products) {
           ),
           quantity: (
             <MDTypography variant="caption" fontWeight="medium">
-              {element.product.quantity}
+              {element.quantity}
             </MDTypography>
+          ),
+          actions: (
+            <IconButton
+              onClick={() => {
+                setSelectedProduct(element);
+                setDialogOpen(true);
+              }}
+            >
+              <EditIcon />
+            </IconButton>
           ),
         }));
 
@@ -42,7 +53,7 @@ export default function useProductReportData(products) {
     }
 
     prepareRowColumns();
-  }, [accessToken, products]);
+  }, [accessToken, products, setSelectedProduct, setDialogOpen]);
 
   return data;
 }

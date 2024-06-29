@@ -59,7 +59,12 @@ export default function useWholesaleReportData(wsCompanyId, month) {
           ),
           onClick: () => {
             navigate("/ws/product-report", {
-              state: { products: report.products, pharmacyName: report.pharmacy.company_name },
+              state: {
+                products: report.products,
+                pharmacyName: report.pharmacy.company_name,
+                pharmacyId: report.pharmacy.id,
+                wholesaleId: report.wholesale.id,
+              },
             });
           },
         }));
