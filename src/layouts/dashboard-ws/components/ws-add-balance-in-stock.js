@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -10,6 +9,9 @@ import Card from "@mui/material/Card";
 import Alert from "@mui/material/Alert";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
+import IconButton from "@mui/material/IconButton";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -17,36 +19,23 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 
 // Authentication layout components
-import BasicLayout from "layouts/authentication/components/BasicLayout";
 import axiosInstance from "services/axiosInstance";
+import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
+import BasicLayout from "layouts/authentication/components/BasicLayout";
 
-function WholesaleAddBalanceInStock({ wholesale_id }) {
+function WholesaleAddSale() {
   const navigate = useNavigate();
   const location = useLocation();
   const { accessToken } = useSelector((state) => state.auth);
-  const [pharmacies, setPharmacies] = useState([]);
-  const [selectedPharmacy, setSelectedPharmacy] = useState(null);
   const [manufacturers, setManufacturers] = useState([]);
   const [selectedManufacturer, setSelectedManufacturer] = useState(null);
   const [availableProducts, setAvailableProducts] = useState([]);
-  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState([{ product: null, quantity: "" }]);
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
+  const { wholesale_id, pharmacy_id } = location.state;
 
   useEffect(() => {
-    async function fetchPharmacies() {
-      try {
-        const response = await axiosInstance.get(`mr/get-all-pharmacy`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        setPharmacies(response.data);
-      } catch (error) {
-        console.error("Failed to fetch pharmacies:", error);
-      }
-    }
-
     async function fetchManufacturers() {
       try {
         const response = await axiosInstance.get(
@@ -67,44 +56,68 @@ function WholesaleAddBalanceInStock({ wholesale_id }) {
       }
     }
 
-    fetchPharmacies();
     fetchManufacturers();
     fetchProducts();
   }, [accessToken]);
 
-  const handleNewClick = () => {
-    navigate("/ws/add-pharmacy");
+
+  const handleProductChange = (index, value) => {
+    const newSelectedProducts = [...selectedProducts];
+    newSelectedProducts[index].product = value;
+    setSelectedProducts(newSelectedProducts);
+  };
+
+  const handleQuantityChange = (index, value) => {
+    const newSelectedProducts = [...selectedProducts];
+    newSelectedProducts[index].quantity = value;
+    setSelectedProducts(newSelectedProducts);
+  };
+
+  const handleAddProduct = () => {
+    setSelectedProducts([...selectedProducts, { product: null, quantity: "" }]);
+  };
+
+  const handleRemoveProduct = (index) => {
+    const newSelectedProducts = [...selectedProducts];
+    newSelectedProducts.splice(index, 1);
+    setSelectedProducts(newSelectedProducts);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission
 
-    if (!selectedPharmacy || !selectedManufacturer || selectedProducts.length === 0) {
+    if (!selectedManufacturer || selectedProducts.some((sp) => !sp.product || !sp.quantity)) {
       setMessage({ color: "error", content: "Пожалуйста, заполните все поля" });
       return;
     }
 
-    const productsData = selectedProducts.map((product) => ({
-      product_id: product.id,
-      quantity: product.quantity || 0,
+    const productsData = selectedProducts.map((sp) => ({
+      product_id: sp.product.id,
+      quantity: sp.quantity,
     }));
 
     const requestData = {
       products: productsData,
-      pharmacy_id: selectedPharmacy.id,
+      pharmacy_id,
       wholesale_id,
       factory_id: selectedManufacturer.id,
       description,
     };
 
     try {
+      console.log(requestData);
       // Call the API with authorization header
-      await axiosInstance.post("https://it-club.uz/mr/add-balance-in-stock", requestData, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axiosInstance.post(
+        "https://it-club.uz/mr/add-balance-in-stock",
+        requestData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
 
+      console.log(response);
       // Handle a successful response
       setMessage({ color: "success", content: "Баланс успешно добавлен!" });
 
@@ -142,20 +155,6 @@ function WholesaleAddBalanceInStock({ wholesale_id }) {
         <MDBox pt={4} pb={3} px={3}>
           {message.content && <Alert severity={message.color}>{message.content}</Alert>}
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
-            <MDBox display="flex" alignItems="center" mb={2}>
-              <Autocomplete
-                options={pharmacies}
-                getOptionLabel={(option) => option.company_name}
-                onChange={(event, newValue) => setSelectedPharmacy(newValue)}
-                renderInput={(params) => (
-                  <TextField {...params} label="Выберите аптеку" variant="outlined" fullWidth />
-                )}
-                sx={{ flexGrow: 1, mr: 2 }}
-              />
-              <MDButton variant="outlined" color="info" onClick={handleNewClick}>
-                Новый
-              </MDButton>
-            </MDBox>
             <MDBox mb={2}>
               <Autocomplete
                 options={manufacturers}
@@ -171,16 +170,35 @@ function WholesaleAddBalanceInStock({ wholesale_id }) {
                 )}
               />
             </MDBox>
-            <MDBox mb={2}>
-              <Autocomplete
-                multiple
-                options={availableProducts}
-                getOptionLabel={(option) => option.name}
-                onChange={(event, newValue) => setSelectedProducts(newValue)}
-                renderInput={(params) => (
-                  <TextField {...params} label="Продукты" variant="outlined" fullWidth />
-                )}
-              />
+            {selectedProducts.map((selectedProduct, index) => (
+              <MDBox key={index} display="flex" alignItems="center" mb={1}>
+                <Autocomplete
+                  options={availableProducts}
+                  getOptionLabel={(option) => option.name}
+                  onChange={(event, newValue) => handleProductChange(index, newValue)}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Продукт" variant="outlined" fullWidth />
+                  )}
+                  value={selectedProduct.product}
+                  sx={{ width: "70%", mr: 1 }}
+                />
+                <TextField
+                  label="Количество"
+                  variant="outlined"
+                  type="number"
+                  value={selectedProduct.quantity}
+                  onChange={(e) => handleQuantityChange(index, e.target.value)}
+                  sx={{ width: "25%", mr: 1 }}
+                />
+                <IconButton onClick={() => handleRemoveProduct(index)}>
+                  <DeleteIcon />
+                </IconButton>
+              </MDBox>
+            ))}
+            <MDBox display="flex" justifyContent="center" mb={2}>
+              <IconButton onClick={handleAddProduct}>
+                <AddIcon />
+              </IconButton>
             </MDBox>
             <MDBox mb={2}>
               <TextField
@@ -206,8 +224,4 @@ function WholesaleAddBalanceInStock({ wholesale_id }) {
   );
 }
 
-WholesaleAddBalanceInStock.propTypes = {
-  wholesale_id: PropTypes.number.isRequired,
-};
-
-export default WholesaleAddBalanceInStock;
+export default WholesaleAddSale;

@@ -59,7 +59,7 @@ function WholesaleProductReportTable({ pharmacyName, products, pharmacy_id, whol
             color="success"
             sx={{ color: "white" }}
             onClick={() => {
-              navigate("/ws/add-balance-in-stock");
+              navigate("/ws/add-balance-in-stock", { state: { wholesale_id, pharmacy_id } });
             }}
           >
             Добавить баланс

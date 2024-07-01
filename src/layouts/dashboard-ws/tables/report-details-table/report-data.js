@@ -4,7 +4,13 @@ import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
 import { useNavigate } from "react-router-dom";
 
-export default function useWholesaleReportData(wsCompanyId, month) {
+export default function useWholesaleReportData(
+  wsCompanyId,
+  month,
+  selectedPharmacy,
+  selectedRegion,
+  selectedMedRep
+) {
   const navigate = useNavigate();
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
@@ -21,7 +27,13 @@ export default function useWholesaleReportData(wsCompanyId, month) {
           }
         );
 
-        const reports = response.data;
+        const reports = response.data.filter((report) => {
+          return (
+            (!selectedPharmacy || report.pharmacy.id === selectedPharmacy.id) &&
+            (!selectedRegion || report.wholesale.region.id === selectedRegion.id) &&
+            (!selectedMedRep || report.pharmacy.med_rep.id === selectedMedRep.id)
+          );
+        });
 
         const columns = [
           { Header: "Аптека", accessor: "pharmacy", align: "left" },
@@ -76,7 +88,7 @@ export default function useWholesaleReportData(wsCompanyId, month) {
     }
 
     fetchWsPharmacies();
-  }, [accessToken, wsCompanyId, month]);
+  }, [accessToken, wsCompanyId, month, selectedPharmacy, selectedRegion, selectedMedRep]);
 
   return data;
 }
