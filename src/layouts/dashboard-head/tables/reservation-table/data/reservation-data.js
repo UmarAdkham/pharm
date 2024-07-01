@@ -65,7 +65,13 @@ export default function useReservationData(apiPath) {
         },
       });
 
-      const reservations = response.data.sort((a, b) => a.id - b.id);
+      const now = new Date();
+
+      const filteredReservations = response.data.filter(
+        (reservation) => new Date(reservation.expire_date) >= now
+      );
+
+      const reservations = filteredReservations.sort((a, b) => a.id - b.id);
 
       const columns = [
         { Header: "Аптека", accessor: "pharmacy_name", align: "left" },
