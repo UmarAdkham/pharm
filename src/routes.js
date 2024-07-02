@@ -56,6 +56,7 @@ import WholesaleProductDetails from "layouts/dashboard-ws/components/ws-product-
 import WholesaleAddBalanceInStock from "layouts/dashboard-ws/components/ws-add-balance-in-stock";
 import DeputyDirectorEditProductExpenses from "layouts/dashboard-dd/components/dd-edit-product-expenses";
 import ProductManagerProducts from "layouts/dashboard-pm/components/pm-products";
+import DeputyDirectorProcessReports from "layouts/dashboard-dd/components/dd-process-reports";
 
 const roleBasedRoutes = [
   {
@@ -116,6 +117,7 @@ const roleBasedRoutes = [
       { path: "add-pharmacy", component: <DeputyDirectorAddPharmacy /> },
       { path: "add-doctor", component: <DeputyDirectorAddDoctor /> },
       { path: "mr-info", component: <DeputyDirectorMRInfo /> },
+      { path: "process-reports", component: <DeputyDirectorProcessReports /> },
     ],
     sideNav: [
       {
@@ -180,6 +182,13 @@ const roleBasedRoutes = [
         key: "dd-products",
         icon: <Icon fontSize="small">inventory</Icon>,
         route: "products",
+      },
+      {
+        type: "collapse",
+        name: "Процесс отчеты",
+        key: "dd-process-reports",
+        icon: <Icon fontSize="small">summarize_two_tone_icon</Icon>,
+        route: "process-reports",
       },
     ],
   },
