@@ -53,6 +53,8 @@ export default function useProductData(apiPath, id1, id2) {
           },
         });
 
+        fetchedData.sort((a, b) => a.id - b.id);
+
         const columns = [
           { Header: "Название", accessor: "name", align: "left" },
           { Header: "Цена", accessor: "price", align: "left" },

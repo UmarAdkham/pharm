@@ -55,10 +55,11 @@ import WholesaleAddPharmacy from "layouts/dashboard-ws/components/ws-add-pharmac
 import WholesaleProductDetails from "layouts/dashboard-ws/components/ws-product-report";
 import WholesaleAddBalanceInStock from "layouts/dashboard-ws/components/ws-add-balance-in-stock";
 import DeputyDirectorEditProductExpenses from "layouts/dashboard-dd/components/dd-edit-product-expenses";
+import ProductManagerProducts from "layouts/dashboard-pm/components/pm-products";
 
 const roleBasedRoutes = [
   {
-    role: userRoles.DIRECTOR,
+    role: [userRoles.DIRECTOR],
     path: "director",
     routes: [
       { path: "dashboard", component: <DirectorDashboard /> },
@@ -183,7 +184,7 @@ const roleBasedRoutes = [
     ],
   },
   {
-    role: userRoles.PRODUCT_MANAGER,
+    role: [userRoles.PRODUCT_MANAGER],
     path: "pm",
     routes: [
       { path: "dashboard", component: <ProductManagerDashboard /> },
@@ -196,7 +197,7 @@ const roleBasedRoutes = [
       { path: "add-product-category", component: <DeputyDirectorAddProductCategory /> },
       { path: "manufacturer-companies", component: <DeputyDirectorManufacturerCompanies /> },
       { path: "add-manufacturer-company", component: <DeputyDirectorAddManufacturerCompany /> },
-      { path: "products", component: <DeputyDirectorProducts /> },
+      { path: "products", component: <ProductManagerProducts /> },
       { path: "add-product", component: <DeputyDirectorAddProduct /> },
       { path: "regions", component: <DeputyDirectorRegions /> },
       { path: "add-region", component: <DeputyDirectorAddRegion /> },
@@ -278,7 +279,7 @@ const roleBasedRoutes = [
     ],
   },
   {
-    role: userRoles.FIELD_FORCE_MANAGER,
+    role: [userRoles.FIELD_FORCE_MANAGER],
     path: "ff",
     routes: [
       { path: "dashboard", component: <FieldForceManagerDashboard /> },
@@ -302,7 +303,7 @@ const roleBasedRoutes = [
     ],
   },
   {
-    role: userRoles.REGIONAL_MANAGER,
+    role: [userRoles.REGIONAL_MANAGER],
     path: "rm",
     routes: [
       { path: "dashboard", component: <RegionalManagerDashboard /> },
@@ -333,7 +334,7 @@ const roleBasedRoutes = [
     ],
   },
   {
-    role: userRoles.MEDICAL_REPRESENTATIVE,
+    role: [userRoles.MEDICAL_REPRESENTATIVE],
     path: "mr",
     routes: [{ path: "dashboard", component: <MedicalRepresentativeDashboard /> }],
     sideNav: [
@@ -375,7 +376,7 @@ const roleBasedRoutes = [
     ],
   },
   {
-    role: userRoles.HEAD_OF_ORDERS,
+    role: [userRoles.HEAD_OF_ORDERS],
     path: "head",
     routes: [
       { path: "dashboard", component: <HeadOfOrdersDashboard /> },
@@ -401,7 +402,7 @@ const roleBasedRoutes = [
     ],
   },
   {
-    role: userRoles.WHOLESALE_MANAGER,
+    role: [userRoles.WHOLESALE_MANAGER],
     path: "ws",
     routes: [
       { path: "dashboard", component: <WholesaleManagerDashboard /> },
