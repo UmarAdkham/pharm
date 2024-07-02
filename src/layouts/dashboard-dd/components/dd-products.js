@@ -82,7 +82,7 @@ function DeputyDirectorProducts() {
           <Grid container spacing={3}>
             <Grid item xs={12} lg={12}>
               <DeputyDirectorTable
-                path={"common/get-product"}
+                path={"dd/get-products"}
                 tableType="products"
                 title={"Продукты"}
                 navigatePath="/dd/add-product"

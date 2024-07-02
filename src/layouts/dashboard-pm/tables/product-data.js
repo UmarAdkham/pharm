@@ -5,13 +5,10 @@ import MDTypography from "components/MDTypography";
 import ProductModal from "layouts/dashboard-dd/dialogs/modal/shared/product-modal";
 import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
 import { IconButton } from "@mui/material";
-import AccountBalanceWalletTwoToneIcon from "@mui/icons-material/AccountBalanceWalletTwoTone";
-import { useNavigate } from "react-router-dom";
 
 export default function useProductData(apiPath, id1, id2) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
-  const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
   const [productData, setProductData] = useState({
@@ -56,18 +53,13 @@ export default function useProductData(apiPath, id1, id2) {
           },
         });
 
-        fetchedData.sort((a, b) => a.id - b.id);
-
         const columns = [
           { Header: "Название", accessor: "name", align: "left" },
           { Header: "Цена", accessor: "price", align: "left" },
           { Header: "Произ. цена", accessor: "discount_price", align: "left" },
           { Header: "Производитель", accessor: "man_company", align: "left" },
           { Header: "Категория", accessor: "category", align: "left" },
-          { Header: "Расходы на маркетинг", accessor: "marketing_expenses", align: "left" },
-          { Header: "Расходы на зарплату", accessor: "salary_expenses", align: "left" },
-          { Header: "Внести расходы", accessor: "set_expenses", align: "left" },
-          { Header: "Изменить", accessor: "update", align: "right" },
+          { Header: "Действия", accessor: "action", align: "right" },
         ];
 
         const rows = fetchedData
@@ -99,27 +91,7 @@ export default function useProductData(apiPath, id1, id2) {
                 {product.category.name}
               </MDTypography>
             ),
-            marketing_expenses: (
-              <MDTypography variant="caption" fontWeight="medium">
-                {product.marketing_expenses || "-"}
-              </MDTypography>
-            ),
-            salary_expenses: (
-              <MDTypography variant="caption" fontWeight="medium">
-                {product.salary_expenses || "-"}
-              </MDTypography>
-            ),
-            set_expenses: (
-              <IconButton
-                onClick={() => {
-                  navigate("/dd/edit-product-expenses", { state: product.id });
-                }}
-                aria-label="update"
-              >
-                <AccountBalanceWalletTwoToneIcon />
-              </IconButton>
-            ),
-            update: (
+            action: (
               <div>
                 <IconButton
                   onClick={() => {

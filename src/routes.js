@@ -54,6 +54,7 @@ import WholesaleAddSale from "layouts/dashboard-ws/components/ws-add-sale";
 import WholesaleAddPharmacy from "layouts/dashboard-ws/components/ws-add-pharmacy";
 import WholesaleProductDetails from "layouts/dashboard-ws/components/ws-product-report";
 import WholesaleAddBalanceInStock from "layouts/dashboard-ws/components/ws-add-balance-in-stock";
+import DeputyDirectorEditProductExpenses from "layouts/dashboard-dd/components/dd-edit-product-expenses";
 
 const roleBasedRoutes = [
   {
@@ -101,6 +102,7 @@ const roleBasedRoutes = [
       { path: "add-manufacturer-company", component: <DeputyDirectorAddManufacturerCompany /> },
       { path: "products", component: <DeputyDirectorProducts /> },
       { path: "add-product", component: <DeputyDirectorAddProduct /> },
+      { path: "edit-product-expenses", component: <DeputyDirectorEditProductExpenses /> },
       { path: "regions", component: <DeputyDirectorRegions /> },
       { path: "add-region", component: <DeputyDirectorAddRegion /> },
       { path: "medical-organizations", component: <DeputyDirectorMedicalOrganizations /> },
