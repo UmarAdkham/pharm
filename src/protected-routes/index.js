@@ -5,7 +5,11 @@ import PropTypes from "prop-types";
 
 const ProtectedRoutes = ({ allowedRoles }) => {
   const { isAuthenticated, userRole } = useSelector((state) => state.auth);
-
+  console.log(allowedRoles);
+  console.log(typeof allowedRoles);
+  console.log(userRole);
+  console.log(allowedRoles.includes(userRole));
+  console.log("==================================");
   return isAuthenticated && allowedRoles.includes(userRole) ? <Outlet /> : <Navigate to="/" />;
 };
 

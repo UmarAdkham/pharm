@@ -84,7 +84,7 @@ export default function App() {
         <Route path="/sign-up" element={<SignUp />} />
 
         {roleBasedRoutes.map(({ role, path, routes }) => (
-          <Route key={role} element={<ProtectedRoutes allowedRoles={[role]} />}>
+          <Route key={role} element={<ProtectedRoutes allowedRoles={role} />}>
             <Route path={`/${path}`} element={<DashboardWrapper />}>
               {routes.map(({ path: routePath, component }) => (
                 <Route key={routePath} path={routePath} element={component} />

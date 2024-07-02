@@ -25,7 +25,7 @@ function DashboardWrapper() {
   const { pathname } = useLocation();
   const userRole = useSelector((state) => state.auth.userRole); // Get user role from Redux
 
-  const roleRoutes = roleBasedRoutes.find((route) => route.role === userRole);
+  const roleRoutes = roleBasedRoutes.find((route) => route.role[0] === userRole);
 
   const handleOnMouseEnter = () => {
     if (miniSidenav && !onMouseEnter) {
