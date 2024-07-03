@@ -108,8 +108,6 @@ export default function useMrData(apiPath, status, navigatePath, onRowClick, reg
             </div>
           ),
           onClick: () => {
-            console.log("Click", navigatePath);
-
             onRowClick(navigatePath, mr);
           },
         }));

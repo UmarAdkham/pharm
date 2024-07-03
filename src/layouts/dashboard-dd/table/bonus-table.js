@@ -38,7 +38,17 @@ function DeputyDirectorBonusTable({ med_rep_id, med_rep_name }) {
   const [doctors, setDoctors] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
-  const { columns, rows } = useBonusData(med_rep_id, month, selectedProduct, selectedDoctor);
+  const [totalBonus, setTotalBonus] = useState(0);
+  const handleTotalBonus = (value) => {
+    setTotalBonus(value);
+  };
+  const { columns, rows } = useBonusData(
+    med_rep_id,
+    month,
+    selectedProduct,
+    selectedDoctor,
+    handleTotalBonus
+  );
 
   useEffect(() => {
     async function fetchData() {
@@ -65,7 +75,7 @@ function DeputyDirectorBonusTable({ med_rep_id, med_rep_name }) {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            {med_rep_name}
+            {med_rep_name}: Общая сумма бонуса {totalBonus}
           </MDTypography>
         </MDBox>
         <MDBox display="flex" alignItems="center">

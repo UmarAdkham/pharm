@@ -3,7 +3,13 @@ import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
 
-export default function useBonusData(med_rep_id, month, selectedProduct, selectedDoctor) {
+export default function useBonusData(
+  med_rep_id,
+  month,
+  selectedProduct,
+  selectedDoctor,
+  handleTotalBonus
+) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -26,6 +32,12 @@ export default function useBonusData(med_rep_id, month, selectedProduct, selecte
           );
         });
 
+        const totalBonus = response.data.reduce((sum, item) => {
+          const bonusAmount = item.bonus_amount;
+          return sum + bonusAmount;
+        }, 0);
+        handleTotalBonus(totalBonus);
+
         const columns = [
           { Header: "Доктор", accessor: "doctor", align: "left" },
           { Header: "Продукт  ", accessor: "product", align: "left" },
@@ -36,6 +48,7 @@ export default function useBonusData(med_rep_id, month, selectedProduct, selecte
         ];
 
         const rows = reports.map((report) => ({
+          ...report,
           doctor: (
             <MDTypography variant="caption" fontWeight="medium">
               {report.doctor_name}

@@ -14,7 +14,6 @@ import DeputyDirectorBonusTable from "../table/bonus-table";
 
 function DeputyDirectorBonus() {
   const location = useLocation();
-  console.log(location.state);
   const { id, full_name } = location.state || {};
 
   return (
