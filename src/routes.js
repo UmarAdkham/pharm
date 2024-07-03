@@ -57,6 +57,8 @@ import WholesaleAddBalanceInStock from "layouts/dashboard-ws/components/ws-add-b
 import DeputyDirectorEditProductExpenses from "layouts/dashboard-dd/components/dd-edit-product-expenses";
 import ProductManagerProducts from "layouts/dashboard-pm/components/pm-products";
 import DeputyDirectorProcessReports from "layouts/dashboard-dd/components/dd-process-reports";
+import DeputyDirectorBonus from "layouts/dashboard-dd/components/dd-bonus";
+import DeputyDirectorBonusMrs from "layouts/dashboard-dd/components/dd-bonus-mrs";
 
 const roleBasedRoutes = [
   {
@@ -118,6 +120,8 @@ const roleBasedRoutes = [
       { path: "add-doctor", component: <DeputyDirectorAddDoctor /> },
       { path: "mr-info", component: <DeputyDirectorMRInfo /> },
       { path: "process-reports", component: <DeputyDirectorProcessReports /> },
+      { path: "bonus", component: <DeputyDirectorBonusMrs /> },
+      { path: "bonus-report", component: <DeputyDirectorBonus /> },
     ],
     sideNav: [
       {
@@ -189,6 +193,13 @@ const roleBasedRoutes = [
         key: "dd-process-reports",
         icon: <Icon fontSize="small">summarize_two_tone_icon</Icon>,
         route: "process-reports",
+      },
+      {
+        type: "collapse",
+        name: "Бонусы",
+        key: "dd-bonus",
+        icon: <Icon fontSize="small">account_balance_wallet_icon</Icon>,
+        route: "bonus",
       },
     ],
   },

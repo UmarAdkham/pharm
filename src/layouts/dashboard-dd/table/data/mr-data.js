@@ -46,8 +46,11 @@ export default function useMrData(apiPath, status, navigatePath, onRowClick, reg
           { Header: "Полное имя", accessor: "full_name", align: "left" },
           { Header: "Регион", accessor: "region", align: "left" },
           { Header: "Статус", accessor: "status", align: "center" },
-          { Header: "Действия", accessor: "actions", align: "center" },
         ];
+
+        if (navigatePath === "/dd/mr-info") {
+          columns.push({ Header: "Действия", accessor: "actions", align: "center" });
+        }
 
         const rows = mrs.map((mr) => ({
           username: (
@@ -70,7 +73,7 @@ export default function useMrData(apiPath, status, navigatePath, onRowClick, reg
               {mr.status}
             </MDTypography>
           ),
-          actions: (
+          actions: navigatePath === "/dd/mr-info" && (
             <div>
               <Tooltip title="Добавить уведомение">
                 <IconButton
@@ -105,6 +108,8 @@ export default function useMrData(apiPath, status, navigatePath, onRowClick, reg
             </div>
           ),
           onClick: () => {
+            console.log("Click", navigatePath);
+
             onRowClick(navigatePath, mr);
           },
         }));
@@ -116,7 +121,7 @@ export default function useMrData(apiPath, status, navigatePath, onRowClick, reg
     }
 
     fetchUsers();
-  }, [accessToken, apiPath, onRowClick, region, ff_manager]);
+  }, [accessToken, apiPath, onRowClick, navigatePath, region, ff_manager]);
 
   return data;
 }

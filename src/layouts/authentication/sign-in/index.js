@@ -46,7 +46,6 @@ function Basic() {
         password: password,
       });
       // On successful login
-      console.log(response);
       dispatch(
         setCredentials({
           accessToken: response.data.access_token,

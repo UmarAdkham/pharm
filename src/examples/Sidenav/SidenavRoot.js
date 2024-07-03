@@ -71,9 +71,23 @@ export default styled(Drawer)(({ theme, ownerState, isVisible }) => {
       border: "none",
       ...(miniSidenav ? drawerCloseStyles() : drawerOpenStyles()),
       display: isVisible ? "block" : "none", // Ensure the visibility is controlled here
-      overflow: "hidden", // Added to prevent horizontal scrolling
+      overflowY: "auto", // Enable vertical scrolling
+      overflowX: "hidden", // Prevent horizontal scrolling
       textOverflow: "ellipsis", // Truncate with ellipsis
       whiteSpace: "nowrap", // Keep text in a single line
+      "&::-webkit-scrollbar": {
+        width: "4px",
+      },
+      "&::-webkit-scrollbar-track": {
+        background: "#f1f1f1",
+      },
+      "&::-webkit-scrollbar-thumb": {
+        background: "#878787", // Blue color
+        borderRadius: "10px",
+      },
+      "&::-webkit-scrollbar-thumb:hover": {
+        background: "#0056b3",
+      },
     },
   };
 });
