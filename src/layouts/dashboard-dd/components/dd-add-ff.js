@@ -28,7 +28,7 @@ function DeputyDirectorAddFieldForce() {
   const [message, setMessage] = useState({ color: "", content: "" });
   const user = location.state || {};
 
-  const path = userRole === "deputy_director" ? "dd" : "pm"; // different api for register
+  const path = userRole === userRoles.DEPUTY_DIRECTOR ? "dd" : "pm"; // different api for register
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission

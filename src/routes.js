@@ -230,13 +230,13 @@ const roleBasedRoutes = [
         icon: <Icon fontSize="small">person</Icon>,
         route: "users",
       },
-      // {
-      //   type: "collapse",
-      //   name: "Медицинские представители",
-      //   key: "dd-mrs",
-      //   icon: <Icon fontSize="small">support_agent</Icon>,
-      //   route: "mrs",
-      // },
+      {
+        type: "collapse",
+        name: "Медицинские представители",
+        key: "pm-mrs",
+        icon: <Icon fontSize="small">support_agent</Icon>,
+        route: "mrs",
+      },
       {
         type: "collapse",
         name: "Регионы",

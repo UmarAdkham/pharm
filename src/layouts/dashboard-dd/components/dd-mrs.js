@@ -14,9 +14,11 @@ import MedicalRepresentativeTable from "layouts/mr-table";
 import UsersTable from "layouts/user-table";
 import { Outlet, useNavigate } from "react-router-dom";
 import DeputyDirectorTable from "../table";
+import { useSelector } from "react-redux";
 
 // eslint-disable-next-line react/prop-types
 function DeputyDirectorMrs({ children }) {
+  const { userRole, username } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   return (
     <DashboardLayout>
@@ -25,7 +27,11 @@ function DeputyDirectorMrs({ children }) {
           <Grid container spacing={3}>
             <Grid item xs={12} lg={12}>
               <DeputyDirectorTable
-                path={"common/get-users"}
+                path={
+                  userRole === userRoles.DEPUTY_DIRECTOR
+                    ? "common/get-users"
+                    : `common/get-users-by-username?username=${username}`
+                }
                 status={userRoles.MEDICAL_REPRESENTATIVE}
                 title={`Медицинские представители`}
                 tableType="mrs"

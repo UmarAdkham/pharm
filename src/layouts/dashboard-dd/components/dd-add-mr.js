@@ -36,7 +36,7 @@ function DeputyDirectorAddMedicalRepresentative() {
   const [message, setMessage] = useState({ color: "", content: "" }); // State to store the message to be displayed
   const user = location.state || {}; // Retrieve user information from the location state
 
-  const path = userRole === "deputy_director" ? "dd" : "pm"; // different api for register
+  const path = userRole === userRoles.DEPUTY_DIRECTOR ? "dd" : "pm"; // different api for register
 
   // useEffect to fetch Field Force Managers when the component mounts or when accessToken changes
   useEffect(() => {
