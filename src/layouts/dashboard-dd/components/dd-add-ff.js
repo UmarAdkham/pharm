@@ -21,12 +21,14 @@ import userRoles from "constants/userRoles";
 function DeputyDirectorAddFieldForce() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { accessToken } = useSelector((state) => state.auth);
+  const { accessToken, userRole } = useSelector((state) => state.auth);
   const [full_name, setFullname] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
   const user = location.state || {};
+
+  const path = userRole === "deputy_director" ? "dd" : "pm"; // different api for register
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission
@@ -43,11 +45,15 @@ function DeputyDirectorAddFieldForce() {
 
     try {
       // Call the API with authorization header
-      const response = await axios.post("https://it-club.uz/dd/register-for-dd", userData, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axios.post(
+        `https://it-club.uz/${path}/register-for-${path}`,
+        userData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
 
       // Handle a successful response
       setMessage({ color: "success", content: "Пользователь успешно зарегистрирован!" });

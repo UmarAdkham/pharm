@@ -46,8 +46,15 @@ function Basic() {
         password: password,
       });
       // On successful login
+      console.log(response);
       dispatch(
-        setCredentials({ accessToken: response.data.access_token, userRole: response.data.status })
+        setCredentials({
+          accessToken: response.data.access_token,
+          userRole: response.data.status,
+          username,
+          userId: response.data.id,
+          regionId: response.data.region_id,
+        })
       );
 
       setMessage({ color: "success", content: "Вход выполнен успешно! Перенаправление..." });

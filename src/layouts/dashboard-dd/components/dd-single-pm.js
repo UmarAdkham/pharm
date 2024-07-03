@@ -7,12 +7,22 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import MDBox from "components/MDBox";
 import userRoles from "constants/userRoles";
 import getFullStatusName, { getFullStatusTranslation } from "../../../constants/getFullStatusName";
+import { useSelector } from "react-redux";
 
 const DeputyDirectorSinglePM = () => {
   const [status, setStatus] = useState(userRoles.FIELD_FORCE_MANAGER);
   const location = useLocation();
   const navigate = useNavigate();
-  const user = location.state || {};
+
+  const reduxUser = useSelector((state) => ({
+    id: state.auth.userId,
+    username: state.auth.username,
+    region: {
+      id: state.auth.regionId,
+    },
+  }));
+
+  const user = location.state || reduxUser;
 
   const handleAddStatus = () => {
     let path;
@@ -38,7 +48,6 @@ const DeputyDirectorSinglePM = () => {
                   <Box display="flex" alignItems="center" mb={3}>
                     <Avatar src={""} sx={{ width: 56, height: 56, mr: 2 }} />
                     <Box>
-                      <Typography variant="h6">{user.full_name}</Typography>
                       <Typography variant="body2">
                         {getFullStatusTranslation(user.status)}
                       </Typography>

@@ -198,6 +198,7 @@ const roleBasedRoutes = [
     routes: [
       { path: "dashboard", component: <ProductManagerDashboard /> },
       // { path: "add", component: <ProductManagerAdd /> },
+      { path: "users", component: <DeputyDirectorSinglePM /> },
       { path: "mrs", component: <DeputyDirectorMrs /> },
       { path: "add-notification", component: <DeputyDirectorAddNotification /> },
       { path: "categories", component: <DeputyDirectorCategories /> },
@@ -222,13 +223,13 @@ const roleBasedRoutes = [
       { path: "mr-info", component: <DeputyDirectorMRInfo /> },
     ],
     sideNav: [
-      // {
-      //   type: "collapse",
-      //   name: "Добавить мед-представителя",
-      //   key: "pm-add",
-      //   icon: <Icon fontSize="small">add</Icon>,
-      //   route: "add",
-      // },
+      {
+        type: "collapse",
+        name: "Мои подопечные",
+        key: "pm-users",
+        icon: <Icon fontSize="small">person</Icon>,
+        route: "users",
+      },
       // {
       //   type: "collapse",
       //   name: "Медицинские представители",

@@ -25,7 +25,7 @@ import userRoles from "constants/userRoles";
 function DeputyDirectorAddMedicalRepresentative() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { accessToken } = useSelector((state) => state.auth);
+  const { accessToken, userRole } = useSelector((state) => state.auth);
   const [full_name, setFullname] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -35,6 +35,8 @@ function DeputyDirectorAddMedicalRepresentative() {
   const [regionalManagers, setRegionalManagers] = useState([]); // State to store the list of Regional Managers
   const [message, setMessage] = useState({ color: "", content: "" }); // State to store the message to be displayed
   const user = location.state || {}; // Retrieve user information from the location state
+
+  const path = userRole === "deputy_director" ? "dd" : "pm"; // different api for register
 
   // useEffect to fetch Field Force Managers when the component mounts or when accessToken changes
   useEffect(() => {
@@ -107,11 +109,15 @@ function DeputyDirectorAddMedicalRepresentative() {
 
     try {
       // Call the API with authorization header
-      const response = await axios.post("https://it-club.uz/dd/register-for-dd", userData, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`, // Set the authorization header with the access token
-        },
-      });
+      const response = await axios.post(
+        `https://it-club.uz/${path}/register-for-${path}`,
+        userData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`, // Set the authorization header with the access token
+          },
+        }
+      );
 
       // Handle a successful response
       setMessage({ color: "success", content: "Пользователь успешно зарегистрирован!" });
