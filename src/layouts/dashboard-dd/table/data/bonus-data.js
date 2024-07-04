@@ -46,6 +46,7 @@ export default function useBonusData(
           { Header: "Факт_процент", accessor: "fact_percent", align: "left" },
           { Header: "Бонус", accessor: "bonus", align: "left" },
           { Header: "Бонус выплачен", accessor: "bonus_paid", align: "left" },
+          { Header: "Остаток бонуса", accessor: "bonus_left", align: "left" },
         ];
 
         const rows = reports.map((report) => ({
@@ -83,6 +84,11 @@ export default function useBonusData(
           bonus_paid: (
             <MDTypography variant="caption" fontWeight="medium">
               {report.bonus_payed}
+            </MDTypography>
+          ),
+          bonus_left: (
+            <MDTypography variant="caption" fontWeight="medium">
+              {report.bonus_amount - report.bonus_payed}
             </MDTypography>
           ),
         }));
