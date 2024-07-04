@@ -6,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { format } from "date-fns";
 
-export default function usePharmacyPlanData(apiPath, openDialog, deleteDialogOpen) {
+export default function usePharmacyPlanData(apiPath, openDialog, deleteDialogOpen, selectedMonth) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -21,6 +21,10 @@ export default function usePharmacyPlanData(apiPath, openDialog, deleteDialogOpe
 
         const pharmacyPlans = response.data;
 
+        const filteredData = selectedMonth
+          ? pharmacyPlans.filter((plan) => format(new Date(plan.date), "MM") === selectedMonth)
+          : pharmacyPlans;
+
         const columns = [
           { Header: "Аптека", accessor: "pharmacy", align: "left" },
           { Header: "Дата", accessor: "date", align: "left" },
@@ -28,7 +32,7 @@ export default function usePharmacyPlanData(apiPath, openDialog, deleteDialogOpe
           { Header: "Удалить", accessor: "delete", align: "center" },
         ];
 
-        const rows = pharmacyPlans.map((plan) => ({
+        const rows = filteredData.map((plan) => ({
           id: plan.id,
           pharmacy: (
             <MDTypography variant="caption" fontWeight="medium">
@@ -82,7 +86,7 @@ export default function usePharmacyPlanData(apiPath, openDialog, deleteDialogOpe
     }
 
     fetchPharmacyPlans();
-  }, [accessToken, apiPath, openDialog, deleteDialogOpen]);
+  }, [accessToken, apiPath, openDialog, deleteDialogOpen, selectedMonth]);
 
   const deletePharmacyPlan = (planId) => {
     setData((prevData) => ({

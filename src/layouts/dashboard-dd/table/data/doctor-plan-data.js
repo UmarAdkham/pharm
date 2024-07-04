@@ -6,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { format } from "date-fns";
 
-export default function useDoctorPlanData(apiPath, openDialog, deleteDialogOpen) {
+export default function useDoctorPlanData(apiPath, openDialog, deleteDialogOpen, selectedMonth) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -19,6 +19,12 @@ export default function useDoctorPlanData(apiPath, openDialog, deleteDialogOpen)
           },
         });
 
+        const filteredData = selectedMonth
+          ? data.filter(
+              (plan) => new Date(plan.date).getMonth() + 1 === parseInt(selectedMonth, 10)
+            )
+          : data;
+
         const columns = [
           { Header: "Врач", accessor: "doctor", align: "left" },
           { Header: "Дата", accessor: "date", align: "left" },
@@ -26,7 +32,7 @@ export default function useDoctorPlanData(apiPath, openDialog, deleteDialogOpen)
           { Header: "Удалить", accessor: "delete", align: "center" },
         ];
 
-        const rows = data.map((plan) => ({
+        const rows = filteredData.map((plan) => ({
           id: plan.id,
           doctor: (
             <MDTypography variant="caption" fontWeight="medium">
@@ -80,7 +86,7 @@ export default function useDoctorPlanData(apiPath, openDialog, deleteDialogOpen)
     }
 
     fetchDoctorPlans();
-  }, [accessToken, apiPath, openDialog]);
+  }, [accessToken, apiPath, openDialog, selectedMonth]);
 
   const deleteDoctorPlan = async (planId) => {
     setData((prevData) => ({

@@ -31,6 +31,7 @@ import ConfirmDialog from "../dialogs/confirm-dialog";
 import NotificationDialog from "../dialogs/notification-dialog";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import ManagersMenu from "../components/managers-menu";
+import months from "../../../constants/months"; // Import the Russian month names
 
 function DeputyDirectorTable({
   path,
@@ -60,6 +61,8 @@ function DeputyDirectorTable({
 
   const [region, setRegion] = useState("");
   const [ff_manager, setFf_manager] = useState("");
+  const currentMonth = new Date().getMonth() + 1;
+  const [selectedMonth, setSelectedMonth] = useState(currentMonth.toString().padStart(2, "0")); // State to store selected month
 
   const handleDeleteDialogOpen = useCallback((planId, planType) => {
     setDeleteDialog({ isOpen: true, planId, planType });
@@ -110,6 +113,10 @@ function DeputyDirectorTable({
     setSelectedPharmacyId(null);
   }, []);
 
+  const handleMonthChange = (event) => {
+    setSelectedMonth(event.target.value);
+  };
+
   let tableData = { columns: [], rows: [] };
   let deletePharmacyPlanFunction = () => {};
   let deleteDoctorPlanFunction = () => {};
@@ -147,13 +154,14 @@ function DeputyDirectorTable({
       break;
     case "pharmacy-plan":
       const pharmacyPlanData =
-        usePharmacyPlanData(path, handleVisitDialogOpen, handleDeleteDialogOpen) || {};
+        usePharmacyPlanData(path, handleVisitDialogOpen, handleDeleteDialogOpen, selectedMonth) ||
+        {};
       tableData = pharmacyPlanData.data || tableData;
       deletePharmacyPlanFunction = pharmacyPlanData.deletePharmacyPlan || (() => {});
       break;
     case "doctor-plan":
       const doctorPlanData =
-        useDoctorPlanData(path, handleVisitDialogOpen, handleDeleteDialogOpen) || {};
+        useDoctorPlanData(path, handleVisitDialogOpen, handleDeleteDialogOpen, selectedMonth) || {};
       tableData = doctorPlanData.data || tableData;
       deleteDoctorPlanFunction = doctorPlanData.deleteDoctorPlan || (() => {});
       break;
@@ -183,6 +191,23 @@ function DeputyDirectorTable({
           </MDTypography>
         </MDBox>
         <MDBox display="flex" alignItems="center">
+          {(tableType === "doctor-plan" || tableType === "pharmacy-plan") && (
+            <FormControl variant="outlined" sx={{ minWidth: 120, marginRight: 2 }}>
+              <InputLabel>Месяц</InputLabel>
+              <Select
+                value={selectedMonth}
+                onChange={handleMonthChange}
+                label="Месяц"
+                sx={{ height: "45px" }}
+              >
+                {months.map((month) => (
+                  <MenuItem key={month.value} value={month.value}>
+                    {month.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
           {showFilters && (
             <>
               {selectDatas?.[0] && <SelectCategory selectDatas={selectDatas[0]} />}
