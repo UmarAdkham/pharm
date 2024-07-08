@@ -96,15 +96,19 @@ export default function useBonusData(
           ),
           action: (
             <Icon
-              onClick={() =>
-                navigate("/dd/add-bonus", {
-                  state: {
-                    bonusId: 25, // hardcoded (waiting for api change)
-                    totalBonus: report.bonus_amount,
-                    remainingBonus: report.bonus_amount - report.bonus_payed,
-                  },
-                })
-              }
+              onClick={() => {
+                if (report.bonus_id === null) {
+                  alert(`Бонус еще не установлен`);
+                } else {
+                  navigate("/dd/add-bonus", {
+                    state: {
+                      bonusId: report.bonus_id,
+                      totalBonus: report.bonus_amount,
+                      remainingBonus: report.bonus_amount - report.bonus_payed,
+                    },
+                  });
+                }
+              }}
               style={{ cursor: "pointer" }}
             >
               add_circle
