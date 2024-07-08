@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
+import Icon from "@mui/material/Icon";
+import { useNavigate } from "react-router-dom";
 
 export default function useBonusData(
   med_rep_id,
@@ -12,6 +14,7 @@ export default function useBonusData(
 ) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchBonuses() {
@@ -40,17 +43,17 @@ export default function useBonusData(
 
         const columns = [
           { Header: "Доктор", accessor: "doctor", align: "left" },
-          { Header: "Продукт  ", accessor: "product", align: "left" },
+          { Header: "Продукт", accessor: "product", align: "left" },
           { Header: "Месячный план", accessor: "monthly_plan", align: "left" },
           { Header: "Факт", accessor: "fact", align: "left" },
-          { Header: "Факт_процент", accessor: "fact_percent", align: "left" },
+          { Header: "Факт %", accessor: "fact_percent", align: "left" },
           { Header: "Бонус", accessor: "bonus", align: "left" },
           { Header: "Бонус выплачен", accessor: "bonus_paid", align: "left" },
           { Header: "Остаток бонуса", accessor: "bonus_left", align: "left" },
+          { Header: "Действие", accessor: "action", align: "center" },
         ];
 
         const rows = reports.map((report) => ({
-          ...report,
           doctor: (
             <MDTypography variant="caption" fontWeight="medium">
               {report.doctor_name}
@@ -91,6 +94,18 @@ export default function useBonusData(
               {report.bonus_amount - report.bonus_payed}
             </MDTypography>
           ),
+          action: (
+            <Icon
+              onClick={() =>
+                navigate("/dd/add-bonus", {
+                  state: { bonusId: 18 }, // hardcoded (waiting for api change)
+                })
+              }
+              style={{ cursor: "pointer" }}
+            >
+              add_circle
+            </Icon>
+          ),
         }));
 
         setData({ columns, rows });
@@ -100,7 +115,7 @@ export default function useBonusData(
     }
 
     fetchBonuses();
-  }, [accessToken, med_rep_id, month, selectedProduct, selectedDoctor]);
+  }, [accessToken, med_rep_id, month, selectedProduct, selectedDoctor, handleTotalBonus, navigate]);
 
   return data;
 }

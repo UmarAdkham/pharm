@@ -59,6 +59,7 @@ import ProductManagerProducts from "layouts/dashboard-pm/components/pm-products"
 import DeputyDirectorProcessReports from "layouts/dashboard-dd/components/dd-process-reports";
 import DeputyDirectorBonus from "layouts/dashboard-dd/components/dd-bonus";
 import DeputyDirectorBonusMrs from "layouts/dashboard-dd/components/dd-bonus-mrs";
+import DeputyDirectorAddBonus from "layouts/dashboard-dd/components/dd-add-bonus";
 
 const roleBasedRoutes = [
   {
@@ -122,6 +123,7 @@ const roleBasedRoutes = [
       { path: "process-reports", component: <DeputyDirectorProcessReports /> },
       { path: "bonus", component: <DeputyDirectorBonusMrs /> },
       { path: "bonus-report", component: <DeputyDirectorBonus /> },
+      { path: "add-bonus", component: <DeputyDirectorAddBonus /> },
     ],
     sideNav: [
       {
