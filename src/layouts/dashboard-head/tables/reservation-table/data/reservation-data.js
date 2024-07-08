@@ -8,8 +8,10 @@ import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import EditIcon from "@mui/icons-material/Edit";
 import axiosInstance from "services/axiosInstance";
 import ExpiryDateDialog from "layouts/dashboard-head/dialogs/edit-expiry-date-dialog";
+import { useNavigate } from "react-router-dom";
 
 export default function useReservationData(apiPath) {
+  const navigate = useNavigate();
   const [data, setData] = useState({ columns: [], rows: [] });
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
@@ -103,9 +105,25 @@ export default function useReservationData(apiPath) {
           </MDTypography>
         ),
         discount: (
-          <MDTypography variant="caption" fontWeight="medium">
-            {`${rsrv.discount} %`}
-          </MDTypography>
+          <>
+            <MDTypography variant="caption" fontWeight="medium">
+              {`${rsrv.discount} %`}
+            </MDTypography>
+            <Tooltip title="Установить скидку">
+              <IconButton
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#e0f2f1",
+                  },
+                }}
+                onClick={() => {
+                  navigate("/head/set-discount", { state: rsrv.id });
+                }}
+              >
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+          </>
         ),
         status: getStatusIndicator(rsrv.checked),
         check: <Switch checked={rsrv.checked} onChange={() => confirmToggle(rsrv)} />,

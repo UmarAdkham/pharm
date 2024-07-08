@@ -60,6 +60,7 @@ import DeputyDirectorProcessReports from "layouts/dashboard-dd/components/dd-pro
 import DeputyDirectorBonus from "layouts/dashboard-dd/components/dd-bonus";
 import DeputyDirectorBonusMrs from "layouts/dashboard-dd/components/dd-bonus-mrs";
 import DeputyDirectorAddBonus from "layouts/dashboard-dd/components/dd-add-bonus";
+import HeadSetDiscount from "layouts/dashboard-head/components/head-set-discount";
 
 const roleBasedRoutes = [
   {
@@ -406,6 +407,7 @@ const roleBasedRoutes = [
       { path: "factory-warehouses", component: <HeadOfOrdersFactoryWarehouses /> },
       { path: "add-warehouse-data", component: <HeadofOrdersAddWarehouseData /> },
       { path: "reservations", component: <HeadReservations /> },
+      { path: "set-discount", component: <HeadSetDiscount /> },
     ],
     sideNav: [
       {
