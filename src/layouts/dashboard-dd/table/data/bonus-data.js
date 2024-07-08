@@ -98,7 +98,11 @@ export default function useBonusData(
             <Icon
               onClick={() =>
                 navigate("/dd/add-bonus", {
-                  state: { bonusId: 18 }, // hardcoded (waiting for api change)
+                  state: {
+                    bonusId: 25, // hardcoded (waiting for api change)
+                    totalBonus: report.bonus_amount,
+                    remainingBonus: report.bonus_amount - report.bonus_payed,
+                  },
                 })
               }
               style={{ cursor: "pointer" }}

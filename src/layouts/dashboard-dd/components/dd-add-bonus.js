@@ -21,11 +21,10 @@ function DeputyDirectorAddBonus() {
   const navigate = useNavigate();
   const { accessToken } = useSelector((state) => state.auth);
   const location = useLocation();
-  const { bonusId } = location.state || {}; // Add a default value
+  const { bonusId, totalBonus, remainingBonus } = location.state || {}; // Add a default value
 
   const [amount, setAmount] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
-
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -34,6 +33,14 @@ function DeputyDirectorAddBonus() {
       setMessage({
         color: "error",
         content: "Бонус ID не найден.",
+      });
+      return;
+    }
+
+    if (parseFloat(amount) > remainingBonus) {
+      setMessage({
+        color: "error",
+        content: "Сумма бонуса не может превышать остаток бонуса.",
       });
       return;
     }
@@ -88,6 +95,12 @@ function DeputyDirectorAddBonus() {
           {message.content && <Alert severity={message.color}>{message.content}</Alert>}
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <MDBox mb={2}>
+              <MDTypography variant="body1" color="textPrimary">
+                Общий бонус: {totalBonus}
+              </MDTypography>
+              <MDTypography variant="body1" color="textPrimary" mb={2}>
+                Остаток: {remainingBonus}
+              </MDTypography>
               <MDInput
                 type="number"
                 label="Сумма бонуса"
