@@ -13,28 +13,30 @@ const OverallValues = ({ overall }) => {
         </Grid>
         <Grid item>
           <Typography variant="button" fontWeight="medium">
-            План общ: {overall.monthlyPlan} <span style={{ textTransform: "lowercase" }}>сум</span>
+            План общ: {overall.monthlyPlan?.toLocaleString("ru-RU")}{" "}
+            <span style={{ textTransform: "lowercase" }}>сум</span>
           </Typography>
         </Grid>
         <Grid item>
           <Typography variant="button" fontWeight="medium">
-            Факт общ: {overall.fact} <span style={{ textTransform: "lowercase" }}>сум</span> (
+            Факт общ: {overall.fact?.toLocaleString("ru-RU")}{" "}
+            <span style={{ textTransform: "lowercase" }}>сум</span> (
             {overall.factPercent?.toFixed(2)}%)
           </Typography>
         </Grid>
         <Grid item>
           <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#f2cc45", p: 1 }}>
-            Бонус общ: {overall.bonus}
+            Бонус общ: {overall.bonus?.toLocaleString("ru-RU")}
           </Typography>
         </Grid>
         <Grid item>
           <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#81c784", p: 1 }}>
-            Выплачено: {overall.bonusPaid}
+            Выплачено: {overall.bonusPaid?.toLocaleString("ru-RU")}
           </Typography>
         </Grid>
         <Grid item>
           <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#f77c48", p: 1 }}>
-            Остаток: {overall.bonusLeft}
+            Остаток: {overall.bonusLeft?.toLocaleString("ru-RU")}
           </Typography>
         </Grid>
       </Grid>
