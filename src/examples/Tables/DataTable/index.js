@@ -190,7 +190,9 @@ function DataTable({
                 onClick={row.original.onClick}
                 style={{
                   cursor: "pointer",
-                  backgroundColor: row.original.isHighlighted ? "#f0f0f0" : "transparent",
+                  backgroundColor: row.original.isHighlighted
+                    ? "#f0f0f0"
+                    : row.original.rowBackgroundColor,
                 }}
               >
                 {row.cells.map((cell, idx) => (

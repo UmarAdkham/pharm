@@ -17,6 +17,16 @@ export default function useDoctorsData(
   const previousDataRef = useRef(data);
 
   useEffect(() => {
+    const getRowBackgroundColor = (factPercent) => {
+      if (factPercent >= 75) {
+        return "#81c784";
+      } else if (factPercent >= 50) {
+        return "#f2cc45";
+      } else {
+        return "#f77c48";
+      }
+    };
+
     async function fetchBonuses() {
       try {
         const regionQueryParam = selectedRegion ? `&region_id=${selectedRegion.id}` : "";
@@ -43,7 +53,7 @@ export default function useDoctorsData(
           monthlyPlan: reports.reduce((sum, item) => sum + item.plan_price, 0),
           fact: reports.reduce((sum, item) => sum + item.fact_price, 0),
           factPercent:
-            reports.reduce((sum, item) => sum + (item.fact * 100) / item.monthly_plan, 0) /
+            reports.reduce((sum, item) => sum + (item.fact_price * 100) / item.plan_price, 0) /
             reports.length,
           bonus: reports.reduce((sum, item) => sum + item.bonus_amount, 0),
           bonusPaid: reports.reduce((sum, item) => sum + item.bonus_payed, 0),
@@ -63,48 +73,55 @@ export default function useDoctorsData(
           { Header: "Остаток бонуса", accessor: "bonus_left", align: "left" },
         ];
 
-        const rows = reports.map((report) => ({
-          doctor: (
-            <MDTypography variant="caption" fontWeight="medium">
-              {report.doctor_name}
-            </MDTypography>
-          ),
-          product: (
-            <MDTypography variant="caption" fontWeight="medium">
-              {report.product_name}
-            </MDTypography>
-          ),
-          monthly_plan: (
-            <MDTypography variant="caption" fontWeight="medium">
-              {report.monthly_plan}
-            </MDTypography>
-          ),
-          fact: (
-            <MDTypography variant="caption" fontWeight="medium">
-              {report.fact}
-            </MDTypography>
-          ),
-          fact_percent: (
-            <MDTypography variant="caption" fontWeight="medium">
-              {(report.fact * 100) / report.monthly_plan}%
-            </MDTypography>
-          ),
-          bonus: (
-            <MDTypography variant="caption" fontWeight="medium">
-              {report.bonus_amount}
-            </MDTypography>
-          ),
-          bonus_paid: (
-            <MDTypography variant="caption" fontWeight="medium">
-              {report.bonus_payed}
-            </MDTypography>
-          ),
-          bonus_left: (
-            <MDTypography variant="caption" fontWeight="medium">
-              {report.bonus_amount - report.bonus_payed}
-            </MDTypography>
-          ),
-        }));
+        const rows = reports.map((report) => {
+          const factPercent = (report.fact_price * 100) / report.plan_price;
+          const rowBackgroundColor = getRowBackgroundColor(factPercent);
+
+          return {
+            doctor: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {report.doctor_name}
+              </MDTypography>
+            ),
+            product: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {report.product_name}
+              </MDTypography>
+            ),
+            monthly_plan: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {report.plan_price}
+              </MDTypography>
+            ),
+            fact: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {report.fact_price}
+              </MDTypography>
+            ),
+            fact_percent: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {factPercent}%
+              </MDTypography>
+            ),
+            bonus: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {report.bonus_amount}
+              </MDTypography>
+            ),
+            bonus_paid: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {report.bonus_payed}
+              </MDTypography>
+            ),
+            bonus_left: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {report.bonus_amount - report.bonus_payed}
+              </MDTypography>
+            ),
+            rowBackgroundColor,
+            factPercent,
+          };
+        });
 
         const newData = { columns, rows, overall };
 
@@ -118,7 +135,15 @@ export default function useDoctorsData(
     }
 
     fetchBonuses();
-  }, [accessToken, month, selectedProduct, selectedDoctor, selectedRegion, handleTotalBonus]);
+  }, [
+    accessToken,
+    month,
+    selectedProduct,
+    selectedDoctor,
+    selectedRegion,
+    selectedMedRep,
+    handleTotalBonus,
+  ]);
 
   return data;
 }
