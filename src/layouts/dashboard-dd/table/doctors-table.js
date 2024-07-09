@@ -33,15 +33,17 @@ const months = [
   { name: "Декабрь", value: 12 },
 ];
 
-function DeputyDirectorDoctorsTable({ med_rep_id, med_rep_name }) {
-  const currentMonth = new Date().getMonth() + 1; // Get current month (1-12)
+function DeputyDirectorDoctorsTable() {
+  const currentMonth = new Date().getMonth() + 1;
   const [month, setMonth] = useState(currentMonth);
   const [products, setProducts] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [regions, setRegions] = useState([]);
+  const [medicalReps, setMedicalReps] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [selectedRegion, setSelectedRegion] = useState(null);
+  const [selectedMedRep, setSelectedMedRep] = useState(null);
   const [totalBonus, setTotalBonus] = useState(0);
 
   const handleTotalBonus = (value) => {
@@ -49,11 +51,11 @@ function DeputyDirectorDoctorsTable({ med_rep_id, med_rep_name }) {
   };
 
   const { columns, rows, overall } = useDoctorsData(
-    med_rep_id,
     month,
     selectedProduct,
     selectedDoctor,
     selectedRegion,
+    selectedMedRep,
     handleTotalBonus
   );
 
@@ -68,6 +70,9 @@ function DeputyDirectorDoctorsTable({ med_rep_id, med_rep_name }) {
 
         const regionResponse = await axiosInstance.get("common/get-regions");
         setRegions(regionResponse.data);
+
+        const medicalRepsData = await axiosInstance.get("common/get-medical-representatives");
+        setMedicalReps(medicalRepsData.data);
       } catch (error) {
         console.error("Failed to fetch data", error);
       }
@@ -80,16 +85,12 @@ function DeputyDirectorDoctorsTable({ med_rep_id, med_rep_name }) {
     setMonth(event.target.value);
   };
 
-  useEffect(() => {
-    console.log(rows);
-  }, [rows]); // Only log rows when they change
-
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            {med_rep_name}
+            Список докторов
           </MDTypography>
         </MDBox>
         <MDBox display="flex" alignItems="center">
@@ -136,6 +137,15 @@ function DeputyDirectorDoctorsTable({ med_rep_id, med_rep_name }) {
             )}
             sx={{ minWidth: 150, mr: 2 }}
           />
+          <Autocomplete
+            options={medicalReps}
+            getOptionLabel={(option) => option.full_name}
+            onChange={(event, newValue) => setSelectedMedRep(newValue)}
+            renderInput={(params) => (
+              <TextField {...params} label="Медицинские представители" variant="outlined" />
+            )}
+            sx={{ minWidth: 200, marginRight: 2 }}
+          />
         </MDBox>
       </MDBox>
       <OverallValues overall={overall} />
@@ -154,10 +164,5 @@ function DeputyDirectorDoctorsTable({ med_rep_id, med_rep_name }) {
     </Card>
   );
 }
-
-DeputyDirectorDoctorsTable.propTypes = {
-  med_rep_id: PropTypes.number.isRequired,
-  med_rep_name: PropTypes.string.isRequired,
-};
 
 export default DeputyDirectorDoctorsTable;

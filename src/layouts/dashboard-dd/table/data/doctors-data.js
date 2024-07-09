@@ -4,11 +4,11 @@ import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
 
 export default function useDoctorsData(
-  med_rep_id,
   month,
   selectedProduct,
   selectedDoctor,
   selectedRegion,
+  selectedMedRep,
   handleTotalBonus
 ) {
   const [data, setData] = useState({ columns: [], rows: [], overall: {} });
@@ -20,8 +20,10 @@ export default function useDoctorsData(
     async function fetchBonuses() {
       try {
         const regionQueryParam = selectedRegion ? `&region_id=${selectedRegion.id}` : "";
+        const medRepQueryParam = selectedMedRep ? `&med_rep_id=${selectedMedRep.id}` : "";
+
         const response = await axiosInstance.get(
-          `https://it-club.uz/dd/get-fact?month_number=${month}${regionQueryParam}`,
+          `dd/get-fact?month_number=${month}${regionQueryParam}${medRepQueryParam}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -116,15 +118,7 @@ export default function useDoctorsData(
     }
 
     fetchBonuses();
-  }, [
-    accessToken,
-    med_rep_id,
-    month,
-    selectedProduct,
-    selectedDoctor,
-    selectedRegion,
-    handleTotalBonus,
-  ]);
+  }, [accessToken, month, selectedProduct, selectedDoctor, selectedRegion, handleTotalBonus]);
 
   return data;
 }
