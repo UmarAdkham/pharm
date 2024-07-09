@@ -63,6 +63,14 @@ const ProductPlanTable = ({ medRepId }) => {
 
   const russianMonthNames = getRussianMonthNames();
 
+  // Calculate the total plan and plan_price
+  const totalPlanAmount = data.plan
+    ? data.plan.reduce((sum, item) => sum + item.plan_amount, 0)
+    : 0;
+  const totalPlanPrice = data.plan
+    ? data.plan.reduce((sum, item) => sum + item.plan_price, 0).toLocaleString("ru-RU")
+    : 0;
+
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
@@ -108,31 +116,48 @@ const ProductPlanTable = ({ medRepId }) => {
               {data.plan && data.plan.length > 0 ? (
                 <>
                   <TableRow style={{ backgroundColor: "#000" }}>
-                    <TableCell style={{ color: "#fff" }}>Факт {data.fact}</TableCell>
-                    <TableCell style={{ color: "#fff" }}>Факт продажа {data.fact_price}</TableCell>
+                    <TableCell style={{ color: "#fff" }}>Общ план: {totalPlanAmount}</TableCell>
+                    <TableCell style={{ color: "#fff" }}>
+                      План продажа: <br /> {totalPlanPrice} сум
+                    </TableCell>
                     <TableCell style={{ color: "#fff" }}></TableCell>
                   </TableRow>
-                  {data.plan.map((product, index) => (
-                    <React.Fragment key={index}>
-                      <TableRow style={{ backgroundColor: getRowColor(index) }}>
-                        <TableCell>{product.product}</TableCell>
-                        <TableCell>План {product.plan_amount}</TableCell>
-                        <TableCell>Факт {product.fact}</TableCell>
-                      </TableRow>
-                      {product.doctor_plans.map((doctor, idx) => (
-                        <TableRow key={idx} style={{ backgroundColor: getRowColor(index) }}>
-                          <TableCell>Имя доктора ({doctor.doctor_name})</TableCell>
-                          <TableCell>{doctor.monthly_plan}</TableCell>
-                          <TableCell>{doctor.fact}</TableCell>
+                  <TableRow style={{ backgroundColor: "#000" }}>
+                    <TableCell style={{ color: "#fff" }}>Общ факт: {data.fact}</TableCell>
+                    <TableCell style={{ color: "#fff" }}>
+                      Факт продажа: <br /> {data.fact_price.toLocaleString("ru-RU")} сум
+                    </TableCell>
+                    <TableCell style={{ color: "#fff" }}></TableCell>
+                  </TableRow>
+                  {data.plan.map((product, index) => {
+                    const totalDoctorFacts = product.doctor_plans.reduce(
+                      (sum, doctor) => sum + doctor.fact,
+                      0
+                    );
+                    return (
+                      <React.Fragment key={index}>
+                        <TableRow style={{ backgroundColor: getRowColor(index) }}>
+                          <TableCell>
+                            <b>{product.product}</b>
+                          </TableCell>
+                          <TableCell>План: {product.plan_amount}</TableCell>
+                          <TableCell>Факт: {totalDoctorFacts}</TableCell>
                         </TableRow>
-                      ))}
-                      <TableRow style={{ backgroundColor: getRowColor(index) }}>
-                        <TableCell>Вакант</TableCell>
-                        <TableCell>{product.vakant}</TableCell>
-                        <TableCell></TableCell>
-                      </TableRow>
-                    </React.Fragment>
-                  ))}
+                        {product.doctor_plans.map((doctor, idx) => (
+                          <TableRow key={idx} style={{ backgroundColor: getRowColor(index) }}>
+                            <TableCell>Имя доктора ({doctor.doctor_name})</TableCell>
+                            <TableCell>{doctor.monthly_plan}</TableCell>
+                            <TableCell>{doctor.fact}</TableCell>
+                          </TableRow>
+                        ))}
+                        <TableRow style={{ backgroundColor: getRowColor(index) }}>
+                          <TableCell>Вакант</TableCell>
+                          <TableCell>{product.vakant}</TableCell>
+                          <TableCell></TableCell>
+                        </TableRow>
+                      </React.Fragment>
+                    );
+                  })}
                 </>
               ) : (
                 <TableRow>
