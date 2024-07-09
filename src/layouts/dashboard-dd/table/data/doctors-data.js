@@ -90,12 +90,12 @@ export default function useDoctorsData(
             ),
             monthly_plan: (
               <MDTypography variant="caption" fontWeight="medium">
-                {report.plan_price}
+                {report.monthly_plan}
               </MDTypography>
             ),
             fact: (
               <MDTypography variant="caption" fontWeight="medium">
-                {report.fact_price}
+                {report.fact}
               </MDTypography>
             ),
             fact_percent: (
