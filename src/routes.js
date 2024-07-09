@@ -194,7 +194,7 @@ const roleBasedRoutes = [
       },
       {
         type: "collapse",
-        name: "Доктора",
+        name: "Список врачей",
         key: "doctors",
         icon: <Icon fontSize="small">medication</Icon>,
         route: "doctors",
