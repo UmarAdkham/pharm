@@ -61,6 +61,7 @@ import DeputyDirectorBonus from "layouts/dashboard-dd/components/dd-bonus";
 import DeputyDirectorBonusMrs from "layouts/dashboard-dd/components/dd-bonus-mrs";
 import DeputyDirectorAddBonus from "layouts/dashboard-dd/components/dd-add-bonus";
 import HeadSetDiscount from "layouts/dashboard-head/components/head-set-discount";
+import DeputyDirectorDoctors from "layouts/dashboard-dd/components/dd-doctors";
 
 const roleBasedRoutes = [
   {
@@ -125,6 +126,7 @@ const roleBasedRoutes = [
       { path: "bonus", component: <DeputyDirectorBonusMrs /> },
       { path: "bonus-report", component: <DeputyDirectorBonus /> },
       { path: "add-bonus", component: <DeputyDirectorAddBonus /> },
+      { path: "doctors", component: <DeputyDirectorDoctors /> },
     ],
     sideNav: [
       {
@@ -192,10 +194,10 @@ const roleBasedRoutes = [
       },
       {
         type: "collapse",
-        name: "Процесс отчеты",
-        key: "dd-process-reports",
-        icon: <Icon fontSize="small">summarize_two_tone_icon</Icon>,
-        route: "process-reports",
+        name: "Доктора",
+        key: "doctors",
+        icon: <Icon fontSize="small">medication</Icon>,
+        route: "doctors",
       },
       {
         type: "collapse",
@@ -203,6 +205,13 @@ const roleBasedRoutes = [
         key: "dd-bonus",
         icon: <Icon fontSize="small">account_balance_wallet_icon</Icon>,
         route: "bonus",
+      },
+      {
+        type: "collapse",
+        name: "Процесс отчеты",
+        key: "dd-process-reports",
+        icon: <Icon fontSize="small">summarize_two_tone_icon</Icon>,
+        route: "process-reports",
       },
     ],
   },

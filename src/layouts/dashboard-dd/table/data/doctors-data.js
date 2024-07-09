@@ -1,27 +1,27 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
-import Icon from "@mui/material/Icon";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@mui/material";
 
-export default function useBonusData(
+export default function useDoctorsData(
   med_rep_id,
   month,
   selectedProduct,
   selectedDoctor,
+  selectedRegion,
   handleTotalBonus
 ) {
-  const [data, setData] = useState({ columns: [], rows: [] });
+  const [data, setData] = useState({ columns: [], rows: [], overall: {} });
   const accessToken = useSelector((state) => state.auth.accessToken);
-  const navigate = useNavigate();
+
+  const previousDataRef = useRef(data);
 
   useEffect(() => {
     async function fetchBonuses() {
       try {
+        const regionQueryParam = selectedRegion ? `&region_id=${selectedRegion.id}` : "";
         const response = await axiosInstance.get(
-          `https://it-club.uz/dd/get-doctor-bonus-by-med-rep-id/${med_rep_id}?month_number=${month}`,
+          `https://it-club.uz/dd/get-fact?month_number=${month}${regionQueryParam}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -36,11 +36,19 @@ export default function useBonusData(
           );
         });
 
-        const totalBonus = response.data.reduce((sum, item) => {
-          const bonusAmount = item.bonus_amount;
-          return sum + bonusAmount;
-        }, 0);
-        handleTotalBonus(totalBonus);
+        const overall = {
+          numberOfDoctors: reports.length,
+          monthlyPlan: reports.reduce((sum, item) => sum + item.plan_price, 0),
+          fact: reports.reduce((sum, item) => sum + item.fact, 0),
+          factPercent:
+            reports.reduce((sum, item) => sum + (item.fact * 100) / item.monthly_plan, 0) /
+            reports.length,
+          bonus: reports.reduce((sum, item) => sum + item.bonus_amount, 0),
+          bonusPaid: reports.reduce((sum, item) => sum + item.bonus_payed, 0),
+          bonusLeft: reports.reduce((sum, item) => sum + (item.bonus_amount - item.bonus_payed), 0),
+        };
+
+        handleTotalBonus(overall.bonus);
 
         const columns = [
           { Header: "Доктор", accessor: "doctor", align: "left" },
@@ -51,7 +59,6 @@ export default function useBonusData(
           { Header: "Бонус", accessor: "bonus", align: "left" },
           { Header: "Бонус выплачен", accessor: "bonus_paid", align: "left" },
           { Header: "Остаток бонуса", accessor: "bonus_left", align: "left" },
-          { Header: "Действие", accessor: "action", align: "center" },
         ];
 
         const rows = reports.map((report) => ({
@@ -95,39 +102,29 @@ export default function useBonusData(
               {report.bonus_amount - report.bonus_payed}
             </MDTypography>
           ),
-          action: (
-            <Button
-              variant="contained"
-              color="success"
-              sx={{ color: "white" }}
-              onClick={() => {
-                if (report.bonus_id === null) {
-                  alert(`Бонус еще не установлен`);
-                } else {
-                  navigate("/dd/add-bonus", {
-                    state: {
-                      bonusId: report.bonus_id,
-                      totalBonus: report.bonus_amount,
-                      remainingBonus: report.bonus_amount - report.bonus_payed,
-                    },
-                  });
-                }
-              }}
-              style={{ cursor: "pointer" }}
-            >
-              Бонус
-            </Button>
-          ),
         }));
 
-        setData({ columns, rows });
+        const newData = { columns, rows, overall };
+
+        if (JSON.stringify(newData) !== JSON.stringify(previousDataRef.current)) {
+          previousDataRef.current = newData;
+          setData(newData);
+        }
       } catch (error) {
         console.error(error);
       }
     }
 
     fetchBonuses();
-  }, [accessToken, med_rep_id, month, selectedProduct, selectedDoctor, handleTotalBonus, navigate]);
+  }, [
+    accessToken,
+    med_rep_id,
+    month,
+    selectedProduct,
+    selectedDoctor,
+    selectedRegion,
+    handleTotalBonus,
+  ]);
 
   return data;
 }
