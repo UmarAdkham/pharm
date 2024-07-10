@@ -244,6 +244,7 @@ const roleBasedRoutes = [
       { path: "add-pharmacy", component: <DeputyDirectorAddPharmacy /> },
       { path: "add-doctor", component: <DeputyDirectorAddDoctor /> },
       { path: "mr-info", component: <DeputyDirectorMRInfo /> },
+      { path: "process-reports", component: <DeputyDirectorProcessReports /> },
     ],
     sideNav: [
       {
@@ -308,6 +309,13 @@ const roleBasedRoutes = [
         key: "dd-products",
         icon: <Icon fontSize="small">inventory</Icon>,
         route: "products",
+      },
+      {
+        type: "collapse",
+        name: "Процесс отчеты",
+        key: "dd-process-reports",
+        icon: <Icon fontSize="small">summarize_two_tone_icon</Icon>,
+        route: "process-reports",
       },
     ],
   },
