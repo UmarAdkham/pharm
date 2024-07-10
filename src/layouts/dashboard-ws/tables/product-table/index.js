@@ -6,17 +6,22 @@ import DataTable from "examples/Tables/DataTable";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import useWholesaleProductData from "./data/product-data";
+import { useState } from "react";
 
 function WholesaleProductTable({ path, navigatePath }) {
   const navigate = useNavigate();
-  const { columns, rows } = useWholesaleProductData(path);
+  const [totalProducts, setTotalProducts] = useState(null);
+  const { columns, rows } = useWholesaleProductData(path, setTotalProducts);
 
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
-          <MDTypography variant="h6" gutterBottom>
-            Продукты
+          <MDTypography variant="h5" gutterBottom>
+            Продукты <br />
+            <MDTypography variant="subtitle2" gutterBottom>
+              Всего {totalProducts} штук{" "}
+            </MDTypography>
           </MDTypography>
         </MDBox>
         <MDBox>

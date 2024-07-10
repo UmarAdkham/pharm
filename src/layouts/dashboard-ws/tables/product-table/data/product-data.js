@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
 
-export default function useWholesaleProductData(apiPath) {
+export default function useWholesaleProductData(apiPath, setTotalProducts) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -25,6 +25,9 @@ export default function useWholesaleProductData(apiPath) {
           { Header: "Количество", accessor: "amount", align: "center" },
           { Header: "Цена", accessor: "price", align: "center" },
         ];
+
+        const totalProducts = wsps.reduce((sum, el) => sum + el.amount, 0);
+        setTotalProducts(totalProducts);
 
         const rows = wsps.map((wsp) => ({
           name: (
