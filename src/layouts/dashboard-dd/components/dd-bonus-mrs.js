@@ -40,7 +40,7 @@ function DeputyDirectorBonusMrs({ children }) {
                   navigate(navigatePath, { state: user });
                 }}
                 showAddButton={false}
-                showFilters={true}
+                showFilters={false}
               />
             </Grid>
           </Grid>
