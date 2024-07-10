@@ -75,7 +75,10 @@ function DeputyDirectorBonusTable({ med_rep_id, med_rep_name }) {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            {med_rep_name}: Общая сумма бонуса {totalBonus}
+            {med_rep_name} <br />
+            <MDTypography variant="subtitle2" gutterBottom>
+              Общая сумма бонуса {totalBonus} сум
+            </MDTypography>
           </MDTypography>
         </MDBox>
         <MDBox display="flex" alignItems="center">
