@@ -59,7 +59,7 @@ export default function useMedicalOrganizationData(apiPath) {
         { Header: "Название", accessor: "name", align: "left" },
         { Header: "Адрес", accessor: "address", align: "left" },
         { Header: "Регион", accessor: "region", align: "left" },
-        { Header: "Медицинский представитель", accessor: "medRep", align: "left" },
+        // { Header: "Медицинский представитель", accessor: "medRep", align: "left" },
         { Header: "Действия", accessor: "action", align: "right" },
       ];
 
@@ -79,11 +79,11 @@ export default function useMedicalOrganizationData(apiPath) {
             {medOrg.region.name}
           </MDTypography>
         ),
-        medRep: (
-          <MDTypography variant="caption" fontWeight="medium">
-            {medOrg.med_rep.full_name}
-          </MDTypography>
-        ),
+        // medRep: (
+        //   <MDTypography variant="caption" fontWeight="medium">
+        //     {medOrg.med_rep?.full_name}
+        //   </MDTypography>
+        // ),
         action: (
           <div>
             <IconButton
