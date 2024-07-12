@@ -15,6 +15,7 @@ import UsersTable from "layouts/user-table";
 import { Outlet, useNavigate } from "react-router-dom";
 import DeputyDirectorTable from "../table";
 import { useSelector } from "react-redux";
+import DeputyDirectorBonusMrsTable from "../table/bonus-mrs-table";
 
 // eslint-disable-next-line react/prop-types
 function DeputyDirectorBonusMrs({ children }) {
@@ -26,21 +27,12 @@ function DeputyDirectorBonusMrs({ children }) {
         <MDBox>
           <Grid container spacing={3}>
             <Grid item xs={12} lg={12}>
-              <DeputyDirectorTable
-                path={
-                  userRole === userRoles.DEPUTY_DIRECTOR
-                    ? "common/get-users"
-                    : `common/get-users-by-username?username=${username}`
-                }
-                status={userRoles.MEDICAL_REPRESENTATIVE}
-                title={`Медицинские представители`}
-                tableType="mrs"
-                navigatePath="/dd/bonus-report"
-                onRowClick={(navigatePath, user) => {
-                  navigate(navigatePath, { state: user });
-                }}
-                showAddButton={false}
-                showFilters={false}
+              <DeputyDirectorBonusMrsTable
+                path={"common/get-medical-representatives"}
+                // navigatePath="/dd/bonus-report"
+                // onRowClick={(navigatePath, user) => {
+                //   navigate(navigatePath, { state: user });
+                // }}
               />
             </Grid>
           </Grid>
