@@ -23,10 +23,10 @@ function DataTable({
   isSorted,
   noEndBorder,
 }) {
-  const defaultValue = entriesPerPage.defaultValue ? entriesPerPage.defaultValue : 10;
+  const defaultValue = entriesPerPage.defaultValue ? entriesPerPage.defaultValue : 10; // Set default to 10
   const entries = entriesPerPage.entries
     ? entriesPerPage.entries.map((el) => el.toString())
-    : ["5", "10", "15", "20", "25"];
+    : ["5", "10", "15", "20", "25", "100"]; // Include 100 in the options
 
   const columns = useMemo(
     () => [
@@ -126,9 +126,9 @@ function DataTable({
 
   return (
     <TableContainer sx={{ boxShadow: "none" }}>
-      {entriesPerPage || canSearch ? (
+      {canSearch ? (
         <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-          {entriesPerPage && (
+          {/* {entriesPerPage && (
             <MDBox display="flex" alignItems="center">
               <Autocomplete
                 disableClearable
@@ -145,7 +145,7 @@ function DataTable({
                 &nbsp;&nbsp;entries per page
               </MDTypography>
             </MDBox>
-          )}
+          )} */}
           {canSearch && (
             <MDBox width="12rem" ml="auto">
               <MDInput
@@ -260,7 +260,7 @@ function DataTable({
 
 // Setting default values for the props of DataTable
 DataTable.defaultProps = {
-  entriesPerPage: { defaultValue: 10, entries: [5, 10, 15, 20, 25] },
+  entriesPerPage: { defaultValue: 10, entries: [5, 10, 15, 20, 25, 100] }, // Set default to 10 and include 100 in options
   canSearch: false,
   showTotalEntries: true,
   pagination: { variant: "gradient", color: "info" },

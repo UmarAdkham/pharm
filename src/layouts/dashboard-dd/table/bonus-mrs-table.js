@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import Card from "@mui/material/Card";
+import CircularProgress from "@mui/material/CircularProgress"; // Import CircularProgress
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import useBonusMrsData from "./data/bonus-mrs-data";
-import OverallValues from "../components/overall-doctor-values";
-
-import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { Select, MenuItem, FormControl, InputLabel, Tooltip, IconButton } from "@mui/material";
+import SortIcon from "@mui/icons-material/Sort";
 
 const months = [
   { name: "Январь", value: 1 },
@@ -26,16 +26,21 @@ const months = [
 function DeputyDirectorBonusMrsTable() {
   const currentMonth = new Date().getMonth() + 1;
   const [month, setMonth] = useState(currentMonth);
+  const [order, setOrder] = useState("");
   const [totalBonus, setTotalBonus] = useState(0);
 
-  const handleTotalBonus = (value) => {
+  const handleTotalBonus = useCallback((value) => {
     setTotalBonus(value);
-  };
+  }, []);
 
-  const { columns, rows, overall } = useBonusMrsData(month, handleTotalBonus);
+  const { data, loading } = useBonusMrsData(month, order, handleTotalBonus);
 
   const handleMonthChange = (event) => {
     setMonth(event.target.value);
+  };
+
+  const handleSortToggle = () => {
+    setOrder((prevOrder) => (prevOrder === "desc" || "" ? "asc" : "desc"));
   };
 
   return (
@@ -63,20 +68,32 @@ function DeputyDirectorBonusMrsTable() {
               ))}
             </Select>
           </FormControl>
+          <Tooltip title="Сортировать по факт %">
+            <IconButton onClick={handleSortToggle}>
+              <SortIcon
+                style={{ transform: order === "asc" ? "rotate(0deg)" : "rotate(180deg)" }}
+              />
+            </IconButton>
+          </Tooltip>
         </MDBox>
       </MDBox>
-      {/* <OverallValues overall={overall} /> */}
       <MDBox>
-        <DataTable
-          table={{
-            columns,
-            rows,
-          }}
-          showTotalEntries={false}
-          isSorted={false}
-          noEndBorder
-          entriesPerPage={false}
-        />
+        {loading ? (
+          <MDBox display="flex" justifyContent="center" alignItems="center" p={3}>
+            <CircularProgress />
+          </MDBox>
+        ) : (
+          <DataTable
+            table={{
+              columns: data.columns,
+              rows: data.rows,
+            }}
+            showTotalEntries={false}
+            isSorted={false}
+            noEndBorder
+            entriesPerPage={{ defaultValue: 100 }}
+          />
+        )}
       </MDBox>
     </Card>
   );

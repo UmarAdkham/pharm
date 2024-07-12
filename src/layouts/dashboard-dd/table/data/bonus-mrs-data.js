@@ -4,8 +4,9 @@ import axiosInstance from "services/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import MDTypography from "components/MDTypography";
 
-export default function useBonusMrsData(month) {
+export default function useBonusMrsData(month, order, handleTotalBonus) {
   const [data, setData] = useState({ columns: [], rows: [] });
+  const [loading, setLoading] = useState(true); // Add loading state
   const accessToken = useSelector((state) => state.auth.accessToken);
   const navigate = useNavigate();
 
@@ -21,6 +22,7 @@ export default function useBonusMrsData(month) {
     };
 
     async function fetchUsers() {
+      setLoading(true); // Set loading to true before fetching data
       try {
         const response = await axiosInstance.get(
           `common/get-medical-representatives?month_number=${month}`,
@@ -32,6 +34,9 @@ export default function useBonusMrsData(month) {
         );
 
         const mrs = response.data;
+
+        // Calculate total bonus
+        let totalBonus = 0;
 
         const columns = [
           { Header: "Имя пользователя", accessor: "username", align: "left" },
@@ -46,6 +51,8 @@ export default function useBonusMrsData(month) {
           const totalFact = mr.plan.reduce((acc, item) => acc + item.fact, 0);
           const factPercent = totalPlan > 0 ? (totalFact / totalPlan) * 100 : 0;
           const rowBackgroundColor = getRowBackgroundColor(factPercent);
+
+          totalBonus += totalFact; // Accumulate total bonus
 
           return {
             username: (
@@ -77,20 +84,32 @@ export default function useBonusMrsData(month) {
               navigate("/dd/bonus-report", { state: mr });
             },
             rowBackgroundColor,
-            // factPercent,
           };
         });
+
+        // Sort rows based on fact_percent
+        if (order) {
+          rows.sort((a, b) => {
+            const factPercentA = parseFloat(a.fact_percent.props.children);
+            const factPercentB = parseFloat(b.fact_percent.props.children);
+            return order === "asc" ? factPercentA - factPercentB : factPercentB - factPercentA;
+          });
+        }
+
+        handleTotalBonus(totalBonus); // Update total bonus
 
         setData({ columns, rows });
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false); // Set loading to false after fetching data
       }
     }
 
     if (accessToken) {
       fetchUsers();
     }
-  }, [accessToken, month]);
+  }, [accessToken, month, order, handleTotalBonus, navigate]);
 
-  return data;
+  return { data, loading }; // Return loading state
 }
