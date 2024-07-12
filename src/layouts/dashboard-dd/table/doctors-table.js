@@ -6,7 +6,6 @@ import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import useDoctorsData from "./data/doctors-data";
 import OverallValues from "../components/overall-doctor-values";
-
 import {
   Button,
   Select,
@@ -15,6 +14,7 @@ import {
   InputLabel,
   Autocomplete,
   TextField,
+  CircularProgress,
 } from "@mui/material";
 import axiosInstance from "services/axiosInstance";
 
@@ -36,6 +36,8 @@ const months = [
 function DeputyDirectorDoctorsTable() {
   const currentMonth = new Date().getMonth() + 1;
   const [month, setMonth] = useState(currentMonth);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [products, setProducts] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [regions, setRegions] = useState([]);
@@ -45,6 +47,7 @@ function DeputyDirectorDoctorsTable() {
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [selectedMedRep, setSelectedMedRep] = useState(null);
   const [totalBonus, setTotalBonus] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const handleTotalBonus = (value) => {
     setTotalBonus(value);
@@ -52,6 +55,8 @@ function DeputyDirectorDoctorsTable() {
 
   const { columns, rows, overall } = useDoctorsData(
     month,
+    startDate,
+    endDate,
     selectedProduct,
     selectedDoctor,
     selectedRegion,
@@ -83,6 +88,17 @@ function DeputyDirectorDoctorsTable() {
 
   const handleMonthChange = (event) => {
     setMonth(event.target.value);
+    setStartDate(null); // Clear start date when month is selected
+    setEndDate(null); // Clear end date when month is selected
+  };
+
+  const handleStartDateChange = (event) => {
+    setStartDate(event.target.value);
+    setEndDate(null); // Reset end date when start date changes
+  };
+
+  const handleEndDateChange = (event) => {
+    setEndDate(event.target.value);
   };
 
   return (
@@ -93,7 +109,7 @@ function DeputyDirectorDoctorsTable() {
             Список врачей
           </MDTypography>
         </MDBox>
-        <MDBox display="flex" alignItems="center">
+        <MDBox display="flex" alignItems="center" sx={{ overflowX: "auto" }}>
           <FormControl variant="outlined" sx={{ minWidth: 120, mr: 2 }}>
             <InputLabel id="month-select-label">Месяц</InputLabel>
             <Select
@@ -110,6 +126,30 @@ function DeputyDirectorDoctorsTable() {
               ))}
             </Select>
           </FormControl>
+          <TextField
+            label="Начальная дата"
+            type="date"
+            value={startDate}
+            onChange={handleStartDateChange}
+            sx={{ mr: 2 }}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          <TextField
+            label="Конечная дата"
+            type="date"
+            value={endDate}
+            onChange={handleEndDateChange}
+            sx={{ mr: 2 }}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            inputProps={{
+              min: startDate,
+            }}
+            disabled={!startDate} // Disable until start date is selected
+          />
           <Autocomplete
             options={products}
             getOptionLabel={(option) => option.name}
@@ -150,16 +190,22 @@ function DeputyDirectorDoctorsTable() {
       </MDBox>
       <OverallValues overall={overall} />
       <MDBox>
-        <DataTable
-          table={{
-            columns,
-            rows,
-          }}
-          showTotalEntries={false}
-          isSorted={false}
-          noEndBorder
-          entriesPerPage={{ defaultValue: 100 }}
-        />
+        {loading ? (
+          <MDBox display="flex" justifyContent="center" alignItems="center" p={3}>
+            <CircularProgress />
+          </MDBox>
+        ) : (
+          <DataTable
+            table={{
+              columns,
+              rows,
+            }}
+            showTotalEntries={false}
+            isSorted={false}
+            noEndBorder
+            entriesPerPage={{ defaultValue: 100 }}
+          />
+        )}
       </MDBox>
     </Card>
   );

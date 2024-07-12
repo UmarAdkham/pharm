@@ -5,6 +5,8 @@ import MDTypography from "components/MDTypography";
 
 export default function useDoctorsData(
   month,
+  startDate,
+  endDate,
   selectedProduct,
   selectedDoctor,
   selectedRegion,
@@ -29,17 +31,23 @@ export default function useDoctorsData(
 
     async function fetchBonuses() {
       try {
+        let url = `dd/get-fact?month_number=${month}`;
+        if (startDate && endDate) {
+          url = `dd/get-fact?start_date=${startDate}&end_date=${endDate}`;
+        }
+
+        console.log(selectedRegion);
+
         const regionQueryParam = selectedRegion ? `&region_id=${selectedRegion.id}` : "";
         const medRepQueryParam = selectedMedRep ? `&med_rep_id=${selectedMedRep.id}` : "";
 
-        const response = await axiosInstance.get(
-          `dd/get-fact?month_number=${month}${regionQueryParam}${medRepQueryParam}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
+        url += `${regionQueryParam}${medRepQueryParam}`;
+
+        const response = await axiosInstance.get(url, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
 
         const reports = response.data.filter((report) => {
           return (
@@ -138,6 +146,8 @@ export default function useDoctorsData(
   }, [
     accessToken,
     month,
+    startDate,
+    endDate,
     selectedProduct,
     selectedDoctor,
     selectedRegion,
