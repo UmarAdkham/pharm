@@ -90,7 +90,7 @@ function DeputyDirectorDoctorsTable() {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            Список докторов
+            Список врачей
           </MDTypography>
         </MDBox>
         <MDBox display="flex" alignItems="center">

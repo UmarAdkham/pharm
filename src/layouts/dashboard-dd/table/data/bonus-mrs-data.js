@@ -1,14 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import MDTypography from "components/MDTypography";
 
-export default function useBonusMrsData(month, order, handleTotalBonus) {
-  const [data, setData] = useState({ columns: [], rows: [] });
-  const [loading, setLoading] = useState(true); // Add loading state
+export default function useBonusMrsData(month, order) {
+  const [data, setData] = useState({ columns: [], rows: [], overall: {} });
+  const [loading, setLoading] = useState(true);
   const accessToken = useSelector((state) => state.auth.accessToken);
   const navigate = useNavigate();
+
+  const previousDataRef = useRef(data);
 
   useEffect(() => {
     const getRowBackgroundColor = (factPercent) => {
@@ -22,7 +24,7 @@ export default function useBonusMrsData(month, order, handleTotalBonus) {
     };
 
     async function fetchUsers() {
-      setLoading(true); // Set loading to true before fetching data
+      setLoading(true);
       try {
         const response = await axiosInstance.get(
           `common/get-medical-representatives?month_number=${month}`,
@@ -35,8 +37,25 @@ export default function useBonusMrsData(month, order, handleTotalBonus) {
 
         const mrs = response.data;
 
-        // Calculate total bonus
-        let totalBonus = 0;
+        // Calculate overall statistics
+        const overall = {
+          numberOfDoctors: mrs.length,
+          monthlyPlan: mrs.reduce(
+            (sum, mr) => sum + mr.plan.reduce((acc, item) => acc + item.plan_price, 0),
+            0
+          ),
+          fact: mrs.reduce(
+            (sum, mr) => sum + mr.plan.reduce((acc, item) => acc + item.fact_price, 0),
+            0
+          ),
+          factPercent:
+            (mrs.reduce((sum, mr) => sum + mr.plan.reduce((acc, item) => acc + item.fact, 0), 0) /
+              mrs.reduce(
+                (sum, mr) => sum + mr.plan.reduce((acc, item) => acc + item.plan_amount, 0),
+                0
+              )) *
+            100,
+        };
 
         const columns = [
           { Header: "Имя пользователя", accessor: "username", align: "left" },
@@ -51,8 +70,6 @@ export default function useBonusMrsData(month, order, handleTotalBonus) {
           const totalFact = mr.plan.reduce((acc, item) => acc + item.fact, 0);
           const factPercent = totalPlan > 0 ? (totalFact / totalPlan) * 100 : 0;
           const rowBackgroundColor = getRowBackgroundColor(factPercent);
-
-          totalBonus += totalFact; // Accumulate total bonus
 
           return {
             username: (
@@ -96,20 +113,23 @@ export default function useBonusMrsData(month, order, handleTotalBonus) {
           });
         }
 
-        handleTotalBonus(totalBonus); // Update total bonus
+        const newData = { columns, rows, overall };
 
-        setData({ columns, rows });
+        if (JSON.stringify(newData) !== JSON.stringify(previousDataRef.current)) {
+          previousDataRef.current = newData;
+          setData(newData);
+        }
       } catch (error) {
         console.error(error);
       } finally {
-        setLoading(false); // Set loading to false after fetching data
+        setLoading(false);
       }
     }
 
     if (accessToken) {
       fetchUsers();
     }
-  }, [accessToken, month, order, handleTotalBonus, navigate]);
+  }, [accessToken, month, order, navigate]);
 
-  return { data, loading }; // Return loading state
+  return { data, loading };
 }

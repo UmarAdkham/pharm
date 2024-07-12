@@ -1,10 +1,11 @@
 import React, { useState, useCallback } from "react";
 import Card from "@mui/material/Card";
-import CircularProgress from "@mui/material/CircularProgress"; // Import CircularProgress
+import CircularProgress from "@mui/material/CircularProgress";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import useBonusMrsData from "./data/bonus-mrs-data";
+import OverallValues from "../components/overall-doctor-values"; // Import OverallValues component
 import { Select, MenuItem, FormControl, InputLabel, Tooltip, IconButton } from "@mui/material";
 import SortIcon from "@mui/icons-material/Sort";
 
@@ -27,13 +28,8 @@ function DeputyDirectorBonusMrsTable() {
   const currentMonth = new Date().getMonth() + 1;
   const [month, setMonth] = useState(currentMonth);
   const [order, setOrder] = useState("");
-  const [totalBonus, setTotalBonus] = useState(0);
 
-  const handleTotalBonus = useCallback((value) => {
-    setTotalBonus(value);
-  }, []);
-
-  const { data, loading } = useBonusMrsData(month, order, handleTotalBonus);
+  const { data, loading } = useBonusMrsData(month, order);
 
   const handleMonthChange = (event) => {
     setMonth(event.target.value);
@@ -77,6 +73,7 @@ function DeputyDirectorBonusMrsTable() {
           </Tooltip>
         </MDBox>
       </MDBox>
+      <OverallValues overall={data.overall} /> {/* Display overall values */}
       <MDBox>
         {loading ? (
           <MDBox display="flex" justifyContent="center" alignItems="center" p={3}>

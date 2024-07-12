@@ -27,7 +27,7 @@ const OverallValues = ({ overall }) => {
       <Grid container spacing={4} wrap="nowrap" sx={{ whiteSpace: "nowrap" }}>
         <Grid item>
           <Typography variant="button" fontWeight="medium">
-            Кол-во врачей: {overall.numberOfDoctors}
+            Кол-во: {overall.numberOfDoctors}
           </Typography>
         </Grid>
         <Grid item>
@@ -43,21 +43,25 @@ const OverallValues = ({ overall }) => {
             {overall.factPercent?.toFixed(2)}%)
           </Typography>
         </Grid>
-        <Grid item>
-          <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#f2cc45", p: 1 }}>
-            Бонус общ: {overall.bonus?.toLocaleString("ru-RU")}
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#81c784", p: 1 }}>
-            Выплачено: {overall.bonusPaid?.toLocaleString("ru-RU")}
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#f77c48", p: 1 }}>
-            Остаток: {overall.bonusLeft?.toLocaleString("ru-RU")}
-          </Typography>
-        </Grid>
+        {overall.bonus && (
+          <>
+            <Grid item>
+              <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#f2cc45", p: 1 }}>
+                Бонус общ: {overall.bonus?.toLocaleString("ru-RU")}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#81c784", p: 1 }}>
+                Выплачено: {overall.bonusPaid?.toLocaleString("ru-RU")}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#f77c48", p: 1 }}>
+                Остаток: {overall.bonusLeft?.toLocaleString("ru-RU")}
+              </Typography>
+            </Grid>
+          </>
+        )}
       </Grid>
     </Box>
   );
@@ -69,9 +73,9 @@ OverallValues.propTypes = {
     monthlyPlan: PropTypes.number.isRequired,
     fact: PropTypes.number.isRequired,
     factPercent: PropTypes.number.isRequired,
-    bonus: PropTypes.number.isRequired,
-    bonusPaid: PropTypes.number.isRequired,
-    bonusLeft: PropTypes.number.isRequired,
+    bonus: PropTypes.number,
+    bonusPaid: PropTypes.number,
+    bonusLeft: PropTypes.number,
   }).isRequired,
 };
 
