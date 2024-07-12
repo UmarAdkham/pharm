@@ -28,9 +28,9 @@ function DeputyDirectorMrs({ children }) {
             <Grid item xs={12} lg={12}>
               <DeputyDirectorTable
                 path={
-                  userRole === userRoles.DEPUTY_DIRECTOR
-                    ? "common/get-users"
-                    : `common/get-users-by-username?username=${username}`
+                  userRole === userRoles.PRODUCT_MANAGER
+                    ? `common/get-users-by-username?username=${username}`
+                    : "common/get-users"
                 }
                 status={userRoles.MEDICAL_REPRESENTATIVE}
                 title={`Медицинские представители`}
