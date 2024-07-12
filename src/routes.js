@@ -417,7 +417,7 @@ const roleBasedRoutes = [
     ],
   },
   {
-    role: [userRoles.HEAD_OF_ORDERS],
+    role: [userRoles.HEAD_OF_ORDERS, userRoles.WHOLESALE_MANAGER],
     path: "head",
     routes: [
       { path: "dashboard", component: <HeadOfOrdersDashboard /> },
@@ -425,6 +425,17 @@ const roleBasedRoutes = [
       { path: "add-warehouse-data", component: <HeadofOrdersAddWarehouseData /> },
       { path: "reservations", component: <HeadReservations /> },
       { path: "set-discount", component: <HeadSetDiscount /> },
+      // Wholesale manager routes
+      { path: "companies", component: <WholesaleManagerCompanies /> },
+      { path: "add-company", component: <WholesaleManagerAddCompany /> },
+      { path: "company-info/:wholesale_id", component: <WholesaleManagerProducts /> },
+      { path: "add-produtc/:wholesale_id", component: <WholesaleManagerAddProduct /> },
+      { path: "report", component: <WholesaleReports /> },
+      { path: "report/:wholesale_id", component: <WholesaleReportDetails /> },
+      { path: "add-sale", component: <WholesaleAddSale /> },
+      { path: "add-pharmacy", component: <WholesaleAddPharmacy /> },
+      { path: "product-report", component: <WholesaleProductDetails /> },
+      { path: "add-balance-in-stock", component: <WholesaleAddBalanceInStock /> },
     ],
     sideNav: [
       {
@@ -441,10 +452,24 @@ const roleBasedRoutes = [
         icon: <Icon fontSize="small">book_online</Icon>,
         route: "reservations",
       },
+      {
+        type: "collapse",
+        name: "Оптовые компании",
+        key: "companies",
+        icon: <Icon fontSize="small">dashboard</Icon>,
+        route: "companies",
+      },
+      {
+        type: "collapse",
+        name: "Отчеты",
+        key: "ws-reports",
+        icon: <Icon fontSize="small">summarize_icon</Icon>,
+        route: "report",
+      },
     ],
   },
   {
-    role: [userRoles.WHOLESALE_MANAGER],
+    role: [userRoles.WHOLESALE_MANAGER, userRoles.HEAD_OF_ORDERS],
     path: "ws",
     routes: [
       { path: "dashboard", component: <WholesaleManagerDashboard /> },
@@ -458,6 +483,11 @@ const roleBasedRoutes = [
       { path: "add-pharmacy", component: <WholesaleAddPharmacy /> },
       { path: "product-report", component: <WholesaleProductDetails /> },
       { path: "add-balance-in-stock", component: <WholesaleAddBalanceInStock /> },
+      // Head of orders routes
+      { path: "factory-warehouses", component: <HeadOfOrdersFactoryWarehouses /> },
+      { path: "add-warehouse-data", component: <HeadofOrdersAddWarehouseData /> },
+      { path: "reservations", component: <HeadReservations /> },
+      { path: "set-discount", component: <HeadSetDiscount /> },
     ],
     sideNav: [
       {
@@ -473,6 +503,20 @@ const roleBasedRoutes = [
         key: "ws-reports",
         icon: <Icon fontSize="small">summarize_icon</Icon>,
         route: "report",
+      },
+      {
+        type: "collapse",
+        name: "Производственные компании",
+        key: "head-factory-warehouses",
+        icon: <Icon fontSize="small">dashboard</Icon>,
+        route: "factory-warehouses",
+      },
+      {
+        type: "collapse",
+        name: "Резервирование",
+        key: "head-reservation",
+        icon: <Icon fontSize="small">book_online</Icon>,
+        route: "reservations",
       },
     ],
   },

@@ -36,8 +36,6 @@ export default function useDoctorsData(
           url = `dd/get-fact?start_date=${startDate}&end_date=${endDate}`;
         }
 
-        console.log(selectedRegion);
-
         const regionQueryParam = selectedRegion ? `&region_id=${selectedRegion.id}` : "";
         const medRepQueryParam = selectedMedRep ? `&med_rep_id=${selectedMedRep.id}` : "";
 
