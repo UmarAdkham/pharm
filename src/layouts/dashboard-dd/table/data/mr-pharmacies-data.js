@@ -2,10 +2,56 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
+import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
+import { IconButton } from "@mui/material";
+import PharmaciesModal from "../../dialogs/modal/shared/pharmacies-modal";
 
 export default function usePharmacyData(apiPath, onRowClick) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
+  const [open, setOpen] = useState(false);
+  const [pharmaciesToUpdate, setPharmaciesToUpdate] = useState({
+    id: null,
+    company_name: "",
+    contact1: "",
+    contact2: "",
+    email: "",
+    brand_name: "",
+    latitude: "",
+    longitude: "",
+    address: "",
+    bank_account_number: "",
+    inter_branch_turnover: "",
+    classification_of_economic_activities: "",
+    VAT_payer_code: "",
+    pharmacy_director: "",
+    region_id: null,
+  });
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSubmit = async (updatedPharmecy) => {
+    console.log("updatedPharmecy -> ", updatedPharmecy);
+    try {
+      const response = await axiosInstance.patch(
+        `https://it-club.uz/mr/update-pharmacy/${updatedPharmecy.id}`,
+        { updatedPharmecy },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error updating medical organization:", error);
+    }
+  };
 
   useEffect(() => {
     async function fetchPharmacies() {
@@ -22,25 +68,77 @@ export default function usePharmacyData(apiPath, onRowClick) {
           { Header: "Название компании", accessor: "name", align: "left" },
           { Header: "Бренд", accessor: "brand", align: "left" },
           { Header: "Директор", accessor: "director", align: "left" },
+          { Header: "ДЕЙСТВИЯ", accessor: "action", align: "right" },
         ];
 
         const rows = pharmacies.map((pharmacy) => ({
           name: (
-            <MDTypography variant="caption" fontWeight="medium">
+            <MDTypography
+              variant="caption"
+              fontWeight="medium"
+              onClick={() => onRowClick(pharmacy.id)}
+            >
+              {console.log(pharmacy)}
               {pharmacy.company_name}
             </MDTypography>
           ),
           brand: (
-            <MDTypography variant="caption" fontWeight="medium">
+            <MDTypography
+              variant="caption"
+              fontWeight="medium"
+              onClick={() => onRowClick(pharmacy.id)}
+            >
               {pharmacy.brand_name}
             </MDTypography>
           ),
           director: (
-            <MDTypography variant="caption" fontWeight="medium">
+            <MDTypography
+              variant="caption"
+              fontWeight="medium"
+              onClick={() => onRowClick(pharmacy.id)}
+            >
               {pharmacy.pharmacy_director}
             </MDTypography>
           ),
-          onClick: () => onRowClick(pharmacy.id), // Add click handler to each row
+          action: (
+            <div>
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleOpen();
+                  setPharmaciesToUpdate({
+                    id: pharmacy.id,
+                    pharmacy_director: pharmacy.pharmacy_director,
+                    contact1: pharmacy.contact1,
+                    contact2: pharmacy.contact2,
+                    email: pharmacy.email,
+                    bank_account_number: pharmacy.bank_account_number,
+                    classification_of_economic_activities:
+                      pharmacy.classification_of_economic_activities,
+                    VAT_payer_code: pharmacy.VAT_payer_code,
+                    brand_name: pharmacy.brand_name,
+                    company_name: pharmacy.company_name,
+                    inter_branch_turnover: pharmacy.inter_branch_turnover,
+                    latitude: pharmacy.latitude,
+                    longitude: pharmacy.longitude,
+                    address: pharmacy.address,
+                    med_rep: pharmacy.med_rep.id,
+                    discount: pharmacy.discount,
+                    region: pharmacy.region.id,
+                  });
+                }}
+                aria-label="update"
+              >
+                <DriveFileRenameOutlineOutlinedIcon />
+              </IconButton>
+              <PharmaciesModal
+                open={open}
+                handleClose={handleClose}
+                handleSubmit={handleSubmit}
+                pharmaciesToUpdate={pharmaciesToUpdate}
+              />
+            </div>
+          ),
         }));
 
         setData({ columns, rows });
@@ -50,7 +148,7 @@ export default function usePharmacyData(apiPath, onRowClick) {
     }
 
     fetchPharmacies();
-  }, [accessToken, apiPath]);
+  }, [accessToken, apiPath, open]);
 
   return data;
 }

@@ -2,10 +2,50 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
+import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
+import { IconButton } from "@mui/material";
+import DoctorModal from "../../dialogs/modal/shared/doctor-modal";
 
 export default function useDoctorData(apiPath, onRowClick) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
+
+  const [open, setOpen] = useState(false);
+  const [doctorToUpdate, setDoctorToUpdate] = useState({
+    id: null,
+    full_name: "",
+    contact1: "",
+    contact2: "",
+    email: "",
+    category_id: null,
+    speciality_id: null,
+    medical_organization_id: null,
+  });
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSubmit = async (updatedDoctor) => {
+    console.log("updatedDoctor -> ", updatedDoctor);
+    try {
+      const response = await axiosInstance.patch(
+        `https://it-club.uz/mr/update-doctor/${updatedDoctor.id}`,
+        { updatedDoctor },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error updating medical organization:", error);
+    }
+  };
 
   useEffect(() => {
     async function fetchDoctors() {
@@ -23,6 +63,7 @@ export default function useDoctorData(apiPath, onRowClick) {
           { Header: "Специальность", accessor: "speciality", align: "left" },
           { Header: "Медицинская организация", accessor: "medical_organization", align: "left" },
           { Header: "Категория", accessor: "category", align: "left" },
+          { Header: "ДЕЙСТВИЯ", accessor: "action", align: "right" },
         ];
 
         const rows = doctors.map((doctor) => ({
@@ -32,21 +73,61 @@ export default function useDoctorData(apiPath, onRowClick) {
             </MDTypography>
           ),
           speciality: (
-            <MDTypography variant="caption" fontWeight="medium">
+            <MDTypography
+              variant="caption"
+              fontWeight="medium"
+              onClick={() => onRowClick(doctor.id)}
+            >
               {doctor.speciality.name}
             </MDTypography>
           ),
           medical_organization: (
-            <MDTypography variant="caption" fontWeight="medium">
+            <MDTypography
+              variant="caption"
+              fontWeight="medium"
+              onClick={() => onRowClick(doctor.id)}
+            >
               {doctor.medical_organization.name}
             </MDTypography>
           ),
           category: (
-            <MDTypography variant="caption" fontWeight="medium">
+            <MDTypography
+              variant="caption"
+              fontWeight="medium"
+              onClick={() => onRowClick(doctor.id)}
+            >
               {doctor.category.name}
             </MDTypography>
           ),
-          onClick: () => onRowClick(doctor.id), // Add click handler to each row
+          action: (
+            <div>
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleOpen();
+                  setDoctorToUpdate({
+                    id: doctor.id,
+                    full_name: doctor.full_name,
+                    contact1: doctor.contact1,
+                    contact2: doctor.contact2,
+                    email: doctor.email,
+                    category_id: doctor.category.id,
+                    speciality_id: doctor.speciality.id,
+                    medical_organization_id: doctor.medical_organization.id,
+                  });
+                }}
+                aria-label="update"
+              >
+                <DriveFileRenameOutlineOutlinedIcon />
+              </IconButton>
+              <DoctorModal
+                open={open}
+                handleClose={handleClose}
+                handleSubmit={handleSubmit}
+                doctorToUpdate={doctorToUpdate}
+              />
+            </div>
+          ),
         }));
 
         setData({ columns, rows });
@@ -56,7 +137,7 @@ export default function useDoctorData(apiPath, onRowClick) {
     }
 
     fetchDoctors();
-  }, [accessToken, apiPath, onRowClick]);
+  }, [accessToken, apiPath, onRowClick, open]);
 
   return data;
 }

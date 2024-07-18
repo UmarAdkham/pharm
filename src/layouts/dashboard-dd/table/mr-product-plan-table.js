@@ -5,41 +5,47 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   Paper,
   Card,
   Button,
 } from "@mui/material";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "services/axiosInstance";
 import { useSelector } from "react-redux";
-
-// Function to get month names in Russian
-const getRussianMonthNames = () => {
-  return Array.from({ length: 12 }, (_, index) =>
-    new Date(0, index).toLocaleString("ru-RU", { month: "long" })
-  );
-};
+import dayjs from "dayjs";
 
 // eslint-disable-next-line react/prop-types
 const ProductPlanTable = ({ medRepId }) => {
+  // Set default dates to the first and last date of the current month
+  const currentMonth = dayjs().month(); // Current month (0-based index)
+  const currentYear = dayjs().year(); // Current year
+  const firstDate = dayjs(new Date(currentYear, currentMonth, 1)); // First date of the month
+  const lastDate = dayjs(new Date(currentYear, currentMonth + 1, 0)); // Last date of the month
+
   const [data, setData] = useState([]);
-  const [month, setMonth] = useState(new Date().getMonth() + 1); // Current month
+  const [startDate, setStartDate] = useState(firstDate);
+  const [endDate, setEndDate] = useState(lastDate);
+  const [month, setMonth] = useState(currentMonth + 1); // Current month
   const { accessToken } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
-  const fetchData = async (month) => {
+  const fetchData = async (startDate, endDate) => {
     try {
       const response = await axiosInstance.get(
-        `https://it-club.uz/dd/get-med-rep-product-plan-by-month-id/${medRepId}?month_number=${month}`,
+        `https://it-club.uz/dd/get-med-rep-product-plan-by-month`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
+          },
+          params: {
+            start_date: startDate ? startDate.format("YYYY-MM-DD") : "",
+            end_date: endDate ? endDate.format("YYYY-MM-DD") : "",
           },
         }
       );
@@ -50,8 +56,8 @@ const ProductPlanTable = ({ medRepId }) => {
   };
 
   useEffect(() => {
-    fetchData(month);
-  }, [month]);
+    fetchData(startDate, endDate);
+  }, [startDate, endDate]);
 
   const handleMonthChange = (event) => {
     setMonth(event.target.value);
@@ -60,8 +66,6 @@ const ProductPlanTable = ({ medRepId }) => {
   const getRowColor = (index) => {
     return index % 2 === 0 ? "#90EE90" : "#FF8C00";
   };
-
-  const russianMonthNames = getRussianMonthNames();
 
   // Calculate the total plan and plan_price
   const totalPlanAmount = data.plan
@@ -80,21 +84,20 @@ const ProductPlanTable = ({ medRepId }) => {
           </MDTypography>
         </MDBox>
         <MDBox>
-          <FormControl variant="outlined">
-            <InputLabel>Месяц</InputLabel>
-            <Select
-              value={month}
-              onChange={handleMonthChange}
-              label="Фильтр по месяцу"
-              sx={{ height: "45px", width: "200px" }}
-            >
-              {russianMonthNames.map((monthName, index) => (
-                <MenuItem key={index + 1} value={index + 1}>
-                  {monthName}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DemoContainer components={["DatePicker", "DatePicker"]}>
+              <DatePicker
+                label="От"
+                value={startDate}
+                onChange={(newValue) => setStartDate(newValue)}
+              />
+              <DatePicker
+                label="До"
+                value={endDate}
+                onChange={(newValue) => setEndDate(newValue)}
+              />
+            </DemoContainer>
+          </LocalizationProvider>
         </MDBox>
         <MDBox>
           <Button
@@ -161,7 +164,10 @@ const ProductPlanTable = ({ medRepId }) => {
                 </>
               ) : (
                 <TableRow>
-                  <TableCell>Планов на {russianMonthNames[month - 1]} пока нет</TableCell>
+                  <TableCell>
+                    Планов на от {startDate ? startDate.format("DD.MM.YYYY") : "начало периода"} до{" "}
+                    {endDate ? endDate.format("DD.MM.YYYY") : "конец периода"} пока нет
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>
