@@ -28,8 +28,6 @@ function MedorgModal({ open, handleClose, handleSubmit, medorgToUpdate }) {
   const accessToken = useSelector((state) => state.auth.accessToken);
 
   useEffect(() => {
-    console.log("OPEN: " + open);
-
     if (open) {
       if (medorgToUpdate) {
         setName(medorgToUpdate.name);
