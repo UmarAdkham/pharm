@@ -12,6 +12,7 @@ import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Switch from "@mui/material/Switch";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -20,9 +21,7 @@ import MDButton from "components/MDButton";
 
 // Authentication layout components
 import axiosInstance from "services/axiosInstance";
-import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import BasicLayout from "layouts/authentication/components/BasicLayout";
-import { Checkbox } from "@mui/material";
 
 function ReservationAdd() {
   const navigate = useNavigate();
@@ -34,35 +33,28 @@ function ReservationAdd() {
   const [selectedManufacturer, setSelectedManufacturer] = useState(null);
   const [availableProducts, setAvailableProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([{ product: null, quantity: "" }]);
+  const [invoiceNumber, setInvoiceNumber] = useState("");
+  const [discountable, setDiscountable] = useState(false);
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
-  const [checked, setChecked] = useState(false);
-  const wholesale_id = location.state || "";
-  console.log(location.state);
-
-  const handleChange = (event) => {
-    setChecked(event.target.checked);
-  };
 
   useEffect(() => {
     async function fetchPharmacies() {
       try {
-        const response = await axiosInstance.get(`mr/get-all-pharmacy`, {
+        const response = await axiosInstance.get("mr/get-all-pharmacy", {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         });
         setPharmacies(response.data);
       } catch (error) {
-        console.error("Failed to fetch pharmacies:", error);
+        console.error("Failed to fetch pharmacies", error);
       }
     }
 
     async function fetchManufacturers() {
       try {
-        const response = await axiosInstance.get(
-          "https://it-club.uz/common/get-manufactured-company"
-        );
+        const response = await axiosInstance.get("common/get-manufactured-company");
         setManufacturers(response.data);
       } catch (error) {
         console.error("Failed to fetch manufacturers", error);
@@ -71,7 +63,11 @@ function ReservationAdd() {
 
     async function fetchProducts() {
       try {
-        const response = await axiosInstance.get("https://it-club.uz/common/get-product");
+        const response = await axiosInstance.get("common/get-product", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
         setAvailableProducts(response.data);
       } catch (error) {
         console.error("Failed to fetch products", error);
@@ -111,6 +107,7 @@ function ReservationAdd() {
     if (
       !selectedPharmacy ||
       !selectedManufacturer ||
+      !invoiceNumber ||
       selectedProducts.some((sp) => !sp.product || !sp.quantity)
     ) {
       setMessage({ color: "error", content: "Пожалуйста, заполните все поля" });
@@ -123,18 +120,17 @@ function ReservationAdd() {
     }));
 
     const requestData = {
+      manufactured_company_id: selectedManufacturer.id,
+      invoice_number: invoiceNumber,
+      discountable: discountable,
       products: productsData,
-      pharmacy_id: selectedPharmacy.id,
-      wholesale_id,
-      factory_id: selectedManufacturer.id,
-      description,
     };
 
     try {
       console.log(requestData);
       // Call the API with authorization header
       const response = await axiosInstance.post(
-        "https://it-club.uz/mr/add-balance-in-stock",
+        `mr/reservation/${selectedPharmacy.id}`,
         requestData,
         {
           headers: {
@@ -181,15 +177,14 @@ function ReservationAdd() {
         <MDBox pt={4} pb={3} px={3}>
           {message.content && <Alert severity={message.color}>{message.content}</Alert>}
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
-            <MDBox display="flex" alignItems="center" mb={2}>
+            <MDBox mb={2}>
               <Autocomplete
                 options={pharmacies}
                 getOptionLabel={(option) => option.company_name}
                 onChange={(event, newValue) => setSelectedPharmacy(newValue)}
                 renderInput={(params) => (
-                  <TextField {...params} label="Выберите аптеку" variant="outlined" fullWidth />
+                  <TextField {...params} label="Аптека" variant="outlined" fullWidth />
                 )}
-                sx={{ flexGrow: 1, mr: 2 }}
               />
             </MDBox>
             <MDBox mb={2}>
@@ -206,6 +201,25 @@ function ReservationAdd() {
                   />
                 )}
               />
+            </MDBox>
+            <MDBox mb={2}>
+              <TextField
+                label="Номер счета"
+                variant="outlined"
+                fullWidth
+                value={invoiceNumber}
+                onChange={(e) => setInvoiceNumber(e.target.value)}
+              />
+            </MDBox>
+            <MDBox display="flex" alignItems="center" mb={2}>
+              <Switch
+                checked={discountable}
+                onChange={(e) => setDiscountable(e.target.checked)}
+                inputProps={{ "aria-label": "discountable switch" }}
+              />
+              <MDTypography variant="button" fontWeight="medium">
+                Скидка доступна
+              </MDTypography>
             </MDBox>
             {selectedProducts.map((selectedProduct, index) => (
               <MDBox key={index} display="flex" alignItems="center" mb={1}>
@@ -232,22 +246,10 @@ function ReservationAdd() {
               </MDBox>
             ))}
             <MDBox display="flex" justifyContent="space-around" mb={2}>
-              <Checkbox
-                checked={checked}
-                onChange={handleChange}
-                inputProps={{ "aria-label": "controlled" }}
-              />
               <IconButton onClick={handleAddProduct}>
                 <AddIcon />
               </IconButton>
             </MDBox>
-            {/* <MDBox display="flex" mb={2}>
-              <Checkbox
-                checked={checked}
-                onChange={handleChange}
-                inputProps={{ "aria-label": "controlled" }}
-              />
-            </MDBox> */}
             <MDBox mt={1} mb={1} display="flex" justifyContent="space-between">
               <MDButton variant="gradient" color="info" type="submit" fullWidth>
                 Добавить
