@@ -63,6 +63,7 @@ import DeputyDirectorAddBonus from "layouts/dashboard-dd/components/dd-add-bonus
 import HeadSetDiscount from "layouts/dashboard-head/components/head-set-discount";
 import DeputyDirectorDoctors from "layouts/dashboard-dd/components/dd-doctors";
 import ReservationAdd from "layouts/dashboard-dd/components/dd-add-reservations";
+import HeadPayReservation from "layouts/dashboard-head/components/head-pay-reservation";
 
 const roleBasedRoutes = [
   {
@@ -243,17 +244,17 @@ const roleBasedRoutes = [
       },
       {
         type: "collapse",
+        name: "Брони",
+        key: "dd-reservations",
+        icon: <Icon fontSize="small">summarize_two_tone_icon</Icon>,
+        route: "reservations",
+      },
+      {
+        type: "collapse",
         name: "Процесс отчеты",
         key: "dd-process-reports",
         icon: <Icon fontSize="small">summarize_two_tone_icon</Icon>,
         route: "process-reports",
-      },
-      {
-        type: "collapse",
-        name: "Резервации",
-        key: "dd-reservations",
-        icon: <Icon fontSize="small">summarize_two_tone_icon</Icon>,
-        route: "reservations",
       },
     ],
   },
@@ -467,6 +468,7 @@ const roleBasedRoutes = [
       { path: "add-warehouse-data", component: <HeadofOrdersAddWarehouseData /> },
       { path: "reservations", component: <HeadReservations /> },
       { path: "set-discount", component: <HeadSetDiscount /> },
+      { path: "pay-reservation", component: <HeadPayReservation /> },
       // Wholesale manager routes
       { path: "companies", component: <WholesaleManagerCompanies /> },
       { path: "add-company", component: <WholesaleManagerAddCompany /> },
@@ -489,7 +491,7 @@ const roleBasedRoutes = [
       },
       {
         type: "collapse",
-        name: "Резервирование",
+        name: "Брони",
         key: "head-reservation",
         icon: <Icon fontSize="small">book_online</Icon>,
         route: "reservations",
@@ -555,7 +557,7 @@ const roleBasedRoutes = [
       },
       {
         type: "collapse",
-        name: "Резервирование",
+        name: "Брони",
         key: "head-reservation",
         icon: <Icon fontSize="small">book_online</Icon>,
         route: "reservations",

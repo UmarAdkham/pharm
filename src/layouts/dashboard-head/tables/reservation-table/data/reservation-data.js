@@ -168,8 +168,10 @@ export default function useReservationData(apiPath) {
               variant="contained"
               color="success"
               sx={{ color: "white" }}
-              onClick={() => {}}
               style={{ cursor: "pointer" }}
+              onClick={() => {
+                navigate("/head/pay-reservation", { state: rsrv.id });
+              }}
             >
               Поступление
             </Button>
