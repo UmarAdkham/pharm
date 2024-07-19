@@ -80,7 +80,6 @@ export default function useReservationData(apiPath) {
         (reservation) => new Date(reservation.expire_date) >= now
       );
 
-      console.log(filteredReservations);
       const reservations = filteredReservations.sort((a, b) => a.id - b.id);
 
       const overallValues = {
@@ -92,6 +91,7 @@ export default function useReservationData(apiPath) {
       };
 
       const columns = [
+        { Header: "Дата  реализаци", accessor: "expiry_date", align: "left" },
         { Header: "Сумма с/ф", accessor: "total_payable", align: "left" },
         { Header: "Контрагент", accessor: "company_name", align: "left" },
         { Header: "Регион", accessor: "region", align: "left" },
@@ -111,6 +111,11 @@ export default function useReservationData(apiPath) {
         const entity = rsrv.pharmacy || rsrv.hospital;
         return {
           ...rsrv,
+          expiry_date: (
+            <MDTypography variant="caption" fontWeight="medium">
+              {format(new Date(rsrv.date), "MM-dd-yyyy")}
+            </MDTypography>
+          ),
           total_payable: (
             <MDTypography variant="caption" fontWeight="medium">
               {rsrv.total_payable_with_nds.toLocaleString("ru-RU")}

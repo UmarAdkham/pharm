@@ -23,6 +23,7 @@ function HeadPayReservation() {
   const { accessToken } = useSelector((state) => state.auth);
   const location = useLocation();
   const reservation_id = location.state || {}; // Add a default value
+  console.log(location);
 
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
