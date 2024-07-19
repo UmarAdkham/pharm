@@ -31,7 +31,6 @@ const ProductPlanTable = ({ medRepId }) => {
   const [data, setData] = useState([]);
   const [startDate, setStartDate] = useState(firstDate);
   const [endDate, setEndDate] = useState(lastDate);
-  const [month, setMonth] = useState(currentMonth + 1); // Current month
   const { accessToken } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
@@ -58,10 +57,6 @@ const ProductPlanTable = ({ medRepId }) => {
   useEffect(() => {
     fetchData(startDate, endDate);
   }, [startDate, endDate]);
-
-  const handleMonthChange = (event) => {
-    setMonth(event.target.value);
-  };
 
   const getRowColor = (index) => {
     return index % 2 === 0 ? "#90EE90" : "#FF8C00";

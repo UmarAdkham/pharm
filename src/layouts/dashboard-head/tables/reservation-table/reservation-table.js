@@ -11,6 +11,12 @@ import useReservationData from "./data/reservation-data";
 import axiosInstance from "services/axiosInstance";
 import { useSelector } from "react-redux";
 
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
+
 function ReservationTable() {
   const [medReps, setMedReps] = useState([]);
   const [pharmacies, setPharmacies] = useState([]);
@@ -19,6 +25,38 @@ function ReservationTable() {
   const [reservationApiPath, setReservationApiPath] = useState("head/get-all-reservations");
   const [filteredRows, setFilteredRows] = useState([]);
   const accessToken = useSelector((state) => state.auth.accessToken);
+
+  const currentMonth = dayjs().month(); // Current month (0-based index)
+  const currentYear = dayjs().year(); // Current year
+  const firstDate = dayjs(new Date(currentYear, currentMonth, 1)); // First date of the month
+  const lastDate = dayjs(new Date(currentYear, currentMonth + 1, 0)); // Last date of the month
+
+  const [startDate, setStartDate] = useState(firstDate);
+  const [endDate, setEndDate] = useState(lastDate);
+
+  const fetchData = async (startDate, endDate) => {
+    try {
+      const response = await axiosInstance.get(
+        `https://it-club.uz/dd/get-med-rep-product-plan-by-month`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          params: {
+            start_date: startDate ? startDate.format("YYYY-MM-DD") : "",
+            end_date: endDate ? endDate.format("YYYY-MM-DD") : "",
+          },
+        }
+      );
+      response.data;
+    } catch (error) {
+      console.error("Не удалось получить данные:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(startDate, endDate);
+  }, [startDate, endDate]);
 
   const { columns, rows, ExpiryDateDialogComponent, SnackbarComponent } =
     useReservationData(reservationApiPath);
@@ -92,6 +130,22 @@ function ReservationTable() {
           </MDTypography>
         </MDBox>
         <MDBox display="flex" gap={2}>
+          <MDBox>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["DatePicker", "DatePicker"]}>
+                <DatePicker
+                  label="От"
+                  value={startDate}
+                  onChange={(newValue) => setStartDate(newValue)}
+                />
+                <DatePicker
+                  label="До"
+                  value={endDate}
+                  onChange={(newValue) => setEndDate(newValue)}
+                />
+              </DemoContainer>
+            </LocalizationProvider>
+          </MDBox>
           <FormControl sx={{ m: 1, minWidth: 200 }} variant="outlined" size="small">
             <InputLabel>Медицинские представители</InputLabel>
             <Select
