@@ -96,7 +96,7 @@ export default function useReservationData(apiPath) {
           ...rsrv,
           total_payable: (
             <MDTypography variant="caption" fontWeight="medium">
-              {rsrv.total_payable_with_nds}
+              {rsrv.total_payable_with_nds.toLocaleString("ru-RU")}
             </MDTypography>
           ),
           company_name: (
