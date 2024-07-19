@@ -459,7 +459,7 @@ const roleBasedRoutes = [
     ],
   },
   {
-    role: [userRoles.HEAD_OF_ORDERS, userRoles.WHOLESALE_MANAGER],
+    role: [userRoles.HEAD_OF_ORDERS, userRoles.WHOLESALE_MANAGER, userRoles.DEPUTY_DIRECTOR],
     path: "head",
     routes: [
       { path: "dashboard", component: <HeadOfOrdersDashboard /> },
