@@ -116,7 +116,7 @@ export default function useReservationData(apiPath) {
           ),
           type: (
             <MDTypography variant="caption" fontWeight="medium">
-              {rsrv.pharmacy ? "Pharmacy" : "Hospital"}
+              {rsrv.pharmacy ? "Аптека" : "Больница"}
             </MDTypography>
           ),
           discount: (
