@@ -217,7 +217,7 @@ function ReservationTable() {
               navigate("/dd/add-reservation");
             }}
           >
-            Добавить бронь
+            Создать бронь
           </Button>
         </MDBox>
       </MDBox>
