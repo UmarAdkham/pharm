@@ -16,6 +16,13 @@ export default function useReservationData(apiPath) {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const [overall, setOverall] = useState({
+    numberOfInvoices: 0,
+    invoiceAmount: 0,
+    profit: 0,
+    debt: 0,
+    promo: 0,
+  });
   const accessToken = useSelector((state) => state.auth.accessToken);
 
   useEffect(() => {
@@ -73,7 +80,16 @@ export default function useReservationData(apiPath) {
         (reservation) => new Date(reservation.expire_date) >= now
       );
 
+      console.log(filteredReservations);
       const reservations = filteredReservations.sort((a, b) => a.id - b.id);
+
+      const overallValues = {
+        numberOfInvoices: reservations.length,
+        invoiceAmount: reservations.reduce((sum, r) => sum + r.total_payable_with_nds, 0),
+        profit: reservations.reduce((sum, r) => sum + r.profit, 0),
+        debt: reservations.reduce((sum, r) => sum + r.debt, 0),
+        promo: reservations.reduce((sum, r) => sum + (r.pharmacy?.promo || r.hospital?.promo), 0),
+      };
 
       const columns = [
         { Header: "Сумма с/ф", accessor: "total_payable", align: "left" },
@@ -81,6 +97,7 @@ export default function useReservationData(apiPath) {
         { Header: "Регион", accessor: "region", align: "left" },
         { Header: "МП", accessor: "med_rep", align: "left" },
         { Header: "Тип К/А", accessor: "type", align: "center" },
+        { Header: "Поступление", accessor: "profit", align: "center" },
         { Header: "Скидка %", accessor: "discount", align: "center" },
         { Header: "Дата брони", accessor: "date_reservation", align: "left" },
         { Header: "Одобрено", accessor: "checked", align: "left" },
@@ -119,6 +136,11 @@ export default function useReservationData(apiPath) {
               {rsrv.pharmacy ? "Аптека" : "Больница"}
             </MDTypography>
           ),
+          profit: (
+            <MDTypography variant="caption" fontWeight="medium">
+              {rsrv.profit.toLocaleString("ru-RU")}
+            </MDTypography>
+          ),
           discount: (
             <MDTypography variant="caption" fontWeight="medium">
               {`${rsrv.discount} %`}
@@ -138,7 +160,7 @@ export default function useReservationData(apiPath) {
           ),
           promo: (
             <MDTypography variant="caption" fontWeight="medium">
-              {entity.promo}
+              {entity.promo?.toLocaleString("ru-RU")}
             </MDTypography>
           ),
           add: (
@@ -167,6 +189,7 @@ export default function useReservationData(apiPath) {
         };
       });
       setData({ columns, rows });
+      setOverall(overallValues);
     } catch (error) {
       console.error("Error fetching reservations", error);
     }
@@ -247,6 +270,7 @@ export default function useReservationData(apiPath) {
 
   return {
     ...data,
+    overall,
     ExpiryDateDialogComponent: (
       <ExpiryDateDialog
         open={openDialog}

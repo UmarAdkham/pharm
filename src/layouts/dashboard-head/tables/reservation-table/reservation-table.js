@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { Button, Autocomplete, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import OverallReservationValues from "layouts/dashboard-dd/components/overall-reserve-values";
 
 const monthNames = [
   "Январь",
@@ -43,7 +44,7 @@ function ReservationTable() {
   const [filteredRows, setFilteredRows] = useState([]);
   const accessToken = useSelector((state) => state.auth.accessToken);
 
-  const { columns, rows, ExpiryDateDialogComponent, SnackbarComponent } =
+  const { columns, rows, ExpiryDateDialogComponent, SnackbarComponent, overall } =
     useReservationData(reservationApiPath);
 
   useEffect(() => {
@@ -220,6 +221,7 @@ function ReservationTable() {
           </Button>
         </MDBox>
       </MDBox>
+      <OverallReservationValues overall={overall} />
       <MDBox>
         <DataTable
           table={{
