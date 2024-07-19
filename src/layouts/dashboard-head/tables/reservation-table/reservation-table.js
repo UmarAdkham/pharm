@@ -10,15 +10,35 @@ import DataTable from "examples/Tables/DataTable";
 import useReservationData from "./data/reservation-data";
 import axiosInstance from "services/axiosInstance";
 import { useSelector } from "react-redux";
-import { Button } from "@mui/material";
+import { Button, Autocomplete, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
+
+const monthNames = [
+  "Январь",
+  "Февраль",
+  "Март",
+  "Апрель",
+  "Май",
+  "Июнь",
+  "Июль",
+  "Август",
+  "Сентябрь",
+  "Октябрь",
+  "Ноябрь",
+  "Декабрь",
+];
 
 function ReservationTable() {
   const navigate = useNavigate();
   const [medReps, setMedReps] = useState([]);
   const [pharmacies, setPharmacies] = useState([]);
+  const [hospitals, setHospitals] = useState([]);
+  const [combinedEntities, setCombinedEntities] = useState([]);
   const [selectedPharmacy, setSelectedPharmacy] = useState("all");
-  const [selectedMedRep, setSelectedMedRep] = useState("all");
+  const [selectedMedRep, setSelectedMedRep] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedEntity, setSelectedEntity] = useState(null);
   const [reservationApiPath, setReservationApiPath] = useState("head/get-all-reservations");
   const [filteredRows, setFilteredRows] = useState([]);
   const accessToken = useSelector((state) => state.auth.accessToken);
@@ -29,22 +49,24 @@ function ReservationTable() {
   useEffect(() => {
     fetchMedicalReps();
     fetchPharmacies();
+    fetchHospitals();
   }, []);
 
   useEffect(() => {
+    combineEntities();
+  }, [hospitals, pharmacies]);
+
+  useEffect(() => {
     filterRows();
-  }, [rows, selectedMedRep]);
+  }, [rows, selectedMedRep, selectedMonth, selectedEntity]);
 
   const fetchMedicalReps = async () => {
     try {
-      const response = await axiosInstance.get(
-        "https://it-club.uz/common/get-medical-representatives",
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await axiosInstance.get("https://it-club.uz/common/get-med-reps", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       setMedReps(response.data);
     } catch (error) {
       console.error("Failed to fetch medical representatives", error);
@@ -59,10 +81,36 @@ function ReservationTable() {
         },
       });
       setPharmacies(response.data);
-      // console.log(response.data);
     } catch (error) {
       console.error("Failed to fetch pharmacies", error);
     }
+  };
+
+  const fetchHospitals = async (medRepId) => {
+    try {
+      const response = await axiosInstance.get(`https://it-club.uz/mr/get-hospitals`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      setHospitals(response.data);
+    } catch (error) {
+      console.error("Failed to fetch hospitals", error);
+    }
+  };
+
+  const combineEntities = () => {
+    const combined = [
+      ...hospitals.map((hospital) => ({
+        ...hospital,
+        type: "Больница",
+      })),
+      ...pharmacies.map((pharmacy) => ({
+        ...pharmacy,
+        type: "Аптека",
+      })),
+    ];
+    setCombinedEntities(combined);
   };
 
   const handlePharmacyChange = (event) => {
@@ -73,18 +121,41 @@ function ReservationTable() {
     );
   };
 
-  const handleMedRepChange = (event) => {
-    const medRepId = event.target.value;
-    setSelectedMedRep(medRepId);
+  const handleMedRepChange = (event, newValue) => {
+    setSelectedMedRep(newValue);
+  };
+
+  const handleMonthChange = (event) => {
+    setSelectedMonth(event.target.value);
+  };
+
+  const handleEntityChange = (event, newValue) => {
+    setSelectedEntity(newValue);
   };
 
   const filterRows = () => {
-    if (selectedMedRep === "all") {
-      setFilteredRows(rows);
-    } else {
-      const filtered = rows.filter((row) => row.pharmacy.med_rep.id === parseInt(selectedMedRep));
-      setFilteredRows(filtered);
+    let filtered = rows;
+    if (selectedMedRep) {
+      filtered = filtered.filter(
+        (row) =>
+          row.pharmacy?.med_rep?.full_name === selectedMedRep.full_name ||
+          row.hospital?.med_rep?.full_name === selectedMedRep.full_name
+      );
     }
+    if (selectedMonth !== "") {
+      filtered = filtered.filter(
+        (row) =>
+          new Date(row.date_reservation.props.children).getMonth() === parseInt(selectedMonth)
+      );
+    }
+    if (selectedEntity) {
+      filtered = filtered.filter(
+        (row) =>
+          row.pharmacy?.company_name === selectedEntity.company_name ||
+          row.hospital?.company_name === selectedEntity.company_name
+      );
+    }
+    setFilteredRows(filtered);
   };
 
   return (
@@ -96,44 +167,52 @@ function ReservationTable() {
           </MDTypography>
         </MDBox>
         <MDBox display="flex" gap={2}>
-          {/* <FormControl sx={{ m: 1, minWidth: 200 }} variant="outlined" size="small">
-            <InputLabel>Медицинские представители</InputLabel>
+          <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
+            <InputLabel>Месяц</InputLabel>
             <Select
-              label="Медицинские представители"
-              sx={{ height: "45px" }}
-              value={selectedMedRep}
-              onChange={handleMedRepChange}
+              value={selectedMonth}
+              onChange={handleMonthChange}
+              sx={{ height: "35px" }}
+              label="Месяц"
             >
-              <MenuItem value="all">Все</MenuItem>
-              {medReps.map((rep) => (
-                <MenuItem key={rep.id} value={rep.id}>
-                  {rep.full_name}
+              <MenuItem value="">Все</MenuItem>
+              {monthNames.map((month, index) => (
+                <MenuItem key={index} value={index}>
+                  {month}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
-          <FormControl sx={{ m: 1, minWidth: 200 }} variant="outlined" size="small">
-            <InputLabel>Аптеки</InputLabel>
-            <Select
-              sx={{ height: "45px" }}
-              value={selectedPharmacy}
-              onChange={handlePharmacyChange}
-              label="Аптеки"
-            >
-              <MenuItem value="all">Все</MenuItem>
-              {pharmacies.map((pharmacy) => (
-                <MenuItem key={pharmacy.id} value={pharmacy.id}>
-                  {pharmacy.company_name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl> */}
+          <Autocomplete
+            options={medReps}
+            getOptionLabel={(option) => option.full_name}
+            value={selectedMedRep}
+            onChange={handleMedRepChange}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Медицинские представители"
+                variant="outlined"
+                size="small"
+              />
+            )}
+            sx={{ minWidth: 200 }}
+          />
+          <Autocomplete
+            options={combinedEntities}
+            getOptionLabel={(option) => `${option.company_name} (${option.type})`}
+            value={selectedEntity}
+            onChange={handleEntityChange}
+            renderInput={(params) => (
+              <TextField {...params} label="Выберите компанию" variant="outlined" size="small" />
+            )}
+            sx={{ minWidth: 200 }}
+          />
           <Button
             variant="contained"
             color="success"
             sx={{ color: "white" }}
             onClick={() => {
-              alert("Please");
               navigate("/dd/add-reservation");
             }}
           >
