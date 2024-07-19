@@ -10,8 +10,11 @@ import DataTable from "examples/Tables/DataTable";
 import useReservationData from "./data/reservation-data";
 import axiosInstance from "services/axiosInstance";
 import { useSelector } from "react-redux";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 function ReservationTable() {
+  const navigate = useNavigate();
   const [medReps, setMedReps] = useState([]);
   const [pharmacies, setPharmacies] = useState([]);
   const [selectedPharmacy, setSelectedPharmacy] = useState("all");
@@ -43,6 +46,7 @@ function ReservationTable() {
         }
       );
       setMedReps(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error("Failed to fetch medical representatives", error);
     }
@@ -56,6 +60,7 @@ function ReservationTable() {
         },
       });
       setPharmacies(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.error("Failed to fetch pharmacies", error);
     }
@@ -92,7 +97,7 @@ function ReservationTable() {
           </MDTypography>
         </MDBox>
         <MDBox display="flex" gap={2}>
-          <FormControl sx={{ m: 1, minWidth: 200 }} variant="outlined" size="small">
+          {/* <FormControl sx={{ m: 1, minWidth: 200 }} variant="outlined" size="small">
             <InputLabel>Медицинские представители</InputLabel>
             <Select
               label="Медицинские представители"
@@ -123,7 +128,18 @@ function ReservationTable() {
                 </MenuItem>
               ))}
             </Select>
-          </FormControl>
+          </FormControl> */}
+          <Button
+            variant="contained"
+            color="success"
+            sx={{ color: "white" }}
+            onClick={() => {
+              alert("Please");
+              navigate("/dd/add-reservation");
+            }}
+          >
+            Добавить продажу
+          </Button>
         </MDBox>
       </MDBox>
       <MDBox>

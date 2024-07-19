@@ -62,6 +62,7 @@ import DeputyDirectorBonusMrs from "layouts/dashboard-dd/components/dd-bonus-mrs
 import DeputyDirectorAddBonus from "layouts/dashboard-dd/components/dd-add-bonus";
 import HeadSetDiscount from "layouts/dashboard-head/components/head-set-discount";
 import DeputyDirectorDoctors from "layouts/dashboard-dd/components/dd-doctors";
+import ReservationAdd from "layouts/dashboard-dd/components/dd-add-reservations";
 
 const roleBasedRoutes = [
   {
@@ -159,6 +160,8 @@ const roleBasedRoutes = [
       { path: "bonus-report", component: <DeputyDirectorBonus /> },
       { path: "add-bonus", component: <DeputyDirectorAddBonus /> },
       { path: "doctors", component: <DeputyDirectorDoctors /> },
+      { path: "reservations", component: <HeadReservations /> },
+      { path: "add-reservation", component: <ReservationAdd /> },
     ],
     sideNav: [
       {
@@ -244,6 +247,13 @@ const roleBasedRoutes = [
         key: "dd-process-reports",
         icon: <Icon fontSize="small">summarize_two_tone_icon</Icon>,
         route: "process-reports",
+      },
+      {
+        type: "collapse",
+        name: "Резервации",
+        key: "dd-reservations",
+        icon: <Icon fontSize="small">summarize_two_tone_icon</Icon>,
+        route: "reservations",
       },
     ],
   },

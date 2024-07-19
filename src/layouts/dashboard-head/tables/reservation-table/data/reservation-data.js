@@ -67,6 +67,8 @@ export default function useReservationData(apiPath) {
         },
       });
 
+      console.log("Ass", response.data[0]["pharmacy" || "hospital"]?.company_name);
+
       const now = new Date();
 
       const filteredReservations = response.data.filter(
@@ -74,6 +76,8 @@ export default function useReservationData(apiPath) {
       );
 
       const reservations = filteredReservations.sort((a, b) => a.id - b.id);
+
+      console.log("uebne", reservations);
 
       const columns = [
         { Header: "Аптека", accessor: "pharmacy_name", align: "left" },
@@ -91,12 +95,12 @@ export default function useReservationData(apiPath) {
         ...rsrv,
         pharmacy_name: (
           <MDTypography variant="caption" fontWeight="medium">
-            {rsrv.pharmacy.company_name}
+            {rsrv.pharmacy ? rsrv.pharmacy.company_name : rsrv.hospital.company_name || "as"}
           </MDTypography>
         ),
         med_rep_name: (
           <MDTypography variant="caption" fontWeight="medium">
-            {rsrv.pharmacy.med_rep.full_name}
+            {rsrv.pharmacy ? rsrv.pharmacy : rsrv.hospital.med_rep.full_name}
           </MDTypography>
         ),
         total_payable: (
@@ -164,10 +168,10 @@ export default function useReservationData(apiPath) {
           </IconButton>
         ),
       }));
-
+      console.log("rows", rows);
       setData({ columns, rows });
     } catch (error) {
-      console.error(error);
+      console.error("Error balosi ", error);
     }
   }
 
@@ -231,7 +235,7 @@ export default function useReservationData(apiPath) {
       },
     })
       .then((response) => {
-        let filename = `${rsrv.pharmacy.company_name}_${format(new Date(rsrv.date), "MM-dd-yyyy")}`;
+        let filename = `${rsrv.hospital.company_name}_${format(new Date(rsrv.date), "MM-dd-yyyy")}`;
 
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
