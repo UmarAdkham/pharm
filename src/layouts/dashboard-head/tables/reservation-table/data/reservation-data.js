@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import MDTypography from "components/MDTypography";
 import { format } from "date-fns";
-import { IconButton, Switch, Tooltip, Snackbar, Alert } from "@mui/material";
+import { IconButton, Switch, Tooltip, Snackbar, Alert, Button } from "@mui/material";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import EditIcon from "@mui/icons-material/Edit";
 import axiosInstance from "services/axiosInstance";
@@ -76,98 +76,99 @@ export default function useReservationData(apiPath) {
       const reservations = filteredReservations.sort((a, b) => a.id - b.id);
 
       const columns = [
-        { Header: "Аптека", accessor: "pharmacy_name", align: "left" },
-        { Header: "Медицинский представитель", accessor: "med_rep_name", align: "left" },
-        { Header: "Сумма к оплате", accessor: "total_payable", align: "left" },
-        { Header: "Скидка", accessor: "discount", align: "left" },
-        { Header: "Статус", accessor: "status", align: "center" },
-        { Header: "Проверить", accessor: "check", align: "center" },
-        { Header: "Дата", accessor: "date", align: "left" },
-        { Header: "Дата истечения", accessor: "expiry_date", align: "left" },
+        { Header: "Сумма с/ф", accessor: "total_payable", align: "left" },
+        { Header: "Контрагент", accessor: "company_name", align: "left" },
+        { Header: "Регион", accessor: "region", align: "left" },
+        { Header: "МП", accessor: "med_rep", align: "left" },
+        { Header: "Тип К/А", accessor: "type", align: "center" },
+        { Header: "Скидка %", accessor: "discount", align: "center" },
+        { Header: "Дата брони", accessor: "date_reservation", align: "left" },
+        { Header: "Одобрено", accessor: "checked", align: "left" },
+        { Header: "Производитель", accessor: "man_company", align: "left" },
+        { Header: "Промо", accessor: "promo", align: "left" },
+        { Header: "Поступление", accessor: "add", align: "left" },
         { Header: "Скачать", accessor: "download", align: "center" },
       ];
 
-      const rows = reservations.map((rsrv) => ({
-        ...rsrv,
-        pharmacy_name: (
-          <MDTypography variant="caption" fontWeight="medium">
-            {rsrv.pharmacy.company_name}
-          </MDTypography>
-        ),
-        med_rep_name: (
-          <MDTypography variant="caption" fontWeight="medium">
-            {rsrv.pharmacy.med_rep.full_name}
-          </MDTypography>
-        ),
-        total_payable: (
-          <MDTypography variant="caption" fontWeight="medium">
-            {rsrv.total_payable_with_nds}
-          </MDTypography>
-        ),
-        discount: (
-          <>
+      const rows = reservations.map((rsrv) => {
+        const entity = rsrv.pharmacy || rsrv.hospital;
+        return {
+          ...rsrv,
+          total_payable: (
+            <MDTypography variant="caption" fontWeight="medium">
+              {rsrv.total_payable_with_nds}
+            </MDTypography>
+          ),
+          company_name: (
+            <MDTypography variant="caption" fontWeight="medium">
+              {entity.company_name}
+            </MDTypography>
+          ),
+          region: (
+            <MDTypography variant="caption" fontWeight="medium">
+              {entity.region ? entity.region.name : "-"}
+            </MDTypography>
+          ),
+          med_rep: (
+            <MDTypography variant="caption" fontWeight="medium">
+              {entity.med_rep.full_name}
+            </MDTypography>
+          ),
+          type: (
+            <MDTypography variant="caption" fontWeight="medium">
+              {rsrv.pharmacy ? "Pharmacy" : "Hospital"}
+            </MDTypography>
+          ),
+          discount: (
             <MDTypography variant="caption" fontWeight="medium">
               {`${rsrv.discount} %`}
             </MDTypography>
-            <Tooltip title="Установить скидку">
-              <IconButton
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "#e0f2f1",
-                  },
-                }}
-                onClick={() => {
-                  navigate("/head/set-discount", { state: rsrv.id });
-                }}
-              >
-                <EditIcon />
-              </IconButton>
-            </Tooltip>
-          </>
-        ),
-        status: getStatusIndicator(rsrv.checked),
-        check: <Switch checked={rsrv.checked} onChange={() => confirmToggle(rsrv)} />,
-        date: (
-          <MDTypography variant="caption" fontWeight="medium">
-            {format(new Date(rsrv.date), "MM-dd-yyyy")}
-          </MDTypography>
-        ),
-        expiry_date: (
-          <>
+          ),
+          date_reservation: (
             <MDTypography variant="caption" fontWeight="medium">
-              {format(new Date(rsrv.expire_date), "MM-dd-yyyy")}
+              {format(new Date(rsrv.date), "MM-dd-yyyy")}
             </MDTypography>
-            <Tooltip title="Изменить дату истечения">
-              <IconButton
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "#e0f2f1",
-                  },
-                }}
-                onClick={() => handleOpenDialog(rsrv)}
-              >
-                <EditIcon />
-              </IconButton>
-            </Tooltip>
-          </>
-        ),
-        download: (
-          <IconButton
-            sx={{
-              "&:hover": {
-                backgroundColor: "#e0f2f1",
-              },
-            }}
-            onClick={() => downloadReport(rsrv)}
-          >
-            <CloudDownloadIcon />
-          </IconButton>
-        ),
-      }));
-
+          ),
+          checked: getStatusIndicator(rsrv.checked),
+          check: <Switch checked={rsrv.checked} onChange={() => confirmToggle(rsrv)} />,
+          man_company: (
+            <MDTypography variant="caption" fontWeight="medium">
+              {entity.manufactured_company}
+            </MDTypography>
+          ),
+          promo: (
+            <MDTypography variant="caption" fontWeight="medium">
+              {entity.promo}
+            </MDTypography>
+          ),
+          add: (
+            <Button
+              variant="contained"
+              color="success"
+              sx={{ color: "white" }}
+              onClick={() => {}}
+              style={{ cursor: "pointer" }}
+            >
+              Поступление
+            </Button>
+          ),
+          download: (
+            <IconButton
+              sx={{
+                "&:hover": {
+                  backgroundColor: "#e0f2f1",
+                },
+              }}
+              onClick={() => downloadReport(rsrv)}
+            >
+              <CloudDownloadIcon />
+            </IconButton>
+          ),
+        };
+      });
       setData({ columns, rows });
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching reservations", error);
     }
   }
 
@@ -231,7 +232,7 @@ export default function useReservationData(apiPath) {
       },
     })
       .then((response) => {
-        let filename = `${rsrv.pharmacy.company_name}_${format(new Date(rsrv.date), "MM-dd-yyyy")}`;
+        let filename = `${rsrv.hospital.company_name}_${format(new Date(rsrv.date), "MM-dd-yyyy")}`;
 
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
