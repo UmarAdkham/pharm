@@ -22,8 +22,8 @@ function HeadPayReservation() {
   const navigate = useNavigate();
   const { accessToken } = useSelector((state) => state.auth);
   const location = useLocation();
-  const reservation_id = location.state || {}; // Add a default value
-  console.log(location);
+  const { reservation_id, isPharmacy } = location.state || {}; // Add a default value
+  const type = isPharmacy ? "" : "-hospital"
 
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
@@ -34,7 +34,7 @@ function HeadPayReservation() {
 
     try {
       const response = await axios.post(
-        `https://it-club.uz/mr/pay-reservation/${reservation_id}`,
+        `https://it-club.uz/mr/pay${type}-reservation/${reservation_id}`,
         { amount, description },
         {
           headers: {
