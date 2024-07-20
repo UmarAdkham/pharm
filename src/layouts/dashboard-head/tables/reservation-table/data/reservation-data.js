@@ -255,8 +255,10 @@ export default function useReservationData(apiPath) {
   }
 
   function downloadReport(rsrv) {
+    const type = !!rsrv.pharmacy ? "" : "-hospital";
+    const entity = rsrv.pharmacy || rsrv.hospital;
     axios({
-      url: `https://it-club.uz/mr/get-report/${rsrv.id}`,
+      url: `https://it-club.uz/mr/get${type}-report/${rsrv.id}`,
       method: "GET",
       responseType: "blob", // Important
       headers: {
@@ -264,7 +266,7 @@ export default function useReservationData(apiPath) {
       },
     })
       .then((response) => {
-        let filename = `${rsrv.hospital.company_name}_${format(new Date(rsrv.date), "MM-dd-yyyy")}`;
+        let filename = `${entity.company_name}_${format(new Date(rsrv.date), "MM-dd-yyyy")}`;
 
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
