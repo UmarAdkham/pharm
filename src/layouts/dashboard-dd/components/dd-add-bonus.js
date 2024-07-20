@@ -24,6 +24,7 @@ function DeputyDirectorAddBonus() {
   const { bonusId, totalBonus, remainingBonus } = location.state || {}; // Add a default value
 
   const [amount, setAmount] = useState("");
+  const [comment, setComment] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
 
   const handleSubmit = async (event) => {
@@ -48,7 +49,7 @@ function DeputyDirectorAddBonus() {
     try {
       const response = await axios.post(
         `https://it-club.uz/mr/paying-bonus/${bonusId}?amount=${amount}`,
-        {},
+        { amount, comment },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -107,6 +108,15 @@ function DeputyDirectorAddBonus() {
                 fullWidth
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
+              />
+            </MDBox>
+            <MDBox mb={2}>
+              <MDInput
+                type="text"
+                label="Оставить комментарий"
+                fullWidth
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
               />
             </MDBox>
             <MDBox mt={4} mb={1}>

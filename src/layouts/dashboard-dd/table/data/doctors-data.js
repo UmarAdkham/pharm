@@ -69,7 +69,9 @@ export default function useDoctorsData(
         handleTotalBonus(overall.bonus);
 
         const columns = [
-          { Header: "Доктор", accessor: "doctor", align: "left" },
+          { Header: "Имя врача", accessor: "doctor", align: "left" },
+          { Header: "Медицинские представители", accessor: "med_rep", align: "left" },
+          { Header: "Регион", accessor: "region", align: "left" },
           { Header: "Продукт", accessor: "product", align: "left" },
           { Header: "Месячный план", accessor: "monthly_plan", align: "left" },
           { Header: "Факт", accessor: "fact", align: "left" },
@@ -82,11 +84,24 @@ export default function useDoctorsData(
         const rows = reports.map((report) => {
           const factPercent = (report.fact_price * 100) / report.plan_price;
           const rowBackgroundColor = getRowBackgroundColor(factPercent);
+          {
+            console.log(report);
+          }
 
           return {
             doctor: (
               <MDTypography variant="caption" fontWeight="medium">
                 {report.doctor_name}
+              </MDTypography>
+            ),
+            med_rep: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {report.med_rep}
+              </MDTypography>
+            ),
+            region: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {report.region}
               </MDTypography>
             ),
             product: (
