@@ -288,6 +288,7 @@ const roleBasedRoutes = [
       { path: "add-doctor", component: <DeputyDirectorAddDoctor /> },
       { path: "mr-info", component: <DeputyDirectorMRInfo /> },
       { path: "process-reports", component: <DeputyDirectorProcessReports /> },
+      { path: "reservations", component: <HeadReservations /> },
     ],
     sideNav: [
       {
@@ -359,6 +360,13 @@ const roleBasedRoutes = [
         key: "dd-process-reports",
         icon: <Icon fontSize="small">summarize_two_tone_icon</Icon>,
         route: "process-reports",
+      },
+      {
+        type: "collapse",
+        name: "Брони",
+        key: "head-reservation",
+        icon: <Icon fontSize="small">book_online_icon</Icon>,
+        route: "reservations",
       },
     ],
   },
@@ -460,7 +468,12 @@ const roleBasedRoutes = [
     ],
   },
   {
-    role: [userRoles.HEAD_OF_ORDERS, userRoles.WHOLESALE_MANAGER, userRoles.DEPUTY_DIRECTOR],
+    role: [
+      userRoles.HEAD_OF_ORDERS,
+      userRoles.WHOLESALE_MANAGER,
+      userRoles.DEPUTY_DIRECTOR,
+      userRoles.PRODUCT_MANAGER,
+    ],
     path: "head",
     routes: [
       { path: "dashboard", component: <HeadOfOrdersDashboard /> },
@@ -493,7 +506,7 @@ const roleBasedRoutes = [
         type: "collapse",
         name: "Брони",
         key: "head-reservation",
-        icon: <Icon fontSize="small">book_online</Icon>,
+        icon: <Icon fontSize="small">book_online_icon</Icon>,
         route: "reservations",
       },
       {
@@ -559,7 +572,7 @@ const roleBasedRoutes = [
         type: "collapse",
         name: "Брони",
         key: "head-reservation",
-        icon: <Icon fontSize="small">book_online</Icon>,
+        icon: <Icon fontSize="small">book_online_icon</Icon>,
         route: "reservations",
       },
     ],

@@ -95,7 +95,7 @@ export default function useReservationData(apiPath) {
         }, 0),
       };
 
-      const columns = [
+      let columns = [
         { Header: "Дата  реализаци", accessor: "expiry_date", align: "left" },
         { Header: "Сумма с/ф", accessor: "total_payable", align: "left" },
         { Header: "Номер с/ф", accessor: "invoice_number", align: "left" },
@@ -103,6 +103,7 @@ export default function useReservationData(apiPath) {
         { Header: "Регион", accessor: "region", align: "left" },
         { Header: "МП", accessor: "med_rep", align: "left" },
         { Header: "Тип К/А", accessor: "type", align: "center" },
+        { Header: "ИНН", accessor: "ibt", align: "center" },
         { Header: "Поступление", accessor: "profit", align: "center" },
         { Header: "Дебитор", accessor: "debt", align: "center" },
         { Header: "Скидка %", accessor: "discount", align: "center" },
@@ -110,9 +111,12 @@ export default function useReservationData(apiPath) {
         { Header: "Одобрено", accessor: "check", align: "left" },
         { Header: "Производитель", accessor: "man_company", align: "left" },
         { Header: "Промо", accessor: "promo", align: "left" },
-        { Header: "Поступление", accessor: "add", align: "left" },
         { Header: "Скачать", accessor: "download", align: "center" },
       ];
+
+      if (userRole === userRoles.HEAD_OF_ORDERS) {
+        columns.splice(-1, 0, { Header: "Поступление", accessor: "add", align: "left" });
+      }
 
       const rows = reservations.map((rsrv) => {
         const entity = rsrv.pharmacy || rsrv.hospital;
@@ -123,13 +127,15 @@ export default function useReservationData(apiPath) {
               <MDTypography variant="caption" fontWeight="medium">
                 {format(new Date(rsrv.expire_date), "MM-dd-yyyy")}
               </MDTypography>
-              <IconButton
-                size="small"
-                onClick={() => handleOpenDialog(rsrv)}
-                style={{ marginLeft: "8px" }}
-              >
-                <EditIcon fontSize="small" />
-              </IconButton>
+              {userRole === userRoles.HEAD_OF_ORDERS && (
+                <IconButton
+                  size="small"
+                  onClick={() => handleOpenDialog(rsrv)}
+                  style={{ marginLeft: "8px" }}
+                >
+                  <EditIcon fontSize="small" />
+                </IconButton>
+              )}
             </div>
           ),
           total_payable: (
@@ -162,6 +168,11 @@ export default function useReservationData(apiPath) {
               {rsrv.pharmacy ? "Аптека" : "Больница"}
             </MDTypography>
           ),
+          ibt: (
+            <MDTypography variant="caption" fontWeight="medium">
+              {entity.inter_branch_turnover || "-"}
+            </MDTypography>
+          ),
           profit: (
             <MDTypography variant="caption" fontWeight="medium">
               {rsrv.profit.toLocaleString("ru-RU")}
@@ -177,17 +188,19 @@ export default function useReservationData(apiPath) {
               <MDTypography variant="caption" fontWeight="medium">
                 {`${rsrv.discount} %`}
               </MDTypography>
-              <IconButton
-                size="small"
-                onClick={() =>
-                  navigate("/head/set-discount", {
-                    state: { reservationId: rsrv.id, isPharmacy: !!rsrv.pharmacy },
-                  })
-                }
-                style={{ marginLeft: "8px" }}
-              >
-                <EditIcon fontSize="small" />
-              </IconButton>
+              {userRole === userRoles.HEAD_OF_ORDERS && (
+                <IconButton
+                  size="small"
+                  onClick={() =>
+                    navigate("/head/set-discount", {
+                      state: { reservationId: rsrv.id, isPharmacy: !!rsrv.pharmacy },
+                    })
+                  }
+                  style={{ marginLeft: "8px" }}
+                >
+                  <EditIcon fontSize="small" />
+                </IconButton>
+              )}
             </div>
           ),
           date_reservation: (
