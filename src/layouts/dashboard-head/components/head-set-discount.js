@@ -25,25 +25,26 @@ function HeadSetDiscount() {
   const navigate = useNavigate();
   const { accessToken } = useSelector((state) => state.auth);
   const location = useLocation();
-  const pharmacyId = location.state || "";
+  const { reservationId, isPharmacy } = location.state || "";
+  const entity = isPharmacy ? "" : "hospital-";
 
-  const [reservationId, setReservationId] = useState("");
+  const [discountRate, setDiscountRate] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!pharmacyId) {
+    if (!reservationId) {
       setMessage({
         color: "error",
-        content: "Pharmacy ID не найден.",
+        content: "Reservation ID не найден.",
       });
       return;
     }
 
     try {
       const response = await axiosInstance.post(
-        `https://it-club.uz/head/update-reservation-discount/${pharmacyId}?discount=${reservationId}`,
+        `https://it-club.uz/head/update-${entity}reservation-discount/${reservationId}?discount=${discountRate}`,
         {},
         {
           headers: {
@@ -84,7 +85,7 @@ function HeadSetDiscount() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Установить скидку аптеке
+            Установить скидку
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -96,10 +97,10 @@ function HeadSetDiscount() {
                 <Select
                   labelId="discount-select-label"
                   id="discount-select"
-                  value={reservationId}
+                  value={discountRate}
                   label="Скидка"
                   sx={{ height: "45px" }}
-                  onChange={(e) => setReservationId(e.target.value)}
+                  onChange={(e) => setDiscountRate(e.target.value)}
                 >
                   <MenuItem value={0}>0%</MenuItem>
                   <MenuItem value={5}>5%</MenuItem>

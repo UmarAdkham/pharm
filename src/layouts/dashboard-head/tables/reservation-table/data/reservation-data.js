@@ -173,9 +173,22 @@ export default function useReservationData(apiPath) {
             </MDTypography>
           ),
           discount: (
-            <MDTypography variant="caption" fontWeight="medium">
-              {`${rsrv.discount} %`}
-            </MDTypography>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <MDTypography variant="caption" fontWeight="medium">
+                {`${rsrv.discount} %`}
+              </MDTypography>
+              <IconButton
+                size="small"
+                onClick={() =>
+                  navigate("/head/set-discount", {
+                    state: { reservationId: rsrv.id, isPharmacy: !!rsrv.pharmacy },
+                  })
+                }
+                style={{ marginLeft: "8px" }}
+              >
+                <EditIcon fontSize="small" />
+              </IconButton>
+            </div>
           ),
           date_reservation: (
             <MDTypography variant="caption" fontWeight="medium">
