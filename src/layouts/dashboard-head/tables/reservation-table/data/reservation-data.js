@@ -101,6 +101,7 @@ export default function useReservationData(apiPath) {
         { Header: "МП", accessor: "med_rep", align: "left" },
         { Header: "Тип К/А", accessor: "type", align: "center" },
         { Header: "Поступление", accessor: "profit", align: "center" },
+        { Header: "Дебитор", accessor: "debt", align: "center" },
         { Header: "Скидка %", accessor: "discount", align: "center" },
         { Header: "Дата брони", accessor: "date_reservation", align: "left" },
         { Header: "Одобрено", accessor: "checked", align: "left" },
@@ -147,6 +148,11 @@ export default function useReservationData(apiPath) {
           profit: (
             <MDTypography variant="caption" fontWeight="medium">
               {rsrv.profit.toLocaleString("ru-RU")}
+            </MDTypography>
+          ),
+          debt: (
+            <MDTypography variant="caption" fontWeight="medium">
+              {rsrv.debt.toLocaleString("ru-RU")}
             </MDTypography>
           ),
           discount: (
