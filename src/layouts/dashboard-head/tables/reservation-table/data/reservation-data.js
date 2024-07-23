@@ -87,7 +87,10 @@ export default function useReservationData(apiPath) {
         invoiceAmount: reservations.reduce((sum, r) => sum + r.total_payable_with_nds, 0),
         profit: reservations.reduce((sum, r) => sum + r.profit, 0),
         debt: reservations.reduce((sum, r) => sum + r.debt, 0),
-        promo: reservations.reduce((sum, r) => sum + (r.pharmacy?.promo || r.hospital?.promo), 0),
+        promo: reservations.reduce((sum, r) => {
+          const promo = r.pharmacy?.promo || r.hospital?.promo || 0;
+          return sum + promo;
+        }, 0),
       };
 
       const columns = [
