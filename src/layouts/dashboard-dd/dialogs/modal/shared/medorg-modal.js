@@ -21,9 +21,7 @@ function MedorgModal({ open, handleClose, handleSubmit, medorgToUpdate }) {
   const [address, setAddress] = useState("");
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
-  const [med_rep_id, setMedRepId] = useState(medorgToUpdate?.med_rep_id || "");
   const [region_id, setRegionId] = useState(medorgToUpdate?.region_id || "");
-  const [medReps, setMedReps] = useState([]);
   const [regions, setRegions] = useState([]);
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -34,7 +32,6 @@ function MedorgModal({ open, handleClose, handleSubmit, medorgToUpdate }) {
         setAddress(medorgToUpdate.address);
         setLatitude(medorgToUpdate.latitude);
         setLongitude(medorgToUpdate.longitude);
-        setMedRepId(medorgToUpdate.med_rep_id);
         setRegionId(medorgToUpdate.region_id);
       }
       fetchRegionsAndReps();
@@ -43,21 +40,13 @@ function MedorgModal({ open, handleClose, handleSubmit, medorgToUpdate }) {
 
   const fetchRegionsAndReps = async () => {
     try {
-      const [repsResponse, regionsResponse] = await Promise.all([
-        axiosInstance.get("https://it-club.uz/common/get-users", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }),
+      const [regionsResponse] = await Promise.all([
         axiosInstance.get("https://it-club.uz/common/get-regions", {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         }),
       ]);
-      setMedReps(
-        repsResponse.data.filter((user) => user.status == userRoles.MEDICAL_REPRESENTATIVE)
-      );
       setRegions(regionsResponse.data);
     } catch (error) {
       console.error(error);
@@ -73,7 +62,6 @@ function MedorgModal({ open, handleClose, handleSubmit, medorgToUpdate }) {
       latitude: latitude.toString(),
       longitude: longitude.toString(),
       region_id,
-      med_rep_id,
     };
     handleSubmit(updatedMedorg);
     handleClose();
@@ -124,28 +112,6 @@ function MedorgModal({ open, handleClose, handleSubmit, medorgToUpdate }) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
-            </MDBox>
-            <MDBox mb={2}>
-              <FormControl fullWidth>
-                <InputLabel id="medical-representatives-label">
-                  Медицинские Представители
-                </InputLabel>
-                <Select
-                  labelId="medical-representatives-label"
-                  value={med_rep_id}
-                  label="Медицинские Представители"
-                  onChange={(e) => {
-                    setMedRepId(e.target.value);
-                  }}
-                  sx={{ height: "45px" }}
-                >
-                  {medReps.map((mr) => (
-                    <MenuItem key={mr.id} value={mr.id}>
-                      {mr.full_name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
             </MDBox>
             <MDBox mb={2}>
               <FormControl fullWidth>
