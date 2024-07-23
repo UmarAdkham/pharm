@@ -12,6 +12,7 @@ import { format } from "date-fns";
 
 // eslint-disable-next-line react/prop-types
 export default function ExpiryDateDialog({ open, handleClose, handleSubmit, initialDate }) {
+  console.log("Hey");
   const [selectedDate, setSelectedDate] = useState(
     initialDate ? format(new Date(initialDate), "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd")
   );

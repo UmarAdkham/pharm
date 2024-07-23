@@ -9,6 +9,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import axiosInstance from "services/axiosInstance";
 import ExpiryDateDialog from "layouts/dashboard-head/dialogs/edit-expiry-date-dialog";
 import { useNavigate } from "react-router-dom";
+import userRoles from "constants/userRoles";
 
 export default function useReservationData(apiPath) {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ export default function useReservationData(apiPath) {
     debt: 0,
     promo: 0,
   });
-  const accessToken = useSelector((state) => state.auth.accessToken);
+  const { accessToken, userRole } = useSelector((state) => state.auth);
 
   useEffect(() => {
     fetchReservations();
@@ -43,9 +44,10 @@ export default function useReservationData(apiPath) {
   };
 
   const handleUpdateExpiryDate = async (newDate) => {
+    const entity = selectedReservation.pharmacy ? "" : "hospital-";
     try {
       await axiosInstance.post(
-        `https://it-club.uz/head/update-reservation-expire-date/${selectedReservation.id}`,
+        `https://it-club.uz/head/update-${entity}reservation-expire-date/${selectedReservation.id}`,
         { date: newDate },
         {
           headers: {
@@ -105,7 +107,7 @@ export default function useReservationData(apiPath) {
         { Header: "Дебитор", accessor: "debt", align: "center" },
         { Header: "Скидка %", accessor: "discount", align: "center" },
         { Header: "Дата брони", accessor: "date_reservation", align: "left" },
-        { Header: "Одобрено", accessor: "checked", align: "left" },
+        { Header: "Одобрено", accessor: "check", align: "left" },
         { Header: "Производитель", accessor: "man_company", align: "left" },
         { Header: "Промо", accessor: "promo", align: "left" },
         { Header: "Поступление", accessor: "add", align: "left" },
@@ -117,9 +119,18 @@ export default function useReservationData(apiPath) {
         return {
           ...rsrv,
           expiry_date: (
-            <MDTypography variant="caption" fontWeight="medium">
-              {format(new Date(rsrv.date), "MM-dd-yyyy")}
-            </MDTypography>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <MDTypography variant="caption" fontWeight="medium">
+                {format(new Date(rsrv.expire_date), "MM-dd-yyyy")}
+              </MDTypography>
+              <IconButton
+                size="small"
+                onClick={() => handleOpenDialog(rsrv)}
+                style={{ marginLeft: "8px" }}
+              >
+                <EditIcon fontSize="small" />
+              </IconButton>
+            </div>
           ),
           total_payable: (
             <MDTypography variant="caption" fontWeight="medium">
@@ -129,7 +140,6 @@ export default function useReservationData(apiPath) {
           invoice_number: (
             <MDTypography variant="caption" fontWeight="medium">
               {rsrv.invoice_number}
-              {"    "}
             </MDTypography>
           ),
           company_name: (
@@ -173,7 +183,20 @@ export default function useReservationData(apiPath) {
             </MDTypography>
           ),
           checked: getStatusIndicator(rsrv.checked),
-          check: <Switch checked={rsrv.checked} onChange={() => confirmToggle(rsrv)} />,
+          check:
+            // Display Switch to toggle the value only for head of orders
+            userRole === userRoles.HEAD_OF_ORDERS ? (
+              <Switch
+                checked={rsrv.checked}
+                onChange={() => confirmToggle(rsrv)}
+                defaultChecked
+                color="secondary"
+                disabled={rsrv.checked}
+              />
+            ) : (
+              // Other userRoles can only see the value
+              getStatusIndicator(rsrv.checked)
+            ),
           man_company: (
             <MDTypography variant="caption" fontWeight="medium">
               {entity.manufactured_company}
@@ -250,9 +273,12 @@ export default function useReservationData(apiPath) {
 
   async function toggleChecked(rsrv) {
     const newChecked = !rsrv.checked;
+    const entity = rsrv.pharmacy ? "" : "hospital-";
+    console.log(rsrv);
+    console.log(newChecked);
     try {
       await axiosInstance.post(
-        `https://it-club.uz/head/check-reservation/${rsrv.id}`,
+        `https://it-club.uz/head/check-${entity}reservation/${rsrv.id}`,
         {
           checked: newChecked,
         },
@@ -303,7 +329,8 @@ export default function useReservationData(apiPath) {
         open={openDialog}
         handleClose={handleCloseDialog}
         handleSubmit={handleUpdateExpiryDate}
-        initialDate={selectedReservation?.expire_date}
+        currentExpiryDate={selectedReservation?.expire_date}
+        startDate={selectedReservation?.date_reservation}
       />
     ),
     SnackbarComponent: (
