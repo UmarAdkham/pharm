@@ -50,40 +50,6 @@ function ReservationTable() {
   const [filteredRows, setFilteredRows] = useState([]);
   const accessToken = useSelector((state) => state.auth.accessToken);
 
-  const currentMonth = dayjs().month(); // Current month (0-based index)
-  const currentYear = dayjs().year(); // Current year
-  const firstDate = dayjs(new Date(currentYear, currentMonth, 1)); // First date of the month
-  const lastDate = dayjs(new Date(currentYear, currentMonth + 1, 0)); // Last date of the month
-
-  // const [startDate, setStartDate] = useState(firstDate);
-  // const [endDate, setEndDate] = useState(lastDate);
-
-  // const fetchData = async (startDate, endDate) => {
-  //   try {
-  //     console.log(startDate.format("YYYY-MM-DD"));
-  //     console.log(endDate.format("YYYY-MM-DD"));
-  //     const response = await axiosInstance.get(
-  //       `https://it-club.uz/dd/get-med-rep-product-plan-by-month`,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${accessToken}`,
-  //         },
-  //         params: {
-  //           start_date: startDate ? startDate.format("YYYY-MM-DD") : "",
-  //           end_date: endDate ? endDate.format("YYYY-MM-DD") : "",
-  //         },
-  //       }
-  //     );
-  //     response.data;
-  //   } catch (error) {
-  //     console.error("Не удалось получить данные:", error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchData(startDate, endDate);
-  // }, [startDate, endDate]);
-
   const { columns, rows, ExpiryDateDialogComponent, SnackbarComponent, overall } =
     useReservationData(reservationApiPath);
 
@@ -224,24 +190,6 @@ function ReservationTable() {
               ))}
             </Select>
           </FormControl>
-          {/* <MDBox>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={["DatePicker", "DatePicker"]}>
-                <DatePicker
-                  label="От"
-                  value={startDate}
-                  onChange={(newValue) => setStartDate(newValue)}
-                  sx={{ width: "150px" }} // Custom width
-                />
-                <DatePicker
-                  label="До"
-                  value={endDate}
-                  onChange={(newValue) => setEndDate(newValue)}
-                  sx={{ width: "150px" }} // Custom width
-                />
-              </DemoContainer>
-            </LocalizationProvider>
-          </MDBox> */}
           <Autocomplete
             options={medReps}
             getOptionLabel={(option) => option.full_name}
