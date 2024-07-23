@@ -218,7 +218,7 @@ const roleBasedRoutes = [
         type: "collapse",
         name: "Категории продуктов",
         key: "dd-product-categories",
-        icon: <Icon fontSize="small">business</Icon>,
+        icon: <Icon fontSize="small">format_list_bulleted_icon</Icon>,
         route: "product-categories",
       },
       {
@@ -246,7 +246,7 @@ const roleBasedRoutes = [
         type: "collapse",
         name: "Брони",
         key: "dd-reservations",
-        icon: <Icon fontSize="small">summarize_two_tone_icon</Icon>,
+        icon: <Icon fontSize="small">book_online_icon</Icon>,
         route: "reservations",
       },
       {
