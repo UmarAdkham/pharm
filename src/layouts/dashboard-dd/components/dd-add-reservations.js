@@ -171,7 +171,7 @@ function ReservationAdd() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Добавить остаток на складе
+            Добавить бронь
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
