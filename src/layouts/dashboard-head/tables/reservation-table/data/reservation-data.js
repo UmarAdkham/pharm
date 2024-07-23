@@ -9,6 +9,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import axiosInstance from "services/axiosInstance";
 import ExpiryDateDialog from "layouts/dashboard-head/dialogs/edit-expiry-date-dialog";
 import { useNavigate } from "react-router-dom";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import ViewReservationHistory from "layouts/dashboard-head/dialogs/view-reservation-history";
 
 export default function useReservationData(apiPath) {
   const navigate = useNavigate();
@@ -16,6 +18,16 @@ export default function useReservationData(apiPath) {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const [open, setOpen] = useState(false);
+  const [reservationId, setReservationId] = useState({});
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   const [overall, setOverall] = useState({
     numberOfInvoices: 0,
     invoiceAmount: 0,
@@ -109,6 +121,7 @@ export default function useReservationData(apiPath) {
         { Header: "Производитель", accessor: "man_company", align: "left" },
         { Header: "Промо", accessor: "promo", align: "left" },
         { Header: "Поступление", accessor: "add", align: "left" },
+        { Header: " просмотр. Поступление", accessor: "view", align: "left" },
         { Header: "Скачать", accessor: "download", align: "center" },
       ];
 
@@ -198,6 +211,26 @@ export default function useReservationData(apiPath) {
             >
               Поступление
             </Button>
+          ),
+          view: (
+            <>
+              <IconButton
+                onClick={
+                  () => {
+                    handleClickOpen();
+                    setReservationId({ reservationId: rsrv.id, type: rsrv.pharmacy });
+                  }
+                  // alert(rsrv.id);
+                }
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#e0f2f1",
+                  },
+                }}
+              >
+                <RemoveRedEyeIcon />
+              </IconButton>
+            </>
           ),
           download: (
             <IconButton
@@ -299,12 +332,19 @@ export default function useReservationData(apiPath) {
     ...data,
     overall,
     ExpiryDateDialogComponent: (
-      <ExpiryDateDialog
-        open={openDialog}
-        handleClose={handleCloseDialog}
-        handleSubmit={handleUpdateExpiryDate}
-        initialDate={selectedReservation?.expire_date}
-      />
+      <>
+        <ExpiryDateDialog
+          open={openDialog}
+          handleClose={handleCloseDialog}
+          handleSubmit={handleUpdateExpiryDate}
+          initialDate={selectedReservation?.expire_date}
+        />
+        <ViewReservationHistory
+          open={open}
+          handleClose={handleClose}
+          reservationId={reservationId}
+        />
+      </>
     ),
     SnackbarComponent: (
       <Snackbar
