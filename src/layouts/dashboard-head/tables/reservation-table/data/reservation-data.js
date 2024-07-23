@@ -186,13 +186,7 @@ export default function useReservationData(apiPath) {
           check:
             // Display Switch to toggle the value only for head of orders
             userRole === userRoles.HEAD_OF_ORDERS ? (
-              <Switch
-                checked={rsrv.checked}
-                onChange={() => confirmToggle(rsrv)}
-                defaultChecked
-                color="secondary"
-                disabled={rsrv.checked}
-              />
+              <Switch checked={rsrv.checked} onChange={() => confirmToggle(rsrv)} color="warning" />
             ) : (
               // Other userRoles can only see the value
               getStatusIndicator(rsrv.checked)
@@ -266,16 +260,22 @@ export default function useReservationData(apiPath) {
   }
 
   function confirmToggle(rsrv) {
-    if (window.confirm("Вы уверены что хотите выполнить это действие?")) {
-      toggleChecked(rsrv);
+    if (rsrv.checked) {
+      setSnackbar({
+        open: true,
+        message: "Уже одобрено",
+        severity: "warning",
+      });
+    } else {
+      if (window.confirm("Вы уверены что хотите выполнить это действие?")) {
+        toggleChecked(rsrv);
+      }
     }
   }
 
   async function toggleChecked(rsrv) {
     const newChecked = !rsrv.checked;
     const entity = rsrv.pharmacy ? "" : "hospital-";
-    console.log(rsrv);
-    console.log(newChecked);
     try {
       await axiosInstance.post(
         `https://it-club.uz/head/check-${entity}reservation/${rsrv.id}`,
@@ -291,8 +291,17 @@ export default function useReservationData(apiPath) {
       rsrv.checked = newChecked;
       rsrv.status = getStatusIndicator(newChecked);
       fetchReservations(); // Refresh the data
+      setSnackbar({
+        open: true,
+        message: "Одобрено",
+        severity: "success",
+      });
     } catch (error) {
-      console.error("Failed to update status", error);
+      setSnackbar({
+        open: true,
+        message: error.response.data?.detail,
+        severity: "error",
+      });
     }
   }
 
