@@ -35,6 +35,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import userRoles from "constants/userRoles";
 
 function ReservationTable() {
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ function ReservationTable() {
   const [selectedEntity, setSelectedEntity] = useState(null);
   const [reservationApiPath, setReservationApiPath] = useState("head/get-all-reservations");
   const [filteredRows, setFilteredRows] = useState([]);
-  const accessToken = useSelector((state) => state.auth.accessToken);
+  const { accessToken, userRole } = useSelector((state) => state.auth);
 
   const { columns, rows, ExpiryDateDialogComponent, SnackbarComponent, overall } =
     useReservationData(reservationApiPath);
@@ -215,16 +216,18 @@ function ReservationTable() {
             )}
             sx={{ minWidth: 200 }}
           />
-          <Button
-            variant="contained"
-            color="success"
-            sx={{ color: "white" }}
-            onClick={() => {
-              navigate("/dd/add-reservation");
-            }}
-          >
-            Создать бронь
-          </Button>
+          {userRole === userRoles.HEAD_OF_ORDERS && (
+            <Button
+              variant="contained"
+              color="success"
+              sx={{ color: "white" }}
+              onClick={() => {
+                navigate("/dd/add-reservation");
+              }}
+            >
+              Создать бронь
+            </Button>
+          )}
         </MDBox>
       </MDBox>
       <OverallReservationValues overall={overall} />
