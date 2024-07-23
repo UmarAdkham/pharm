@@ -96,6 +96,7 @@ export default function useReservationData(apiPath) {
       const columns = [
         { Header: "Дата  реализаци", accessor: "expiry_date", align: "left" },
         { Header: "Сумма с/ф", accessor: "total_payable", align: "left" },
+        { Header: "Номер с/ф", accessor: "invoice_number", align: "left" },
         { Header: "Контрагент", accessor: "company_name", align: "left" },
         { Header: "Регион", accessor: "region", align: "left" },
         { Header: "МП", accessor: "med_rep", align: "left" },
@@ -123,6 +124,12 @@ export default function useReservationData(apiPath) {
           total_payable: (
             <MDTypography variant="caption" fontWeight="medium">
               {rsrv.total_payable_with_nds.toLocaleString("ru-RU")}
+            </MDTypography>
+          ),
+          invoice_number: (
+            <MDTypography variant="caption" fontWeight="medium">
+              {rsrv.invoice_number}
+              {"    "}
             </MDTypography>
           ),
           company_name: (
