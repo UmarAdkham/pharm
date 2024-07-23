@@ -127,7 +127,6 @@ function ReservationAdd() {
     };
 
     try {
-      console.log(requestData);
       // Call the API with authorization header
       const response = await axiosInstance.post(
         `mr/reservation/${selectedPharmacy.id}`,

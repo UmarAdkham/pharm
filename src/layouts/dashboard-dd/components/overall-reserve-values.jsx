@@ -44,7 +44,7 @@ const OverallReservationValues = ({ overall }) => {
         </Grid>
         <Grid item>
           <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#f77c48", p: 1 }}>
-            Дебетор: {overall.debt?.toLocaleString("ru-RU")}
+            Дебитор: {overall.debt?.toLocaleString("ru-RU")}
             <span style={{ textTransform: "lowercase" }}>сум</span>{" "}
           </Typography>
         </Grid>
