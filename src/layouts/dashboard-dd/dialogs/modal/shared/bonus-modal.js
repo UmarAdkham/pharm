@@ -7,7 +7,7 @@ import MDBox from "components/MDBox";
 import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 
-function BonusModal({ open, handleClose }) {
+function BonusModal({ open, handleClose, id }) {
   const [bonusHistory, setBonusHistory] = useState([]);
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -60,7 +60,8 @@ function BonusModal({ open, handleClose }) {
 
 BonusModal.propTypes = {
   open: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
+  handleClose: PropTypes.func,
+  id: PropTypes.number.isRequired,
 };
 
 export default BonusModal;

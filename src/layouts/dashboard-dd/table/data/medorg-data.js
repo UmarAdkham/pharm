@@ -66,6 +66,7 @@ export default function useMedicalOrganizationData(apiPath) {
       const rows = medicalOrganizations.map((medOrg) => ({
         name: (
           <MDTypography variant="caption" fontWeight="medium">
+            {console.log(medOrg)}
             {medOrg.name}
           </MDTypography>
         ),
@@ -96,8 +97,6 @@ export default function useMedicalOrganizationData(apiPath) {
                   latitude: medOrg.latitude,
                   longitude: medOrg.longitude,
                   region_id: medOrg.region.id,
-                  med_rep_id: medOrg.med_rep.id,
-                  med_rep_name: medOrg.med_rep.full_name,
                 });
               }}
               aria-label="update"

@@ -134,7 +134,7 @@ export default function useBonusData(
               >
                 История бонусов
               </Button>
-              <BonusModal open={open} handleClose={handleClose} />
+              <BonusModal open={open} handleClose={handleClose} id={report.bonus_id} />
             </MDBox>
           ),
         }));
