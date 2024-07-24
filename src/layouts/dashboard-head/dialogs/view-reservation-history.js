@@ -48,30 +48,54 @@ const ViewReservationHistory = ({ open, handleClose, reservationId }) => {
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
+      maxWidth="md" // Adjust the max width of the dialog
+      fullWidth
     >
-      <DialogTitle id="alert-dialog-title">ПОСТУПЛЕНИЕ</DialogTitle>
+      <DialogTitle id="alert-dialog-title">История поступлений</DialogTitle>
       <DialogContent>
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} style={{ minWidth: 600 }}>
           <Table aria-label="simple table">
-            <TableHead>
+            <TableBody>
               <TableRow>
-                <TableCell style={{ fontWeight: "bold" }} align="right">
+                <TableCell
+                  style={{
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    padding: "10px",
+                  }}
+                >
                   Поступление
                 </TableCell>
-                <TableCell style={{ fontWeight: "bold" }} align="right">
-                  дата
+                <TableCell
+                  style={{
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    padding: "10px",
+                  }}
+                >
+                  Дата
                 </TableCell>
-                <TableCell style={{ fontWeight: "bold" }} align="right">
+                <TableCell
+                  style={{
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    padding: "10px",
+                  }}
+                >
                   Сумма
                 </TableCell>
               </TableRow>
-            </TableHead>
-            <TableBody>
               {data.map((dat, key) => (
                 <TableRow key={key}>
-                  <TableCell>{dat.description}</TableCell>
-                  <TableCell>{format(new Date(dat.date), "MM-dd-yyyy")}</TableCell>
-                  <TableCell>{dat.amount}</TableCell>
+                  <TableCell style={{ textAlign: "center", padding: "10px" }}>
+                    {dat.description}
+                  </TableCell>
+                  <TableCell style={{ textAlign: "center", padding: "10px" }}>
+                    {format(new Date(dat.date), "MM-dd-yyyy")}
+                  </TableCell>
+                  <TableCell style={{ textAlign: "center", padding: "10px" }}>
+                    {dat.amount.toLocaleString("ru-RU")}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
