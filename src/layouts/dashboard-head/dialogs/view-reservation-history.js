@@ -92,7 +92,7 @@ const ViewReservationHistory = ({ open, handleClose, reservationId }) => {
 ViewReservationHistory.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  reservationId: PropTypes.obj.isRequired,
+  reservationId: PropTypes.object.isRequired,
 };
 
 export default ViewReservationHistory;
