@@ -19,7 +19,6 @@ import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 
 const ViewReservationHistory = ({ open, handleClose, reservationId }) => {
-  console.log("aass", reservationId);
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [data, setData] = useState([]);
   const getReservationHistory = async () => {
@@ -34,7 +33,6 @@ const ViewReservationHistory = ({ open, handleClose, reservationId }) => {
           },
         }
       );
-      console.log("Data", data);
       setData(data);
     } catch (error) {
       console.log(error);

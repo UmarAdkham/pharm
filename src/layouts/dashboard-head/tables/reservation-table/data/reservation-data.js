@@ -123,13 +123,16 @@ export default function useReservationData(apiPath) {
         { Header: "Одобрено", accessor: "check", align: "left" },
         { Header: "Производитель", accessor: "man_company", align: "left" },
         { Header: "Промо", accessor: "promo", align: "left" },
-        { Header: "Поступление", accessor: "add", align: "left" },
-        { Header: " просмотр. Поступление", accessor: "view", align: "left" },
         { Header: "Скачать", accessor: "download", align: "center" },
       ];
 
       if (userRole === userRoles.HEAD_OF_ORDERS) {
-        columns.splice(-1, 0, { Header: "Поступление", accessor: "add", align: "left" });
+        columns.splice(
+          -1,
+          0,
+          { Header: "Действие", accessor: "add", align: "left" },
+          { Header: "Просмотр Поступлений", accessor: "view", align: "left" }
+        );
       }
 
       const rows = reservations.map((rsrv) => {
@@ -257,7 +260,7 @@ export default function useReservationData(apiPath) {
             </Button>
           ),
           view: (
-            <>
+            <Tooltip title="История поступлений">
               <IconButton
                 onClick={
                   () => {
@@ -274,19 +277,21 @@ export default function useReservationData(apiPath) {
               >
                 <RemoveRedEyeIcon />
               </IconButton>
-            </>
+            </Tooltip>
           ),
           download: (
-            <IconButton
-              sx={{
-                "&:hover": {
-                  backgroundColor: "#e0f2f1",
-                },
-              }}
-              onClick={() => downloadReport(rsrv)}
-            >
-              <CloudDownloadIcon />
-            </IconButton>
+            <Tooltip title="Загрузить отчет">
+              <IconButton
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#e0f2f1",
+                  },
+                }}
+                onClick={() => downloadReport(rsrv)}
+              >
+                <CloudDownloadIcon />
+              </IconButton>
+            </Tooltip>
           ),
         };
       });
