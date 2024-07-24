@@ -62,7 +62,9 @@ export default function usePharmacyData(apiPath, onRowClick) {
           },
         });
 
-        const pharmacies = response.data;
+        const pharmacies = response.data.sort((a, b) =>
+          a.company_name.localeCompare(b.company_name)
+        );
 
         const columns = [
           { Header: "Название компании", accessor: "name", align: "left" },
@@ -78,7 +80,6 @@ export default function usePharmacyData(apiPath, onRowClick) {
               fontWeight="medium"
               onClick={() => onRowClick(pharmacy.id)}
             >
-              {console.log(pharmacy)}
               {pharmacy.company_name}
             </MDTypography>
           ),

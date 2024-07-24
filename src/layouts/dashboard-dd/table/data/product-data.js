@@ -56,7 +56,7 @@ export default function useProductData(apiPath, id1, id2) {
           },
         });
 
-        fetchedData.sort((a, b) => a.id - b.id);
+        fetchedData.sort((a, b) => a.name.localeCompare(b.name));
 
         const columns = [
           { Header: "Название", accessor: "name", align: "left" },

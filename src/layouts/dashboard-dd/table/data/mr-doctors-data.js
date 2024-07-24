@@ -31,7 +31,6 @@ export default function useDoctorData(apiPath, onRowClick) {
   };
 
   const handleSubmit = async (updatedDoctor) => {
-    console.log("updatedDoctor -> ", updatedDoctor);
     try {
       const response = await axiosInstance.patch(
         `https://it-club.uz/mr/update-doctor/${updatedDoctor.id}`,
@@ -56,7 +55,7 @@ export default function useDoctorData(apiPath, onRowClick) {
           },
         });
 
-        const doctors = response.data;
+        const doctors = response.data.sort((a, b) => a.full_name.localeCompare(b.full_name));
 
         const columns = [
           { Header: "Полное имя", accessor: "full_name", align: "left" },
