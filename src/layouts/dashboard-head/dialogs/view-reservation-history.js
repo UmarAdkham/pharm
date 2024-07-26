@@ -18,15 +18,14 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 
-const ViewReservationHistory = ({ open, handleClose, reservationId }) => {
+const ViewReservationHistory = ({ open, handleClose, reservation }) => {
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [data, setData] = useState([]);
   const getReservationHistory = async () => {
     try {
+      const entity = reservation.type ? "" : "hospital-";
       const { data } = await axiosInstance.get(
-        `https://it-club.uz/mr/get-${
-          reservationId.type === undefined ? "hospital-" : ""
-        }reservation-history/${reservationId.reservationId}`,
+        `https://it-club.uz/mr/get-${entity}reservation-history/${reservation.id}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -39,8 +38,10 @@ const ViewReservationHistory = ({ open, handleClose, reservationId }) => {
     }
   };
   useEffect(() => {
-    getReservationHistory();
-  }, [reservationId]);
+    if (reservation.id) {
+      getReservationHistory();
+    }
+  }, [reservation]);
 
   return (
     <Dialog
@@ -114,7 +115,7 @@ const ViewReservationHistory = ({ open, handleClose, reservationId }) => {
 ViewReservationHistory.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  reservationId: PropTypes.object.isRequired,
+  reservation: PropTypes.object.isRequired,
 };
 
 export default ViewReservationHistory;

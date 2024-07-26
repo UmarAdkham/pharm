@@ -20,7 +20,7 @@ export default function useReservationData(apiPath) {
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
   const [open, setOpen] = useState(false);
-  const [reservationId, setReservationId] = useState({});
+  const [reservation, setReservation] = useState({});
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -265,7 +265,7 @@ export default function useReservationData(apiPath) {
                 onClick={
                   () => {
                     handleClickOpen();
-                    setReservationId({ reservationId: rsrv.id, type: rsrv.pharmacy });
+                    setReservation({ id: rsrv.id, type: !!rsrv.pharmacy });
                   }
                   // alert(rsrv.id);
                 }
@@ -407,11 +407,7 @@ export default function useReservationData(apiPath) {
           currentExpiryDate={selectedReservation?.expire_date}
           startDate={selectedReservation?.date_reservation}
         />
-        <ViewReservationHistory
-          open={open}
-          handleClose={handleClose}
-          reservationId={reservationId}
-        />
+        <ViewReservationHistory open={open} handleClose={handleClose} reservation={reservation} />
       </>
     ),
     SnackbarComponent: (
