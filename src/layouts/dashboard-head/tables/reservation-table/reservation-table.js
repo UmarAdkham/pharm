@@ -222,7 +222,7 @@ function ReservationTable() {
               color="success"
               sx={{ color: "white" }}
               onClick={() => {
-                navigate("/dd/add-reservation");
+                navigate("/head/add-reservation");
               }}
             >
               Создать бронь
