@@ -12,30 +12,36 @@ import TextField from "@mui/material/TextField";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 
 // Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
+import axiosInstance from "services/axiosInstance";
 
-function HeadPayReservation() {
+function HeadSetInvoiceNumber() {
   const navigate = useNavigate();
   const { accessToken } = useSelector((state) => state.auth);
   const location = useLocation();
-  const { reservation_id, isPharmacy } = location.state || {}; // Add a default value
-  const type = isPharmacy ? "" : "-hospital"
+  const { reservationId, type } = location.state;
 
-  const [amount, setAmount] = useState("");
-  const [description, setDescription] = useState("");
+  const [invoiceNumber, setInvoiceNumber] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    if (!reservationId) {
+      setMessage({
+        color: "error",
+        content: "Reservation ID не найден.",
+      });
+      return;
+    }
+
     try {
-      const response = await axios.post(
-        `https://it-club.uz/head/pay${type}-reservation/${reservation_id}`,
-        { amount, description },
+      const response = await axiosInstance.put(
+        `https://it-club.uz/head/edit-${type}-reservation-invoice-number/${reservationId}?invoice_number=${invoiceNumber}`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -43,7 +49,7 @@ function HeadPayReservation() {
         }
       );
 
-      setMessage({ color: "success", content: "Поступление добавлено" });
+      setMessage({ color: "success", content: "С/Ф установлен" });
 
       setTimeout(() => {
         navigate(-1);
@@ -53,7 +59,7 @@ function HeadPayReservation() {
       setMessage({
         color: "error",
         content:
-          "Не удалось добавить бонус. " +
+          "Не удалось установить С/Ф. " +
           (error.response?.data?.detail ||
             "Проверьте правильность введенных данных и попробуйте снова."),
       });
@@ -75,34 +81,24 @@ function HeadPayReservation() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Поступление
+            Изменить номер С/Ф
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           {message.content && <Alert severity={message.color}>{message.content}</Alert>}
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <MDBox mb={2}>
-              <MDInput
-                type="number"
-                label="Сумма"
-                fullWidth
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-              />
-            </MDBox>
-            <MDBox mb={2}>
               <TextField
-                label="Описание"
-                multiline
-                rows={4}
                 fullWidth
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                label="Номер С/Ф"
+                variant="outlined"
+                value={invoiceNumber}
+                onChange={(e) => setInvoiceNumber(e.target.value)}
               />
             </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
-                Добавить
+                Отправить
               </MDButton>
             </MDBox>
           </MDBox>
@@ -112,4 +108,4 @@ function HeadPayReservation() {
   );
 }
 
-export default HeadPayReservation;
+export default HeadSetInvoiceNumber;

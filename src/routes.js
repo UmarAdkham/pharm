@@ -61,6 +61,7 @@ import DeputyDirectorBonus from "layouts/dashboard-dd/components/dd-bonus";
 import DeputyDirectorBonusMrs from "layouts/dashboard-dd/components/dd-bonus-mrs";
 import DeputyDirectorAddBonus from "layouts/dashboard-dd/components/dd-add-bonus";
 import HeadSetDiscount from "layouts/dashboard-head/components/head-set-discount";
+import HeadSetInvoiceNumber from "layouts/dashboard-head/components/head-set-invoice-number";
 import DeputyDirectorDoctors from "layouts/dashboard-dd/components/dd-doctors";
 import ReservationAdd from "layouts/dashboard-head/components/head-add-reservation";
 import HeadPayReservation from "layouts/dashboard-head/components/head-pay-reservation";
@@ -480,6 +481,7 @@ const roleBasedRoutes = [
       { path: "add-warehouse-data", component: <HeadofOrdersAddWarehouseData /> },
       { path: "reservations", component: <HeadReservations /> },
       { path: "set-discount", component: <HeadSetDiscount /> },
+      { path: "set-invoice-number", component: <HeadSetInvoiceNumber /> },
       { path: "pay-reservation", component: <HeadPayReservation /> },
       { path: "add-reservation", component: <ReservationAdd /> },
 

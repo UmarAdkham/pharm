@@ -136,7 +136,7 @@ export default function useReservationData(apiPath) {
       }
 
       const rows = reservations.map((rsrv) => {
-        const entity = rsrv.pharmacy || rsrv.hospital;
+        const entity = rsrv.pharmacy || rsrv.hospital || rsrv.wholesale;
         return {
           ...rsrv,
           expiry_date: (
@@ -162,7 +162,24 @@ export default function useReservationData(apiPath) {
           ),
           invoice_number: (
             <MDTypography variant="caption" fontWeight="medium">
-              {rsrv.invoice_number}
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <MDTypography variant="caption" fontWeight="medium">
+                  {rsrv.invoice_number}
+                </MDTypography>
+                {userRole === userRoles.HEAD_OF_ORDERS && (
+                  <IconButton
+                    size="small"
+                    onClick={() =>
+                      navigate("/head/set-invoice-number", {
+                        state: { reservationId: rsrv.id, type: getRsrvType(rsrv) },
+                      })
+                    }
+                    style={{ marginLeft: "8px" }}
+                  >
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+                )}
+              </div>
             </MDTypography>
           ),
           company_name: (
@@ -299,6 +316,18 @@ export default function useReservationData(apiPath) {
       setOverall(overallValues);
     } catch (error) {
       console.error("Error fetching reservations", error);
+    }
+  }
+  // https://it-club.uz/head/edit-hospital-reservation-invoice-number/7?invoice_number=111
+  // https://it-club.uz/head/edit-hospital-reservation-invoice-number/7?invoice_number=111
+
+  function getRsrvType(rsrv) {
+    if (rsrv.pharmacy) {
+      return "pharmacy";
+    } else if (rsrv.hospital) {
+      return "hospital";
+    } else if (rsrv.wholesale) {
+      return "wholesale";
     }
   }
 
