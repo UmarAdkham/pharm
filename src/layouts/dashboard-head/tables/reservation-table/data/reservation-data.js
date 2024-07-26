@@ -269,7 +269,7 @@ export default function useReservationData(apiPath) {
               style={{ cursor: "pointer" }}
               onClick={() => {
                 navigate("/head/pay-reservation", {
-                  state: { reservation_id: rsrv.id, isPharmacy: !!rsrv.pharmacy },
+                  state: { reservationId: rsrv.id, isPharmacy: !!rsrv.pharmacy, type: "wholesale" },
                 });
               }}
             >
