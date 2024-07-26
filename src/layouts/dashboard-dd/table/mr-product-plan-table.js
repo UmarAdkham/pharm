@@ -8,6 +8,7 @@ import {
   Paper,
   Card,
   Button,
+  IconButton,
 } from "@mui/material";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -15,10 +16,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
+
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "services/axiosInstance";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
+import PlanModal from "../dialogs/modal/shared/plan-modal";
 
 // eslint-disable-next-line react/prop-types
 const ProductPlanTable = ({ medRepId }) => {
@@ -29,14 +33,25 @@ const ProductPlanTable = ({ medRepId }) => {
   const lastDate = dayjs(new Date(currentYear, currentMonth + 1, 0)); // Last date of the month
 
   const [data, setData] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [planToUpdate, setPlanToUpdate] = useState({});
+
   const [startDate, setStartDate] = useState(firstDate);
   const [endDate, setEndDate] = useState(lastDate);
   const { accessToken } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const fetchData = async (startDate, endDate) => {
     try {
-      const response = await axiosInstance.get(
+      const { data } = await axiosInstance.get(
         `https://it-club.uz/dd/get-med-rep-product-plan-by-month-id/${medRepId}`,
         {
           headers: {
@@ -48,7 +63,7 @@ const ProductPlanTable = ({ medRepId }) => {
           },
         }
       );
-      setData(response.data);
+      setData(data);
     } catch (error) {
       console.error("Не удалось получить данные:", error);
     }
@@ -137,6 +152,23 @@ const ProductPlanTable = ({ medRepId }) => {
                         <TableRow style={{ backgroundColor: getRowColor(index) }}>
                           <TableCell>
                             <b>{product.product}</b>
+                            <div>
+                              <IconButton
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleOpen();
+                                  setPlanToUpdate({
+                                    plan_id: product.id,
+                                    plan_amount: product.plan_amount,
+                                    product: product.product,
+                                  });
+                                  console.log(product);
+                                }}
+                                aria-label="update"
+                              >
+                                <DriveFileRenameOutlineOutlinedIcon />
+                              </IconButton>
+                            </div>
                           </TableCell>
                           <TableCell>План: {product.plan_amount}</TableCell>
                           <TableCell>Факт: {totalDoctorFacts}</TableCell>
@@ -169,6 +201,7 @@ const ProductPlanTable = ({ medRepId }) => {
           </Table>
         </TableContainer>
       </MDBox>
+      <PlanModal open={open} handleClose={handleClose} planToUpdate={planToUpdate} />
     </Card>
   );
 };
