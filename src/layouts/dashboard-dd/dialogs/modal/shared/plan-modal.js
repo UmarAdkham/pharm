@@ -30,7 +30,7 @@ function PlanModal({ open, handleClose, planToUpdate }) {
       );
       console.log(response.data);
       handleClose();
-      //   location.reload();
+      location.reload();
     } catch (error) {
       console.log(error);
       handleClose();
