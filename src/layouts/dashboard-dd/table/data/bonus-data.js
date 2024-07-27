@@ -2,12 +2,9 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
-import Icon from "@mui/material/Icon";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import MDBox from "../../../../components/MDBox";
-import MDButton from "../../../../components/MDButton";
-import BonusModal from "../../dialogs/modal/shared/bonus-modal";
 
 export default function useBonusData(
   med_rep_id,
@@ -19,10 +16,6 @@ export default function useBonusData(
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
   const navigate = useNavigate();
-
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
 
   useEffect(() => {
     async function fetchBonuses() {
@@ -64,7 +57,6 @@ export default function useBonusData(
         const rows = reports.map((report) => ({
           doctor: (
             <MDTypography variant="caption" fontWeight="medium">
-              {console.log(report)}
               {report.doctor_name}
             </MDTypography>
           ),
@@ -130,11 +122,14 @@ export default function useBonusData(
                 variant="contained"
                 color="success"
                 sx={{ marginLeft: "5px", color: "white" }}
-                onClick={handleOpen}
+                onClick={() => {
+                  navigate("/dd/bonus-history", {
+                    state: { bonusId: report.bonus_id, doctorName: report.doctor_name },
+                  });
+                }}
               >
                 История бонусов
               </Button>
-              <BonusModal open={open} handleClose={handleClose} id={report.bonus_id} />
             </MDBox>
           ),
         }));
@@ -146,16 +141,7 @@ export default function useBonusData(
     }
 
     fetchBonuses();
-  }, [
-    accessToken,
-    open,
-    med_rep_id,
-    month,
-    selectedProduct,
-    selectedDoctor,
-    handleTotalBonus,
-    navigate,
-  ]);
+  }, [accessToken, med_rep_id, month, selectedProduct, selectedDoctor, handleTotalBonus]);
 
   return data;
 }
