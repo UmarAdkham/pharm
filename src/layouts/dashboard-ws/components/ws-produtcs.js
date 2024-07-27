@@ -16,7 +16,7 @@ function WholesaleManagerProducts() {
             <Grid item xs={12} lg={12}>
               <WholesaleProductTable
                 path={`/ws/get-wholesale-products/${wholesale_id}`}
-                navigatePath={`/ws/add-produtc/${wholesale_id}`}
+                navigatePath={`/ws/add-reservation/${wholesale_id}`}
               />
             </Grid>
           </Grid>

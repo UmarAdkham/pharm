@@ -65,6 +65,7 @@ import HeadSetInvoiceNumber from "layouts/dashboard-head/components/head-set-inv
 import DeputyDirectorDoctors from "layouts/dashboard-dd/components/dd-doctors";
 import ReservationAdd from "layouts/dashboard-head/components/head-add-reservation";
 import HeadPayReservation from "layouts/dashboard-head/components/head-pay-reservation";
+import WholesaleManagerAddReservation from "layouts/dashboard-ws/components/ws-add-reservation";
 
 const roleBasedRoutes = [
   {
@@ -537,6 +538,7 @@ const roleBasedRoutes = [
       { path: "add-company", component: <WholesaleManagerAddCompany /> },
       { path: "company-info/:wholesale_id", component: <WholesaleManagerProducts /> },
       { path: "add-produtc/:wholesale_id", component: <WholesaleManagerAddProduct /> },
+      { path: "add-reservation/:wholesale_id", component: <WholesaleManagerAddReservation /> },
       { path: "report", component: <WholesaleReports /> },
       { path: "report/:wholesale_id", component: <WholesaleReportDetails /> },
       { path: "add-sale", component: <WholesaleAddSale /> },

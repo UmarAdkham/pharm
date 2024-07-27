@@ -7,11 +7,14 @@ import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import useWholesaleProductData from "./data/product-data";
 import { useState } from "react";
+import userRoles from "constants/userRoles";
+import { useSelector } from "react-redux";
 
 function WholesaleProductTable({ path, navigatePath }) {
   const navigate = useNavigate();
   const [totalProducts, setTotalProducts] = useState(null);
   const { columns, rows } = useWholesaleProductData(path, setTotalProducts);
+  const { userRole } = useSelector((state) => state.auth);
 
   return (
     <Card>
@@ -24,18 +27,20 @@ function WholesaleProductTable({ path, navigatePath }) {
             </MDTypography>
           </MDTypography>
         </MDBox>
-        <MDBox>
-          <Button
-            variant="contained"
-            color="success"
-            sx={{ color: "white" }}
-            onClick={() => {
-              navigate(navigatePath);
-            }}
-          >
-            Добавить
-          </Button>
-        </MDBox>
+        {userRole == userRoles.WHOLESALE_MANAGER && (
+          <MDBox>
+            <Button
+              variant="contained"
+              color="success"
+              sx={{ color: "white" }}
+              onClick={() => {
+                navigate(navigatePath);
+              }}
+            >
+              Создать бронь
+            </Button>
+          </MDBox>
+        )}
       </MDBox>
       <MDBox>
         <DataTable
