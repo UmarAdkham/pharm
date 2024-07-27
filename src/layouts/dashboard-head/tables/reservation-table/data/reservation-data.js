@@ -6,11 +6,12 @@ import { format } from "date-fns";
 import { IconButton, Switch, Tooltip, Snackbar, Alert, Button } from "@mui/material";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import EditIcon from "@mui/icons-material/Edit";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import ViewProductListDialog from "../../../dialogs/reservation-product-list-dialog";
 import axiosInstance from "services/axiosInstance";
 import ExpiryDateDialog from "layouts/dashboard-head/dialogs/edit-expiry-date-dialog";
 import { useNavigate } from "react-router-dom";
 import userRoles from "constants/userRoles";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import ViewReservationHistory from "layouts/dashboard-head/dialogs/view-reservation-history";
 
 export default function useReservationData(apiPath) {
@@ -21,6 +22,15 @@ export default function useReservationData(apiPath) {
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
   const [open, setOpen] = useState(false);
   const [reservation, setReservation] = useState({});
+  const [productListDialogOpen, setProductListDialogOpen] = useState(false);
+
+  const handleProductListDialogOpen = () => {
+    setProductListDialogOpen(true);
+  };
+
+  const handleProductListDialogClose = () => {
+    setProductListDialogOpen(false);
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -131,7 +141,8 @@ export default function useReservationData(apiPath) {
           -1,
           0,
           { Header: "Действие", accessor: "add", align: "left" },
-          { Header: "Просмотр Поступлений", accessor: "view", align: "left" }
+          { Header: "История Поступлений", accessor: "view", align: "left" },
+          { Header: "Список продуктов", accessor: "product_list", align: "center" }
         );
       }
 
@@ -279,13 +290,10 @@ export default function useReservationData(apiPath) {
           view: (
             <Tooltip title="История поступлений">
               <IconButton
-                onClick={
-                  () => {
-                    handleClickOpen();
-                    setReservation({ id: rsrv.id, type: !!rsrv.pharmacy });
-                  }
-                  // alert(rsrv.id);
-                }
+                onClick={() => {
+                  handleClickOpen();
+                  setReservation({ id: rsrv.id, type: !!rsrv.pharmacy });
+                }}
                 sx={{
                   "&:hover": {
                     backgroundColor: "#e0f2f1",
@@ -310,6 +318,23 @@ export default function useReservationData(apiPath) {
               </IconButton>
             </Tooltip>
           ),
+          product_list: (
+            <Tooltip title="Просмотр списка продуктов">
+              <IconButton
+                onClick={() => {
+                  setReservation({ id: rsrv.id, type: !!rsrv.pharmacy });
+                  handleProductListDialogOpen(rsrv);
+                }}
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#e0f2f1",
+                  },
+                }}
+              >
+                <RemoveRedEyeIcon />
+              </IconButton>
+            </Tooltip>
+          ),
         };
       });
       setData({ columns, rows });
@@ -318,8 +343,6 @@ export default function useReservationData(apiPath) {
       console.error("Error fetching reservations", error);
     }
   }
-  // https://it-club.uz/head/edit-hospital-reservation-invoice-number/7?invoice_number=111
-  // https://it-club.uz/head/edit-hospital-reservation-invoice-number/7?invoice_number=111
 
   function getRsrvType(rsrv) {
     if (rsrv.pharmacy) {
@@ -437,6 +460,11 @@ export default function useReservationData(apiPath) {
           startDate={selectedReservation?.date_reservation}
         />
         <ViewReservationHistory open={open} handleClose={handleClose} reservation={reservation} />
+        <ViewProductListDialog
+          open={productListDialogOpen}
+          handleClose={handleProductListDialogClose}
+          reservation={reservation}
+        />
       </>
     ),
     SnackbarComponent: (
