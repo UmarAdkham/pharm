@@ -1,114 +1,175 @@
-/* eslint-disable prettier/prettier */
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 // @mui material components
 import Card from "@mui/material/Card";
 import Alert from "@mui/material/Alert";
-import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
-import InputAdornment from "@mui/material/InputAdornment";
+import Switch from "@mui/material/Switch";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
-import MDInput from "components/MDInput";
 
 // Authentication layout components
+import axiosInstance from "services/axiosInstance";
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 
-function HeadPayReservation() {
+function ReservationAdd() {
   const navigate = useNavigate();
-  const { accessToken } = useSelector((state) => state.auth);
   const location = useLocation();
-  const { reservationId, isPharmacy } = location.state || {}; // Add a default value
-  const type = isPharmacy ? "" : "-hospital";
-
-  const [amount, setAmount] = useState("");
+  const { accessToken } = useSelector((state) => state.auth);
+  const [pharmacies, setPharmacies] = useState([]);
+  const [hospitals, setHospitals] = useState([]);
+  const [selectedPharmacy, setSelectedPharmacy] = useState(null);
+  const [selectedHospital, setSelectedHospital] = useState(null);
+  const [manufacturers, setManufacturers] = useState([]);
+  const [selectedManufacturer, setSelectedManufacturer] = useState(null);
+  const [availableProducts, setAvailableProducts] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState([{ product: null, quantity: "" }]);
+  const [invoiceNumber, setInvoiceNumber] = useState("");
+  const [discountable, setDiscountable] = useState(false);
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
-  const [doctors, setDoctors] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [doctorProducts, setDoctorProducts] = useState([
-    { doctor: null, product: null, quantity: 1 }
-  ]);
+  const [reservationType, setReservationType] = useState("pharmacy");
 
   useEffect(() => {
-    const fetchDoctors = async () => {
+    async function fetchPharmacies() {
       try {
-        const response = await axios.get("https://it-club.uz/mr/get-doctors");
-        setDoctors(response.data);
+        const response = await axiosInstance.get("mr/get-all-pharmacy", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setPharmacies(response.data);
       } catch (error) {
-        console.log(error);
+        console.error("Failed to fetch pharmacies", error);
       }
-    };
+    }
 
-    const fetchProducts = async () => {
+    async function fetchHospitals() {
       try {
-        const response = await axios.get("https://it-club.uz/common/get-product");
-        setProducts(response.data);
+        const response = await axiosInstance.get("https://it-club.uz/mr/get-hospitals", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setHospitals(response.data);
       } catch (error) {
-        console.log(error);
+        console.error("Failed to fetch hospitals", error);
       }
-    };
+    }
 
-    fetchDoctors();
+    async function fetchManufacturers() {
+      try {
+        const response = await axiosInstance.get("common/get-manufactured-company");
+        setManufacturers(response.data);
+      } catch (error) {
+        console.error("Failed to fetch manufacturers", error);
+      }
+    }
+
+    async function fetchProducts() {
+      try {
+        const response = await axiosInstance.get("common/get-product", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setAvailableProducts(response.data);
+      } catch (error) {
+        console.error("Failed to fetch products", error);
+      }
+    }
+
+    fetchPharmacies();
+    fetchHospitals();
+    fetchManufacturers();
     fetchProducts();
-  }, []);
+  }, [accessToken]);
 
-  const handleDoctorProductChange = (index, field, value) => {
-    const updatedDoctorProducts = [...doctorProducts];
-    updatedDoctorProducts[index][field] = value;
-    setDoctorProducts(updatedDoctorProducts);
+  const handleProductChange = (index, value) => {
+    const newSelectedProducts = [...selectedProducts];
+    newSelectedProducts[index].product = value;
+    setSelectedProducts(newSelectedProducts);
   };
 
-  const handleAddDoctorProduct = () => {
-    setDoctorProducts([...doctorProducts, { doctor: null, product: null, quantity: 1 }]);
+  const handleQuantityChange = (index, value) => {
+    const newSelectedProducts = [...selectedProducts];
+    newSelectedProducts[index].quantity = value;
+    setSelectedProducts(newSelectedProducts);
   };
 
-  const handleRemoveDoctorProduct = (index) => {
-    const updatedDoctorProducts = doctorProducts.filter((_, i) => i !== index);
-    setDoctorProducts(updatedDoctorProducts);
+  const handleAddProduct = () => {
+    setSelectedProducts([...selectedProducts, { product: null, quantity: "" }]);
+  };
+
+  const handleRemoveProduct = (index) => {
+    const newSelectedProducts = [...selectedProducts];
+    newSelectedProducts.splice(index, 1);
+    setSelectedProducts(newSelectedProducts);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const objects = doctorProducts.map(({ doctor, product, quantity }) => ({
-      amount: quantity,
-      doctor_id: doctor?.id,
-      product_id: product?.id,
+    if (
+      (reservationType === "pharmacy" && !selectedPharmacy) ||
+      (reservationType === "hospital" && !selectedHospital) ||
+      !selectedManufacturer ||
+      !invoiceNumber ||
+      selectedProducts.some((sp) => !sp.product || !sp.quantity)
+    ) {
+      setMessage({ color: "error", content: "Пожалуйста, заполните все поля" });
+      return;
+    }
+
+    const productsData = selectedProducts.map((sp) => ({
+      product_id: sp.product.id,
+      quantity: sp.quantity,
     }));
 
-    try {
-      const response = await axios.post(
-        `https://it-club.uz/head/pay${type}-reservation/${reservationId}`,
-        { objects, description },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+    const requestData = {
+      manufactured_company_id: selectedManufacturer.id,
+      invoice_number: invoiceNumber,
+      discountable: discountable,
+      products: productsData,
+    };
 
-      setMessage({ color: "success", content: "Поступление добавлено" });
+    const endpoint =
+      reservationType === "pharmacy"
+        ? `mr/reservation/${selectedPharmacy.id}`
+        : `mr/hospital-reservation/${selectedHospital.id}`;
+
+    try {
+      const response = await axiosInstance.post(endpoint, requestData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      setMessage({ color: "success", content: "Бронь успешно добавлена!" });
 
       setTimeout(() => {
         navigate(-1);
       }, 2000);
     } catch (error) {
-      console.log(error);
+      console.error("Failed to add reservation", error);
       setMessage({
         color: "error",
-        content:
-          "Не удалось добавить поступление. " +
-          (error.response?.data?.detail || "Проверьте правильность введенных данных и попробуйте снова."),
+        content: error.response?.data?.detail || "Не удалось добавить бронь.",
       });
     }
   };
@@ -128,73 +189,115 @@ function HeadPayReservation() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Поступление
+            Добавить бронь
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           {message.content && <Alert severity={message.color}>{message.content}</Alert>}
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
-            <MDBox mb={2}>
-              <MDInput
-                type="number"
-                label="Сумма"
-                fullWidth
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-              />
-            </MDBox>
-            {doctorProducts.map((doctorProduct, index) => (
-              <MDBox key={index} mb={2} display="flex" alignItems="center">
+            <FormControl component="fieldset" mb={2} style={{ color: "black" }}>
+              <FormLabel component="legend" style={{ color: "black" }}>
+                Тип брони
+              </FormLabel>
+              <RadioGroup
+                row
+                aria-label="reservation type"
+                name="reservation-type"
+                value={reservationType}
+                onChange={(e) => setReservationType(e.target.value)}
+              >
+                <FormControlLabel value="hospital" control={<Radio />} label="Больница" />
+                <FormControlLabel value="pharmacy" control={<Radio />} label="Аптека" />
+              </RadioGroup>
+            </FormControl>
+            {reservationType === "pharmacy" ? (
+              <MDBox mb={2}>
                 <Autocomplete
-                  options={doctors}
-                  getOptionLabel={(option) => option.full_name}
-                  value={doctorProduct.doctor}
-                  onChange={(event, newValue) => handleDoctorProductChange(index, "doctor", newValue)}
-                  renderInput={(params) => <TextField {...params} label="Выберите доктора" variant="outlined" />}
-                  fullWidth
+                  options={pharmacies}
+                  getOptionLabel={(option) => option.company_name}
+                  onChange={(event, newValue) => setSelectedPharmacy(newValue)}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Аптека" variant="outlined" fullWidth />
+                  )}
                 />
-                <Autocomplete
-                  options={products}
-                  getOptionLabel={(option) => option.name}
-                  value={doctorProduct.product}
-                  onChange={(event, newValue) => handleDoctorProductChange(index, "product", newValue)}
-                  renderInput={(params) => <TextField {...params} label="Выберите продукт" variant="outlined" />}
-                  fullWidth
-                  style={{ marginLeft: 8 }}
-                />
-                <TextField
-                  type="number"
-                  label="Количество"
-                  variant="outlined"
-                  value={doctorProduct.quantity}
-                  onChange={(e) => handleDoctorProductChange(index, "quantity", e.target.value)}
-                  InputProps={{ inputProps: { min: 1 } }}
-                  style={{ marginLeft: 8, width: 100 }}
-                />
-                {index > 0 && (
-                  <IconButton onClick={() => handleRemoveDoctorProduct(index)}>
-                    <DeleteIcon />
-                  </IconButton>
-                )}
               </MDBox>
-            ))}
-            <MDBox display="flex" justifyContent="center" mb={2}>
-              <IconButton onClick={handleAddDoctorProduct} color="primary">
-                <AddIcon />
-              </IconButton>
+            ) : (
+              <MDBox mb={2}>
+                <Autocomplete
+                  options={hospitals}
+                  getOptionLabel={(option) => option.company_name}
+                  onChange={(event, newValue) => setSelectedHospital(newValue)}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Больница" variant="outlined" fullWidth />
+                  )}
+                />
+              </MDBox>
+            )}
+            <MDBox mb={2}>
+              <Autocomplete
+                options={manufacturers}
+                getOptionLabel={(option) => option.name}
+                onChange={(event, newValue) => setSelectedManufacturer(newValue)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Производственная компания"
+                    variant="outlined"
+                    fullWidth
+                  />
+                )}
+              />
             </MDBox>
             <MDBox mb={2}>
               <TextField
-                label="Комментарий"
-                multiline
-                rows={4}
+                label="Номер счета"
+                variant="outlined"
                 fullWidth
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                value={invoiceNumber}
+                onChange={(e) => setInvoiceNumber(e.target.value)}
               />
             </MDBox>
-            <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+            <MDBox display="flex" alignItems="center" mb={2}>
+              <Switch
+                checked={discountable}
+                onChange={(e) => setDiscountable(e.target.checked)}
+                inputProps={{ "aria-label": "discountable switch" }}
+              />
+              <MDTypography variant="button" fontWeight="medium">
+                Скидка доступна
+              </MDTypography>
+            </MDBox>
+            {selectedProducts.map((selectedProduct, index) => (
+              <MDBox key={index} display="flex" alignItems="center" mb={1}>
+                <Autocomplete
+                  options={availableProducts}
+                  getOptionLabel={(option) => option.name}
+                  onChange={(event, newValue) => handleProductChange(index, newValue)}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Продукт" variant="outlined" fullWidth />
+                  )}
+                  value={selectedProduct.product}
+                  sx={{ width: "70%", mr: 1 }}
+                />
+                <TextField
+                  label="Количество"
+                  variant="outlined"
+                  value={selectedProduct.quantity}
+                  onChange={(e) => handleQuantityChange(index, e.target.value)}
+                  sx={{ width: "25%", mr: 1 }}
+                />
+                <IconButton onClick={() => handleRemoveProduct(index)}>
+                  <DeleteIcon />
+                </IconButton>
+              </MDBox>
+            ))}
+            <MDBox display="flex" justifyContent="space-around" mb={2}>
+              <IconButton onClick={handleAddProduct}>
+                <AddIcon />
+              </IconButton>
+            </MDBox>
+            <MDBox mt={1} mb={1} display="flex" justifyContent="space-between">
+              <MDButton variant="gradient" color="info" type="submit" fullWidth>
                 Добавить
               </MDButton>
             </MDBox>
@@ -205,4 +308,4 @@ function HeadPayReservation() {
   );
 }
 
-export default HeadPayReservation;
+export default ReservationAdd;
