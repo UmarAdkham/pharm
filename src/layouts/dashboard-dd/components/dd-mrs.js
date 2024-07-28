@@ -30,7 +30,7 @@ function DeputyDirectorMrs({ children }) {
                 path={
                   userRole === userRoles.PRODUCT_MANAGER
                     ? `common/get-users-by-username?username=${username}`
-                    : "common/get-users"
+                    : "common/get-med-reps"
                 }
                 status={userRoles.MEDICAL_REPRESENTATIVE}
                 title={`Медицинские представители`}

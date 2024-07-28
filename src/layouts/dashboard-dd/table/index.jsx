@@ -61,6 +61,7 @@ function DeputyDirectorTable({
 
   const [region, setRegion] = useState("");
   const [ff_manager, setFf_manager] = useState("");
+  const [product_manager, setProduct_manager] = useState("");
   const currentMonth = new Date().getMonth() + 1;
   const [selectedMonth, setSelectedMonth] = useState(currentMonth.toString().padStart(2, "0")); // State to store selected month
 
@@ -150,7 +151,8 @@ function DeputyDirectorTable({
       break;
     case "mrs":
       tableData =
-        useMrData(path, status, navigatePath, onRowClick, region, ff_manager) || tableData;
+        useMrData(path, status, navigatePath, onRowClick, region, ff_manager, product_manager) ||
+        tableData;
       break;
     case "pharmacy-plan":
       const pharmacyPlanData =
@@ -217,8 +219,10 @@ function DeputyDirectorTable({
                 <ManagersMenu
                   setFf_manager={setFf_manager}
                   setRegion={setRegion}
+                  setProduct_manager={setProduct_manager}
                   ff_manager={ff_manager}
                   region={region}
+                  product_manager={product_manager}
                 />
               )}
             </>

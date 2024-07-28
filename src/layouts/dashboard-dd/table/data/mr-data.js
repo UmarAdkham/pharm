@@ -10,7 +10,15 @@ import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
 import userRoles from "constants/userRoles";
 
-export default function useMrData(apiPath, status, navigatePath, onRowClick, region, ff_manager) {
+export default function useMrData(
+  apiPath,
+  status,
+  navigatePath,
+  onRowClick,
+  region,
+  ff_manager,
+  product_manager
+) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
   const navigate = useNavigate();
@@ -19,7 +27,7 @@ export default function useMrData(apiPath, status, navigatePath, onRowClick, reg
     let mrs;
     async function fetchUsers() {
       try {
-        if (region === "" && ff_manager === "") {
+        if (region === "" && ff_manager === "" && product_manager === "") {
           const response = await axiosInstance.get(apiPath, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -38,15 +46,28 @@ export default function useMrData(apiPath, status, navigatePath, onRowClick, reg
           const { data } = await axiosInstance.get(
             `https://it-club.uz/common/get-users-by-username?username=${ff_manager}`
           );
-          mrs = data.filter((e) => e.status == userRoles.MEDICAL_REPRESENTATIVE);
+          mrs = data.filter((e) => e.status === userRoles.MEDICAL_REPRESENTATIVE);
+        } else if (product_manager !== "") {
+          const { data } = await axiosInstance.get(
+            `https://it-club.uz/common/get-users-by-username?username=${product_manager}`
+          );
+          mrs = data.filter((e) => e.status === userRoles.MEDICAL_REPRESENTATIVE);
         }
 
         const columns = [
           { Header: "Имя пользователя", accessor: "username", align: "left" },
           { Header: "Полное имя", accessor: "full_name", align: "left" },
-          { Header: "Регион", accessor: "region", align: "left" },
+          // { Header: "Регион", accessor: "region", align: "left" },
           { Header: "Статус", accessor: "status", align: "center" },
         ];
+
+        if (region === "" && ff_manager === "" && product_manager === "") {
+          columns.push({
+            Header: "Продукт Менеджер",
+            accessor: "product_manager_name",
+            align: "left",
+          });
+        }
 
         if (navigatePath === "/dd/mr-info") {
           columns.push({ Header: "Действия", accessor: "actions", align: "center" });
@@ -63,15 +84,17 @@ export default function useMrData(apiPath, status, navigatePath, onRowClick, reg
               {mr.full_name}
             </MDTypography>
           ),
-          region: (
-            <MDTypography variant="caption" fontWeight="medium" color="text">
-              {mr.region.name}
-            </MDTypography>
-          ),
           status: (
             <MDTypography variant="caption" fontWeight="medium" color="text">
               {mr.status}
             </MDTypography>
+          ),
+          product_manager_name: mr.product_manager ? (
+            <MDTypography variant="caption" fontWeight="medium">
+              {mr.product_manager.full_name}
+            </MDTypography>
+          ) : (
+            ""
           ),
           actions: navigatePath === "/dd/mr-info" && (
             <div>
@@ -119,7 +142,7 @@ export default function useMrData(apiPath, status, navigatePath, onRowClick, reg
     }
 
     fetchUsers();
-  }, [accessToken, apiPath, onRowClick, navigatePath, region, ff_manager]);
+  }, [accessToken, apiPath, onRowClick, navigatePath, region, ff_manager, product_manager]);
 
   return data;
 }
