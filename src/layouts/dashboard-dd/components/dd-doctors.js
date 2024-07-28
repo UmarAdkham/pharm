@@ -8,7 +8,6 @@ import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 
 // Dashboard components
-import { useLocation, useParams } from "react-router-dom";
 import DeputyDirectorDoctorsTable from "../table/doctors-table";
 
 function DeputyDirectorDoctors() {

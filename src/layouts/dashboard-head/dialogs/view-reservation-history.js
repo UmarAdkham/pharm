@@ -37,7 +37,6 @@ const ViewReservationHistory = ({ open, handleClose, reservation }) => {
         }
       );
       setData(data);
-      console.log(data);
     } catch (error) {
       console.log(error);
     }
