@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 
 // @mui material components
@@ -12,12 +11,12 @@ import Autocomplete from "@mui/material/Autocomplete";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Tooltip from "@mui/material/Tooltip";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
-import MDInput from "components/MDInput";
 
 // Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
@@ -28,65 +27,94 @@ function HeadPayReservation() {
   const { accessToken } = useSelector((state) => state.auth);
   const location = useLocation();
   const { reservationId, type } = location.state || {}; // Add a default value
-  const isPharmacy = type === "pharmacy";
 
-  const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
   const [doctors, setDoctors] = useState([]);
-  const [products, setProducts] = useState([]);
   const [pharmacies, setPharmacies] = useState([]);
   const [medReps, setMedReps] = useState([]);
   const [doctorProducts, setDoctorProducts] = useState([
-    { doctor: null, product: null, quantity: 1 },
+    { doctor: null, products: [], product: null, quantity: 1 },
   ]);
   const [selectedPharmacy, setSelectedPharmacy] = useState(null);
   const [selectedMedRep, setSelectedMedRep] = useState(null);
 
   useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        const response = await axios.get("https://it-club.uz/mr/get-doctors");
-        setDoctors(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get("https://it-club.uz/common/get-product");
-        setProducts(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    const fetchPharmacies = async () => {
-      try {
-        const response = await axios.get("https://it-club.uz/mr/get-all-pharmacy");
-        setPharmacies(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
     const fetchMedReps = async () => {
       try {
-        const response = await axios.get("https://it-club.uz/common/get-med-reps");
+        const response = await axiosInstance.get("/common/get-med-reps");
         setMedReps(response.data);
       } catch (error) {
         console.log(error);
       }
     };
 
-    fetchDoctors();
-    fetchProducts();
-    if (type === "wholesale") {
-      fetchPharmacies();
-      fetchMedReps();
+    const fetchDoctors = async () => {
+      try {
+        const response = await axiosInstance.get("/mr/get-doctors");
+        setDoctors(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchMedReps();
+    if (type !== "wholesale") {
+      fetchDoctors();
     }
   }, [type]);
+
+  const fetchPharmacies = async (medRepId) => {
+    try {
+      const response = await axiosInstance.get(
+        `https://it-club.uz/mr/get-pharmacy?user_id=${medRepId}`
+      );
+      setPharmacies(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchDoctorsByMedRep = async (medRepId) => {
+    try {
+      const response = await axiosInstance.get(
+        `https://it-club.uz/mr/get-doctors-by-med-rep/${medRepId}`
+      );
+      setDoctors(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleMedRepChange = (newValue) => {
+    setSelectedMedRep(newValue);
+    if (newValue) {
+      fetchPharmacies(newValue.id);
+      fetchDoctorsByMedRep(newValue.id);
+    } else {
+      setPharmacies([]);
+      setSelectedPharmacy(null);
+      setDoctors([]);
+    }
+  };
+
+  const handleDoctorChange = async (index, value) => {
+    const updatedDoctorProducts = [...doctorProducts];
+    updatedDoctorProducts[index].doctor = value;
+    setDoctorProducts(updatedDoctorProducts);
+
+    if (value) {
+      try {
+        const response = await axiosInstance.get(`/mr/doctor-attached-products/${value.id}`);
+        updatedDoctorProducts[index].products = response.data.map((item) => item.product);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      updatedDoctorProducts[index].products = [];
+    }
+    setDoctorProducts(updatedDoctorProducts);
+  };
 
   const handleDoctorProductChange = (index, field, value) => {
     const updatedDoctorProducts = [...doctorProducts];
@@ -95,7 +123,10 @@ function HeadPayReservation() {
   };
 
   const handleAddDoctorProduct = () => {
-    setDoctorProducts([...doctorProducts, { doctor: null, product: null, quantity: 1 }]);
+    setDoctorProducts([
+      ...doctorProducts,
+      { doctor: null, products: [], product: null, quantity: 1 },
+    ]);
   };
 
   const handleRemoveDoctorProduct = (index) => {
@@ -105,6 +136,11 @@ function HeadPayReservation() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (doctorProducts.some(({ doctor, product, quantity }) => !doctor || !product || !quantity)) {
+      setMessage({ color: "error", content: "Пожалуйста, заполните все поля" });
+      return;
+    }
 
     const objects = doctorProducts.map(({ doctor, product, quantity }) => ({
       amount: quantity,
@@ -126,8 +162,8 @@ function HeadPayReservation() {
           };
 
     try {
-      const response = await axiosInstance.post(
-        `head/pay${isPharmacy ? "" : "-hospital"}-reservation/${reservationId}`,
+      await axiosInstance.post(
+        `head/pay-${type === "pharmacy" ? "" : `${type}-`}reservation/${reservationId}`,
         payload,
         {
           headers: {
@@ -174,15 +210,6 @@ function HeadPayReservation() {
         <MDBox pt={4} pb={3} px={3}>
           {message.content && <Alert severity={message.color}>{message.content}</Alert>}
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
-            <MDBox mb={2}>
-              <MDInput
-                type="number"
-                label="Сумма"
-                fullWidth
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-              />
-            </MDBox>
             {type === "wholesale" && (
               <>
                 <MDBox mb={2}>
@@ -190,7 +217,7 @@ function HeadPayReservation() {
                     options={medReps}
                     getOptionLabel={(option) => option.full_name}
                     value={selectedMedRep}
-                    onChange={(event, newValue) => setSelectedMedRep(newValue)}
+                    onChange={(event, newValue) => handleMedRepChange(newValue)}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -202,48 +229,89 @@ function HeadPayReservation() {
                   />
                 </MDBox>
                 <MDBox mb={2}>
-                  <Autocomplete
-                    options={pharmacies}
-                    getOptionLabel={(option) => option.company_name}
-                    value={selectedPharmacy}
-                    onChange={(event, newValue) => setSelectedPharmacy(newValue)}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Выберите аптеку" variant="outlined" />
-                    )}
-                    fullWidth
-                  />
+                  <Tooltip
+                    title={selectedMedRep ? "" : "Сначала выберите медицинского представителя"}
+                    arrow
+                    disableHoverListener={!!selectedMedRep}
+                  >
+                    <span style={{ width: "100%" }}>
+                      <Autocomplete
+                        options={pharmacies}
+                        getOptionLabel={(option) => option.company_name}
+                        value={selectedPharmacy}
+                        onChange={(event, newValue) => setSelectedPharmacy(newValue)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Выберите аптеку"
+                            variant="outlined"
+                            disabled={!selectedMedRep}
+                          />
+                        )}
+                        fullWidth
+                      />
+                    </span>
+                  </Tooltip>
                 </MDBox>
               </>
             )}
             {doctorProducts.map((doctorProduct, index) => (
               <div key={index}>
                 <MDBox mb={2}>
-                  <Autocomplete
-                    options={doctors}
-                    getOptionLabel={(option) => option.full_name}
-                    value={doctorProduct.doctor}
-                    onChange={(event, newValue) =>
-                      handleDoctorProductChange(index, "doctor", newValue)
+                  <Tooltip
+                    title={
+                      type === "wholesale" && !selectedMedRep
+                        ? "Сначала выберите медицинского представителя"
+                        : ""
                     }
-                    renderInput={(params) => (
-                      <TextField {...params} label="Выберите доктора" variant="outlined" />
-                    )}
-                    fullWidth
-                  />
+                    arrow
+                    disableHoverListener={type !== "wholesale" || !!selectedMedRep}
+                  >
+                    <span style={{ width: "100%" }}>
+                      <Autocomplete
+                        options={doctors}
+                        getOptionLabel={(option) => option.full_name}
+                        value={doctorProduct.doctor}
+                        onChange={(event, newValue) => handleDoctorChange(index, newValue)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Выберите доктора"
+                            variant="outlined"
+                            disabled={type === "wholesale" && !selectedMedRep}
+                          />
+                        )}
+                        fullWidth
+                      />
+                    </span>
+                  </Tooltip>
                 </MDBox>
                 <MDBox mb={2} display="flex" alignItems="center">
-                  <Autocomplete
-                    options={products}
-                    getOptionLabel={(option) => option.name}
-                    value={doctorProduct.product}
-                    onChange={(event, newValue) =>
-                      handleDoctorProductChange(index, "product", newValue)
-                    }
-                    renderInput={(params) => (
-                      <TextField {...params} label="Выберите продукт" variant="outlined" />
-                    )}
-                    fullWidth
-                  />
+                  <Tooltip
+                    title={doctorProduct.doctor ? "" : "Сначала выберите доктора"}
+                    arrow
+                    disableHoverListener={!!doctorProduct.doctor}
+                  >
+                    <span style={{ width: "100%" }}>
+                      <Autocomplete
+                        options={doctorProduct.products || []}
+                        getOptionLabel={(option) => option.name}
+                        value={doctorProduct.product}
+                        onChange={(event, newValue) =>
+                          handleDoctorProductChange(index, "product", newValue)
+                        }
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Выберите продукт"
+                            variant="outlined"
+                            disabled={!doctorProduct.doctor}
+                          />
+                        )}
+                        fullWidth
+                      />
+                    </span>
+                  </Tooltip>
                   <TextField
                     type="number"
                     label="Количество"

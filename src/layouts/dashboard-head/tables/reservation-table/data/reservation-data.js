@@ -282,7 +282,7 @@ export default function useReservationData(apiPath, month) {
               style={{ cursor: "pointer" }}
               onClick={() => {
                 navigate("/head/pay-reservation", {
-                  state: { reservationId: rsrv.id, isPharmacy: !!rsrv.pharmacy, type: "wholesale" },
+                  state: { reservationId: rsrv.id, type: getRsrvType(rsrv) },
                 });
               }}
             >
@@ -294,7 +294,7 @@ export default function useReservationData(apiPath, month) {
               <IconButton
                 onClick={() => {
                   handleClickOpen();
-                  setReservation({ id: rsrv.id, type: !!rsrv.pharmacy });
+                  setReservation({ id: rsrv.id, type: getRsrvType(rsrv) });
                 }}
                 sx={{
                   "&:hover": {
@@ -441,7 +441,9 @@ export default function useReservationData(apiPath, month) {
     const entity = rsrv.pharmacy || rsrv.hospital || rsrv.wholesale;
     const url =
       type === "wholesale"
-        ? `https://it-club.uz/mr/wholesale-report-by-wholesale-reservation-id/${rsrv.id}?month_number=${month}
+        ? `https://it-club.uz/mr/wholesale-report-by-wholesale-reservation-id/${
+            rsrv.id
+          }?month_number=${month || new Date().getMonth()}
 `
         : `https://it-club.uz/mr/get-${type === "pharmacy" ? "" : `${type}-`}report/${rsrv.id}`;
     axios({

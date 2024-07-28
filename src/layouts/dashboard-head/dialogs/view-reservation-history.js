@@ -12,6 +12,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import MDTypography from "components/MDTypography";
 import { format } from "date-fns";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
@@ -23,9 +24,10 @@ const ViewReservationHistory = ({ open, handleClose, reservation }) => {
   const [data, setData] = useState([]);
   const getReservationHistory = async () => {
     try {
-      const entity = reservation.type ? "" : "hospital-";
       const { data } = await axiosInstance.get(
-        `https://it-club.uz/mr/get-${entity}reservation-history/${reservation.id}`,
+        `https://it-club.uz/mr/get-${type === "pharmacy" ? "" : `${type}-`}reservation-history/${
+          reservation.id
+        }`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -54,54 +56,60 @@ const ViewReservationHistory = ({ open, handleClose, reservation }) => {
     >
       <DialogTitle id="alert-dialog-title">История поступлений</DialogTitle>
       <DialogContent>
-        <TableContainer component={Paper} style={{ minWidth: 600 }}>
-          <Table aria-label="simple table">
-            <TableBody>
-              <TableRow>
-                <TableCell
-                  style={{
-                    fontWeight: "bold",
-                    textAlign: "center",
-                    padding: "10px",
-                  }}
-                >
-                  Поступление
-                </TableCell>
-                <TableCell
-                  style={{
-                    fontWeight: "bold",
-                    textAlign: "center",
-                    padding: "10px",
-                  }}
-                >
-                  Дата
-                </TableCell>
-                <TableCell
-                  style={{
-                    fontWeight: "bold",
-                    textAlign: "center",
-                    padding: "10px",
-                  }}
-                >
-                  Сумма
-                </TableCell>
-              </TableRow>
-              {data.map((dat, key) => (
-                <TableRow key={key}>
-                  <TableCell style={{ textAlign: "center", padding: "10px" }}>
-                    {dat.description}
+        {reservation.type === "pharmacy" ? (
+          <TableContainer component={Paper} style={{ minWidth: 600 }}>
+            <Table aria-label="simple table">
+              <TableBody>
+                <TableRow>
+                  <TableCell
+                    style={{
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      padding: "10px",
+                    }}
+                  >
+                    Поступление
                   </TableCell>
-                  <TableCell style={{ textAlign: "center", padding: "10px" }}>
-                    {format(new Date(dat.date), "MM-dd-yyyy")}
+                  <TableCell
+                    style={{
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      padding: "10px",
+                    }}
+                  >
+                    Дата
                   </TableCell>
-                  <TableCell style={{ textAlign: "center", padding: "10px" }}>
-                    {dat.amount.toLocaleString("ru-RU")}
+                  <TableCell
+                    style={{
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      padding: "10px",
+                    }}
+                  >
+                    Сумма
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                {data.map((dat, key) => (
+                  <TableRow key={key}>
+                    <TableCell style={{ textAlign: "center", padding: "10px" }}>
+                      {dat.description}
+                    </TableCell>
+                    <TableCell style={{ textAlign: "center", padding: "10px" }}>
+                      {format(new Date(dat.date), "MM-dd-yyyy")}
+                    </TableCell>
+                    <TableCell style={{ textAlign: "center", padding: "10px" }}>
+                      {dat.amount.toLocaleString("ru-RU")}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        ) : (
+          <MDTypography variant="body2">
+            Эта функция для больницы/оптовика в процессе разработки
+          </MDTypography>
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} autoFocus>

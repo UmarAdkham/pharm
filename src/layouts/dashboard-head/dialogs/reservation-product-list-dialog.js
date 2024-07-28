@@ -18,11 +18,15 @@ const ViewProductListDialog = ({ open, handleClose, reservation }) => {
     }
   }, [reservation]);
 
-  const fetchProductList = async (id, isPharmacy) => {
+  const fetchProductList = async (id, type) => {
     try {
-      const entity = isPharmacy ? "" : "hospital-";
       const response = await axiosInstance.get(
-        `https://it-club.uz/mr/get-${entity}reservation/${id}`
+        type === "wholesale"
+          ? `https://it-club.uz/mr/wholesale-report-by-wholesale-reservation-id/${
+              rsrv.id
+            }?month_number=${month || new Date().getMonth()}
+`
+          : `https://it-club.uz/mr/get-${type === "pharmacy" ? "" : `${type}-`}reservation/${id}`
       );
       setProductList(response.data);
       console.log(response.data);
@@ -35,7 +39,7 @@ const ViewProductListDialog = ({ open, handleClose, reservation }) => {
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
       <DialogTitle>Список продуктов</DialogTitle>
       <DialogContent>
-        {productList && reservation.type ? (
+        {productList && reservation.type === "pharmacy" ? (
           <div>
             <List>
               {productList.products.map((item, index) => (
@@ -54,7 +58,7 @@ const ViewProductListDialog = ({ open, handleClose, reservation }) => {
           </div>
         ) : (
           <MDTypography variant="body2">
-            Эта функция для больницы в процессе разработки
+            Эта функция для больницы/оптовика в процессе разработки
           </MDTypography>
         )}
       </DialogContent>
