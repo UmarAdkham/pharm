@@ -19,16 +19,6 @@ export default function useDoctorsData(
   const previousDataRef = useRef(data);
 
   useEffect(() => {
-    const getRowBackgroundColor = (factPercent) => {
-      if (factPercent >= 75) {
-        return "#81c784";
-      } else if (factPercent >= 50) {
-        return "#f2cc45";
-      } else {
-        return "#f77c48";
-      }
-    };
-
     async function fetchBonuses() {
       try {
         let url = `dd/get-fact?month_number=${month}`;
@@ -54,13 +44,60 @@ export default function useDoctorsData(
           );
         });
 
+        const doctorMap = new Map();
+
+        reports.forEach((report) => {
+          if (!doctorMap.has(report.doctor_name)) {
+            doctorMap.set(report.doctor_name, {
+              doctor_name: report.doctor_name,
+              med_rep: report.med_rep,
+              region: report.region,
+              speciality: report.speciality,
+              medical_organization_name: report.medical_organization_name,
+              fact: 0,
+              fact_price: 0,
+              bonus_amount: 0,
+              bonus_payed: 0,
+              bonus_remainder: 0,
+              pre_investment: 0,
+              details: [],
+            });
+          }
+
+          const doctorData = doctorMap.get(report.doctor_name);
+          doctorData.fact += report.fact;
+          doctorData.fact_price += report.fact_price;
+          doctorData.bonus_amount += report.bonus_amount;
+          doctorData.bonus_payed += report.bonus_payed;
+          doctorData.bonus_remainder += report.bonus_remainder;
+          doctorData.pre_investment += report.pre_investment;
+
+          doctorData.details.push({
+            product_name: report.product_name,
+            monthly_plan: report.monthly_plan,
+            fact: report.fact,
+            fact_price: report.fact_price,
+            bonus_amount: report.bonus_amount,
+            bonus_payed: report.bonus_payed,
+            bonus_remainder: report.bonus_remainder,
+            pre_investment: report.pre_investment,
+          });
+
+          doctorMap.set(report.doctor_name, doctorData);
+        });
+
         const overall = {
           numberOfDoctors: reports.length,
           monthlyPlan: reports.reduce((sum, item) => sum + item.plan_price, 0),
           fact: reports.reduce((sum, item) => sum + item.fact_price, 0),
           factPercent:
-            reports.reduce((sum, item) => sum + (item.fact_price * 100) / item.plan_price, 0) /
-            reports.length,
+            reports.length > 0
+              ? reports.reduce((sum, item) => {
+                  // Skip items where plan_price is zero or undefined
+                  if (!item.plan_price) return sum;
+                  return sum + (item.fact_price * 100) / item.plan_price;
+                }, 0) / reports.length
+              : 0,
           bonus: reports.reduce((sum, item) => sum + item.bonus_amount, 0),
           bonusPaid: reports.reduce((sum, item) => sum + item.bonus_payed, 0),
           bonusLeft: reports.reduce((sum, item) => sum + (item.bonus_amount - item.bonus_payed), 0),
@@ -69,78 +106,81 @@ export default function useDoctorsData(
         handleTotalBonus(overall.bonus);
 
         const columns = [
-          { Header: "Имя врача", accessor: "doctor", align: "left" },
+          { Header: "Имя врача", accessor: "doctor_name", align: "left" },
           { Header: "Медицинские представители", accessor: "med_rep", align: "left" },
           { Header: "Регион", accessor: "region", align: "left" },
-          { Header: "Продукт", accessor: "product", align: "left" },
-          { Header: "Месячный план", accessor: "monthly_plan", align: "left" },
+          { Header: "Специальность", accessor: "speciality", align: "left" },
+          {
+            Header: "Медицинская организация",
+            accessor: "medical_organization_name",
+            align: "left",
+          },
           { Header: "Факт", accessor: "fact", align: "left" },
-          { Header: "Факт %", accessor: "fact_percent", align: "left" },
-          { Header: "Бонус", accessor: "bonus", align: "left" },
-          { Header: "Бонус выплачен", accessor: "bonus_paid", align: "left" },
-          { Header: "Остаток бонуса", accessor: "bonus_left", align: "left" },
+          { Header: "Факт Цена", accessor: "fact_price", align: "left" },
+          { Header: "Бонус", accessor: "bonus_amount", align: "left" },
+          { Header: "Бонус выплачен", accessor: "bonus_payed", align: "left" },
+          { Header: "Остаток бонуса", accessor: "bonus_remainder", align: "left" },
+          { Header: "Предварительное вложение", accessor: "pre_investment", align: "left" },
         ];
 
-        const rows = reports.map((report) => {
-          const factPercent = (report.fact_price * 100) / report.plan_price;
-          const rowBackgroundColor = getRowBackgroundColor(factPercent);
-          {
-            console.log(report);
-          }
-
+        const rows = Array.from(doctorMap.values()).map((doctorData) => {
           return {
-            doctor: (
+            ...doctorData,
+            doctor_name: (
               <MDTypography variant="caption" fontWeight="medium">
-                {report.doctor_name}
+                {doctorData.doctor_name}
               </MDTypography>
             ),
             med_rep: (
               <MDTypography variant="caption" fontWeight="medium">
-                {report.med_rep}
+                {doctorData.med_rep}
               </MDTypography>
             ),
             region: (
               <MDTypography variant="caption" fontWeight="medium">
-                {report.region}
+                {doctorData.region}
               </MDTypography>
             ),
-            product: (
+            speciality: (
               <MDTypography variant="caption" fontWeight="medium">
-                {report.product_name}
+                {doctorData.speciality}
               </MDTypography>
             ),
-            monthly_plan: (
+            medical_organization_name: (
               <MDTypography variant="caption" fontWeight="medium">
-                {report.monthly_plan}
+                {doctorData.medical_organization_name}
               </MDTypography>
             ),
             fact: (
               <MDTypography variant="caption" fontWeight="medium">
-                {report.fact}
+                {doctorData.fact}
               </MDTypography>
             ),
-            fact_percent: (
+            fact_price: (
               <MDTypography variant="caption" fontWeight="medium">
-                {factPercent}%
+                {doctorData.fact_price}
               </MDTypography>
             ),
-            bonus: (
+            bonus_amount: (
               <MDTypography variant="caption" fontWeight="medium">
-                {report.bonus_amount}
+                {doctorData.bonus_amount}
               </MDTypography>
             ),
-            bonus_paid: (
+            bonus_payed: (
               <MDTypography variant="caption" fontWeight="medium">
-                {report.bonus_payed}
+                {doctorData.bonus_payed}
               </MDTypography>
             ),
-            bonus_left: (
+            bonus_remainder: (
               <MDTypography variant="caption" fontWeight="medium">
-                {report.bonus_amount - report.bonus_payed}
+                {doctorData.bonus_remainder}
               </MDTypography>
             ),
-            rowBackgroundColor,
-            factPercent,
+            pre_investment: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {doctorData.pre_investment}
+              </MDTypography>
+            ),
           };
         });
 

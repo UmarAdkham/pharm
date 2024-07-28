@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import Card from "@mui/material/Card";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import DataTable from "examples/Tables/DataTable";
+
 import useDoctorsData from "./data/doctors-data";
 import OverallValues from "../components/overall-doctor-values";
 import {
-  Button,
   Select,
   MenuItem,
   FormControl,
@@ -17,6 +15,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import axiosInstance from "services/axiosInstance";
+import ExpandableDataTable from "examples/Tables/DataTable/ExpandableTable";
 
 const months = [
   { name: "Январь", value: 1 },
@@ -195,7 +194,7 @@ function DeputyDirectorDoctorsTable() {
             <CircularProgress />
           </MDBox>
         ) : (
-          <DataTable
+          <ExpandableDataTable
             table={{
               columns,
               rows,
