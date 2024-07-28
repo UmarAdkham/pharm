@@ -441,10 +441,7 @@ export default function useReservationData(apiPath, month) {
     const entity = rsrv.pharmacy || rsrv.hospital || rsrv.wholesale;
     const url =
       type === "wholesale"
-        ? `https://it-club.uz/mr/wholesale-report-by-wholesale-reservation-id/${
-            rsrv.id
-          }?month_number=${month || new Date().getMonth()}
-`
+        ? `https://it-club.uz/ws/get-wholesale-report/${rsrv.id}`
         : `https://it-club.uz/mr/get-${type === "pharmacy" ? "" : `${type}-`}report/${rsrv.id}`;
     axios({
       url: url,

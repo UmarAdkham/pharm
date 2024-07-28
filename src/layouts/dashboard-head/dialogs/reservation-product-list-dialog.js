@@ -29,7 +29,6 @@ const ViewProductListDialog = ({ open, handleClose, reservation }) => {
           : `https://it-club.uz/mr/get-${type === "pharmacy" ? "" : `${type}-`}reservation/${id}`
       );
       setProductList(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error("Failed to fetch product list", error);
     }
