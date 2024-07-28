@@ -25,8 +25,7 @@ function HeadSetDiscount() {
   const navigate = useNavigate();
   const { accessToken } = useSelector((state) => state.auth);
   const location = useLocation();
-  const { reservationId, isPharmacy } = location.state || "";
-  const entity = isPharmacy ? "" : "hospital-";
+  const { reservationId, type } = location.state || "";
 
   const [discountRate, setDiscountRate] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
@@ -44,7 +43,9 @@ function HeadSetDiscount() {
 
     try {
       const response = await axiosInstance.post(
-        `https://it-club.uz/head/update-${entity}reservation-discount/${reservationId}?discount=${discountRate}`,
+        `https://it-club.uz/head/update-${
+          type === "pharmacy" ? "" : `${type}-` // because for pharmacy API does not have the word
+        }reservation-discount/${reservationId}?discount=${discountRate}`,
         {},
         {
           headers: {

@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import userRoles from "constants/userRoles";
 import ViewReservationHistory from "layouts/dashboard-head/dialogs/view-reservation-history";
 
-export default function useReservationData(apiPath) {
+export default function useReservationData(apiPath, month) {
   const navigate = useNavigate();
   const [data, setData] = useState({ columns: [], rows: [] });
   const [openDialog, setOpenDialog] = useState(false);
@@ -66,10 +66,12 @@ export default function useReservationData(apiPath) {
   };
 
   const handleUpdateExpiryDate = async (newDate) => {
-    const entity = selectedReservation.pharmacy ? "" : "hospital-";
+    const type = getRsrvType(selectedReservation);
     try {
       await axiosInstance.post(
-        `https://it-club.uz/head/update-${entity}reservation-expire-date/${selectedReservation.id}`,
+        `https://it-club.uz/head/update-${
+          type === "pharmacy" ? "" : `${type}-`
+        }reservation-expire-date/${selectedReservation.id}`,
         { date: newDate },
         {
           headers: {
@@ -205,12 +207,12 @@ export default function useReservationData(apiPath) {
           ),
           med_rep: (
             <MDTypography variant="caption" fontWeight="medium">
-              {entity.med_rep.full_name}
+              {entity.med_rep?.full_name || "-"}
             </MDTypography>
           ),
           type: (
             <MDTypography variant="caption" fontWeight="medium">
-              {rsrv.pharmacy ? "Аптека" : "Больница"}
+              {getRsrvTypeRussian(rsrv)}
             </MDTypography>
           ),
           ibt: (
@@ -231,14 +233,14 @@ export default function useReservationData(apiPath) {
           discount: (
             <div style={{ display: "flex", alignItems: "center" }}>
               <MDTypography variant="caption" fontWeight="medium">
-                {`${rsrv.discount} %`}
+                {rsrv.discount ? `${rsrv.discount} %` : "0"}
               </MDTypography>
               {userRole === userRoles.HEAD_OF_ORDERS && (
                 <IconButton
                   size="small"
                   onClick={() =>
                     navigate("/head/set-discount", {
-                      state: { reservationId: rsrv.id, isPharmacy: !!rsrv.pharmacy },
+                      state: { reservationId: rsrv.id, type: getRsrvType(rsrv) },
                     })
                   }
                   style={{ marginLeft: "8px" }}
@@ -264,7 +266,7 @@ export default function useReservationData(apiPath) {
             ),
           man_company: (
             <MDTypography variant="caption" fontWeight="medium">
-              {entity.manufactured_company}
+              {entity.manufactured_company || "-"}
             </MDTypography>
           ),
           promo: (
@@ -354,6 +356,16 @@ export default function useReservationData(apiPath) {
     }
   }
 
+  function getRsrvTypeRussian(rsrv) {
+    if (rsrv.pharmacy) {
+      return "Аптека";
+    } else if (rsrv.hospital) {
+      return "Больница";
+    } else if (rsrv.wholesale) {
+      return "Оптовик";
+    }
+  }
+
   function getStatusIndicator(checked) {
     return (
       <div
@@ -392,10 +404,12 @@ export default function useReservationData(apiPath) {
 
   async function toggleChecked(rsrv) {
     const newChecked = !rsrv.checked;
-    const entity = rsrv.pharmacy ? "" : "hospital-";
+    const type = getRsrvType(rsrv);
     try {
       await axiosInstance.post(
-        `https://it-club.uz/head/check-${entity}reservation/${rsrv.id}`,
+        `https://it-club.uz/head/check-${type === "pharmacy" ? "" : `${type}-`}reservation/${
+          rsrv.id
+        }`,
         {
           checked: newChecked,
         },
@@ -416,17 +430,22 @@ export default function useReservationData(apiPath) {
     } catch (error) {
       setSnackbar({
         open: true,
-        message: error.response.data?.detail,
+        message: error.response?.data?.detail,
         severity: "error",
       });
     }
   }
 
   function downloadReport(rsrv) {
-    const type = !!rsrv.pharmacy ? "" : "-hospital";
-    const entity = rsrv.pharmacy || rsrv.hospital;
+    const type = getRsrvType(rsrv);
+    const entity = rsrv.pharmacy || rsrv.hospital || rsrv.wholesale;
+    const url =
+      type === "wholesale"
+        ? `https://it-club.uz/mr/wholesale-report-by-wholesale-reservation-id/${rsrv.id}?month_number=${month}
+`
+        : `https://it-club.uz/mr/get-${type === "pharmacy" ? "" : `${type}-`}report/${rsrv.id}`;
     axios({
-      url: `https://it-club.uz/mr/get${type}-report/${rsrv.id}`,
+      url: url,
       method: "GET",
       responseType: "blob", // Important
       headers: {

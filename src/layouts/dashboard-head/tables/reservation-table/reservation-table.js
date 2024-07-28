@@ -52,7 +52,7 @@ function ReservationTable() {
   const { accessToken, userRole } = useSelector((state) => state.auth);
 
   const { columns, rows, ExpiryDateDialogComponent, SnackbarComponent, overall } =
-    useReservationData(reservationApiPath);
+    useReservationData(reservationApiPath, selectedMonth);
 
   useEffect(() => {
     fetchMedicalReps();
