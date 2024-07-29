@@ -180,7 +180,7 @@ const ProductPlanTable = ({ medRepId }) => {
                             <TableCell>{doctor.fact}</TableCell>
                           </TableRow>
                         ))}
-                        <TableRow style={{ backgroundColor: getRowColor(index) }}>
+                        <TableRow style={{ backgroundColor: "#a1a1a1" }}>
                           <TableCell>Вакант</TableCell>
                           <TableCell>{product.vakant}</TableCell>
                           <TableCell></TableCell>
