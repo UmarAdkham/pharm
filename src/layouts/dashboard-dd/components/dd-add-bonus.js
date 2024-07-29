@@ -37,15 +37,6 @@ function DeputyDirectorAddBonus() {
       });
       return;
     }
-
-    if (parseFloat(amount) > remainingBonus) {
-      setMessage({
-        color: "error",
-        content: "Сумма бонуса не может превышать остаток бонуса.",
-      });
-      return;
-    }
-
     try {
       const response = await axios.post(
         `https://it-club.uz/mr/paying-bonus/${bonusId}?amount=${amount}`,

@@ -61,7 +61,7 @@ const OverallValues = ({ overall }) => {
               </Typography>
             </Grid>
             <Grid item>
-              <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#f77c48", p: 1 }}>
+              <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#abcbff", p: 1 }}>
                 Прединвест: {overall.pre_investment?.toLocaleString("ru-RU")}
               </Typography>
             </Grid>
