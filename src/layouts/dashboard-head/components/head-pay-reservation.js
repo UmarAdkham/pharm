@@ -34,7 +34,7 @@ function HeadPayReservation() {
   const [pharmacies, setPharmacies] = useState([]);
   const [medReps, setMedReps] = useState([]);
   const [doctorProducts, setDoctorProducts] = useState([
-    { doctor: null, products: [], product: null, quantity: 1 },
+    { doctor: null, products: [], product: null, quantity: 1, amount: 1 },
   ]);
   const [selectedPharmacy, setSelectedPharmacy] = useState(null);
   const [selectedMedRep, setSelectedMedRep] = useState(null);
@@ -128,7 +128,7 @@ function HeadPayReservation() {
   const handleAddDoctorProduct = () => {
     setDoctorProducts([
       ...doctorProducts,
-      { doctor: null, products: [], product: null, quantity: 1 },
+      { doctor: null, products: [], product: null, quantity: 1, amount: 1 },
     ]);
   };
 
@@ -140,15 +140,20 @@ function HeadPayReservation() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (doctorProducts.some(({ doctor, product, quantity }) => !doctor || !product || !quantity)) {
+    if (
+      doctorProducts.some(
+        ({ doctor, product, quantity, amount }) => !doctor || !product || !quantity || !amount
+      )
+    ) {
       setMessage({ color: "error", content: "Пожалуйста, заполните все поля" });
       return;
     }
 
-    const objects = doctorProducts.map(({ doctor, product, quantity }) => ({
-      amount: quantity,
+    const objects = doctorProducts.map(({ doctor, product, quantity, amount }) => ({
       doctor_id: doctor?.id,
       product_id: product?.id,
+      quantity,
+      amount,
     }));
 
     const payload =
@@ -322,6 +327,15 @@ function HeadPayReservation() {
                     variant="outlined"
                     value={doctorProduct.quantity}
                     onChange={(e) => handleDoctorProductChange(index, "quantity", e.target.value)}
+                    InputProps={{ inputProps: { min: 1 } }}
+                    style={{ marginLeft: 8, width: 100 }}
+                  />
+                  <TextField
+                    type="number"
+                    label="Сумма"
+                    variant="outlined"
+                    value={doctorProduct.amount}
+                    onChange={(e) => handleDoctorProductChange(index, "amount", e.target.value)}
                     InputProps={{ inputProps: { min: 1 } }}
                     style={{ marginLeft: 8, width: 100 }}
                   />
