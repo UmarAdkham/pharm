@@ -38,6 +38,7 @@ function HeadPayReservation() {
   ]);
   const [selectedPharmacy, setSelectedPharmacy] = useState(null);
   const [selectedMedRep, setSelectedMedRep] = useState(null);
+  const [forceRender, setForceRender] = useState(false); // State variable to force re-render
 
   useEffect(() => {
     const fetchMedReps = async () => {
@@ -101,19 +102,21 @@ function HeadPayReservation() {
   const handleDoctorChange = async (index, value) => {
     const updatedDoctorProducts = [...doctorProducts];
     updatedDoctorProducts[index].doctor = value;
-    setDoctorProducts(updatedDoctorProducts);
 
     if (value) {
       try {
         const response = await axiosInstance.get(`/mr/doctor-attached-products/${value.id}`);
         updatedDoctorProducts[index].products = response.data.map((item) => item.product);
+        setDoctorProducts(updatedDoctorProducts);
+        setForceRender((prev) => !prev); // Toggle forceRender to trigger re-render
       } catch (error) {
         console.log(error);
       }
     } else {
       updatedDoctorProducts[index].products = [];
+      setDoctorProducts(updatedDoctorProducts);
+      setForceRender((prev) => !prev); // Toggle forceRender to trigger re-render
     }
-    setDoctorProducts(updatedDoctorProducts);
   };
 
   const handleDoctorProductChange = (index, field, value) => {
@@ -309,6 +312,7 @@ function HeadPayReservation() {
                           />
                         )}
                         fullWidth
+                        key={`${index}-${forceRender}`} // Use forceRender state to trigger re-render
                       />
                     </span>
                   </Tooltip>
