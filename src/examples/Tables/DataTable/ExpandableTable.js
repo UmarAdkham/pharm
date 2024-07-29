@@ -154,6 +154,7 @@ function ExpandableDataTable({
         <MDBox component="thead">
           {headerGroups.map((headerGroup, key) => (
             <TableRow key={key} {...headerGroup.getHeaderGroupProps()}>
+              <TableCell />
               {headerGroup.headers.map((column, idx) => (
                 <DataTableHeadCell
                   key={idx}
@@ -184,6 +185,11 @@ function ExpandableDataTable({
                       : row.original.rowBackgroundColor,
                   }}
                 >
+                  <DataTableBodyCell>
+                    <IconButton size="small">
+                      {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                    </IconButton>
+                  </DataTableBodyCell>
                   {row.cells.map((cell, idx) => (
                     <DataTableBodyCell
                       key={idx}
@@ -194,11 +200,6 @@ function ExpandableDataTable({
                       {cell.render("Cell")}
                     </DataTableBodyCell>
                   ))}
-                  <DataTableBodyCell>
-                    <IconButton size="small">
-                      {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                    </IconButton>
-                  </DataTableBodyCell>
                 </TableRow>
                 {isExpanded &&
                   row.original.details.map((detail, detailIndex) => (

@@ -101,6 +101,7 @@ export default function useDoctorsData(
           bonus: reports.reduce((sum, item) => sum + item.bonus_amount, 0),
           bonusPaid: reports.reduce((sum, item) => sum + item.bonus_payed, 0),
           bonusLeft: reports.reduce((sum, item) => sum + (item.bonus_amount - item.bonus_payed), 0),
+          pre_investment: reports.reduce((sum, item) => sum + item.pre_investment, 0),
         };
 
         handleTotalBonus(overall.bonus);
@@ -116,7 +117,7 @@ export default function useDoctorsData(
             align: "left",
           },
           { Header: "Факт", accessor: "fact", align: "left" },
-          { Header: "Факт поступю", accessor: "fact_price", align: "left" },
+          { Header: "Факт поступ", accessor: "fact_price", align: "left" },
           { Header: "Бонус", accessor: "bonus_amount", align: "left" },
           { Header: "Бонус выплачен", accessor: "bonus_payed", align: "left" },
           { Header: "Остаток бонуса", accessor: "bonus_remainder", align: "left" },

@@ -60,6 +60,11 @@ const OverallValues = ({ overall }) => {
                 Остаток: {overall.bonusLeft?.toLocaleString("ru-RU")}
               </Typography>
             </Grid>
+            <Grid item>
+              <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#f77c48", p: 1 }}>
+                Прединвест: {overall.pre_investment?.toLocaleString("ru-RU")}
+              </Typography>
+            </Grid>
           </>
         )}
       </Grid>
@@ -76,6 +81,7 @@ OverallValues.propTypes = {
     bonus: PropTypes.number,
     bonusPaid: PropTypes.number,
     bonusLeft: PropTypes.number,
+    pre_investment: PropTypes.number,
   }).isRequired,
 };
 
