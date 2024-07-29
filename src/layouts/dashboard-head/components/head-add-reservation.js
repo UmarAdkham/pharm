@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -33,14 +33,21 @@ function ReservationAdd() {
   const { accessToken } = useSelector((state) => state.auth);
   const [pharmacies, setPharmacies] = useState([]);
   const [hospitals, setHospitals] = useState([]);
+  const [wholesales, setWholesales] = useState([]);
+  const [manufacturers, setManufacturers] = useState([]);
+  const [medicalReps, setMedicalReps] = useState([]);
+  const [availableProducts, setAvailableProducts] = useState([]);
   const [selectedPharmacy, setSelectedPharmacy] = useState(null);
   const [selectedHospital, setSelectedHospital] = useState(null);
-  const [manufacturers, setManufacturers] = useState([]);
+  const [selectedWholesale, setSelectedWholesale] = useState(null);
   const [selectedManufacturer, setSelectedManufacturer] = useState(null);
-  const [availableProducts, setAvailableProducts] = useState([]);
-  const [selectedProducts, setSelectedProducts] = useState([{ product: null, quantity: "" }]);
+  const [selectedMedRep, setSelectedMedRep] = useState(null);
+  const [selectedProducts, setSelectedProducts] = useState([
+    { product: null, quantity: "", price: "" },
+  ]);
   const [invoiceNumber, setInvoiceNumber] = useState("");
   const [discountable, setDiscountable] = useState(false);
+  const [discount, setDiscount] = useState(0);
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
   const [reservationType, setReservationType] = useState("pharmacy");
@@ -72,6 +79,19 @@ function ReservationAdd() {
       }
     }
 
+    async function fetchWholesales() {
+      try {
+        const response = await axiosInstance.get("https://it-club.uz/ws/get-wholesales", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setWholesales(response.data);
+      } catch (error) {
+        console.error("Failed to fetch wholesales", error);
+      }
+    }
+
     async function fetchManufacturers() {
       try {
         const response = await axiosInstance.get("common/get-manufactured-company");
@@ -94,10 +114,25 @@ function ReservationAdd() {
       }
     }
 
+    async function fetchMedicalReps() {
+      try {
+        const response = await axiosInstance.get("https://it-club.uz/common/get-med-reps", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setMedicalReps(response.data);
+      } catch (error) {
+        console.error("Failed to fetch medical representatives", error);
+      }
+    }
+
     fetchPharmacies();
     fetchHospitals();
+    fetchWholesales();
     fetchManufacturers();
     fetchProducts();
+    fetchMedicalReps();
   }, [accessToken]);
 
   const handleProductChange = (index, value) => {
@@ -112,8 +147,14 @@ function ReservationAdd() {
     setSelectedProducts(newSelectedProducts);
   };
 
+  const handlePriceChange = (index, value) => {
+    const newSelectedProducts = [...selectedProducts];
+    newSelectedProducts[index].price = value;
+    setSelectedProducts(newSelectedProducts);
+  };
+
   const handleAddProduct = () => {
-    setSelectedProducts([...selectedProducts, { product: null, quantity: "" }]);
+    setSelectedProducts([...selectedProducts, { product: null, quantity: "", price: "" }]);
   };
 
   const handleRemoveProduct = (index) => {
@@ -128,9 +169,13 @@ function ReservationAdd() {
     if (
       (reservationType === "pharmacy" && !selectedPharmacy) ||
       (reservationType === "hospital" && !selectedHospital) ||
+      (reservationType === "wholesale" && !selectedWholesale) ||
       !selectedManufacturer ||
       !invoiceNumber ||
-      selectedProducts.some((sp) => !sp.product || !sp.quantity)
+      (reservationType === "wholesale" && !selectedMedRep) ||
+      selectedProducts.some(
+        (sp) => !sp.product || !sp.quantity || (reservationType === "wholesale" && !sp.price)
+      )
     ) {
       setMessage({ color: "error", content: "Пожалуйста, заполните все поля" });
       return;
@@ -139,19 +184,24 @@ function ReservationAdd() {
     const productsData = selectedProducts.map((sp) => ({
       product_id: sp.product.id,
       quantity: sp.quantity,
+      ...(reservationType === "wholesale" && { price: sp.price }),
     }));
 
     const requestData = {
       manufactured_company_id: selectedManufacturer.id,
       invoice_number: invoiceNumber,
-      discountable: discountable,
+      ...(reservationType === "wholesale"
+        ? { med_rep_id: selectedMedRep.id, discount }
+        : { discountable }),
       products: productsData,
     };
 
     const endpoint =
       reservationType === "pharmacy"
         ? `mr/reservation/${selectedPharmacy.id}`
-        : `mr/hospital-reservation/${selectedHospital.id}`;
+        : reservationType === "hospital"
+        ? `mr/hospital-reservation/${selectedHospital.id}`
+        : `https://it-club.uz/ws/wholesale-reservation/${selectedWholesale.id}`;
 
     try {
       const response = await axiosInstance.post(endpoint, requestData, {
@@ -206,8 +256,9 @@ function ReservationAdd() {
                 value={reservationType}
                 onChange={(e) => setReservationType(e.target.value)}
               >
-                <FormControlLabel value="hospital" control={<Radio />} label="Больница" />
                 <FormControlLabel value="pharmacy" control={<Radio />} label="Аптека" />
+                <FormControlLabel value="hospital" control={<Radio />} label="Больница" />
+                <FormControlLabel value="wholesale" control={<Radio />} label="Оптовик" />
               </RadioGroup>
             </FormControl>
             {reservationType === "pharmacy" ? (
@@ -221,7 +272,7 @@ function ReservationAdd() {
                   )}
                 />
               </MDBox>
-            ) : (
+            ) : reservationType === "hospital" ? (
               <MDBox mb={2}>
                 <Autocomplete
                   options={hospitals}
@@ -232,6 +283,34 @@ function ReservationAdd() {
                   )}
                 />
               </MDBox>
+            ) : (
+              <>
+                <MDBox mb={2}>
+                  <Autocomplete
+                    options={wholesales}
+                    getOptionLabel={(option) => option.name}
+                    onChange={(event, newValue) => setSelectedWholesale(newValue)}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Оптовик" variant="outlined" fullWidth />
+                    )}
+                  />
+                </MDBox>
+                <MDBox mb={2}>
+                  <Autocomplete
+                    options={medicalReps}
+                    getOptionLabel={(option) => option.full_name}
+                    onChange={(event, newValue) => setSelectedMedRep(newValue)}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Медицинский представитель"
+                        variant="outlined"
+                        fullWidth
+                      />
+                    )}
+                  />
+                </MDBox>
+              </>
             )}
             <MDBox mb={2}>
               <Autocomplete
@@ -257,16 +336,28 @@ function ReservationAdd() {
                 onChange={(e) => setInvoiceNumber(e.target.value)}
               />
             </MDBox>
+
             <MDBox display="flex" alignItems="center" mb={2}>
               <Switch
                 checked={discountable}
                 onChange={(e) => setDiscountable(e.target.checked)}
                 inputProps={{ "aria-label": "discountable switch" }}
               />
-              <MDTypography variant="button" fontWeight="medium">
+              <MDTypography variant="button" fontWeight="medium" ml={1}>
                 Скидка доступна
               </MDTypography>
+              {reservationType === "wholesale" && discountable && (
+                <TextField
+                  label="Скидка (%)"
+                  variant="outlined"
+                  type="number"
+                  value={discount}
+                  onChange={(e) => setDiscount(Number(e.target.value))}
+                  sx={{ width: "100px", ml: 2 }}
+                />
+              )}
             </MDBox>
+
             {selectedProducts.map((selectedProduct, index) => (
               <MDBox key={index} display="flex" alignItems="center" mb={1}>
                 <Autocomplete
@@ -277,15 +368,26 @@ function ReservationAdd() {
                     <TextField {...params} label="Продукт" variant="outlined" fullWidth />
                   )}
                   value={selectedProduct.product}
-                  sx={{ width: "70%", mr: 1 }}
+                  sx={{ width: reservationType === "wholesale" ? "30%" : "40%", mr: 1 }}
                 />
                 <TextField
                   label="Количество"
                   variant="outlined"
+                  type="number"
                   value={selectedProduct.quantity}
                   onChange={(e) => handleQuantityChange(index, e.target.value)}
-                  sx={{ width: "25%", mr: 1 }}
+                  sx={{ width: reservationType === "wholesale" ? "20%" : "30%", mr: 1 }}
                 />
+                {reservationType === "wholesale" && (
+                  <TextField
+                    label="Цена"
+                    variant="outlined"
+                    type="number"
+                    value={selectedProduct.price}
+                    onChange={(e) => handlePriceChange(index, e.target.value)}
+                    sx={{ width: "20%", mr: 1 }}
+                  />
+                )}
                 <IconButton onClick={() => handleRemoveProduct(index)}>
                   <DeleteIcon />
                 </IconButton>
