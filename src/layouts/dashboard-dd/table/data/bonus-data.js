@@ -51,6 +51,7 @@ export default function useBonusData(
           { Header: "Бонус", accessor: "bonus", align: "left" },
           { Header: "Бонус выплачен", accessor: "bonus_paid", align: "left" },
           { Header: "Остаток бонуса", accessor: "bonus_left", align: "left" },
+          { Header: "Прединвест", accessor: "pre_investment", align: "left" },
           { Header: "Действие", accessor: "action", align: "center" },
         ];
 
@@ -93,6 +94,11 @@ export default function useBonusData(
           bonus_left: (
             <MDTypography variant="caption" fontWeight="medium">
               {report.bonus_amount - report.bonus_payed}
+            </MDTypography>
+          ),
+          pre_investment: (
+            <MDTypography variant="caption" fontWeight="medium">
+              {report.pre_investment}
             </MDTypography>
           ),
           action: (
