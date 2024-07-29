@@ -116,11 +116,11 @@ export default function useDoctorsData(
             align: "left",
           },
           { Header: "Факт", accessor: "fact", align: "left" },
-          { Header: "Факт Цена", accessor: "fact_price", align: "left" },
+          { Header: "Факт поступю", accessor: "fact_price", align: "left" },
           { Header: "Бонус", accessor: "bonus_amount", align: "left" },
           { Header: "Бонус выплачен", accessor: "bonus_payed", align: "left" },
           { Header: "Остаток бонуса", accessor: "bonus_remainder", align: "left" },
-          { Header: "Предварительное вложение", accessor: "pre_investment", align: "left" },
+          { Header: "Прединвест", accessor: "pre_investment", align: "left" },
         ];
 
         const rows = Array.from(doctorMap.values()).map((doctorData) => {
