@@ -102,9 +102,7 @@ export default function useReservationData(apiPath, month) {
 
       const now = new Date();
 
-      const filteredReservations = response.data.filter(
-        (reservation) => new Date(reservation.expire_date) >= now
-      );
+      const filteredReservations = response.data;
 
       const reservations = filteredReservations.sort((a, b) => a.id - b.id);
 
