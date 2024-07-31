@@ -6,6 +6,7 @@ import ProductModal from "layouts/dashboard-dd/dialogs/modal/shared/product-moda
 import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
 import { IconButton } from "@mui/material";
 import AccountBalanceWalletTwoToneIcon from "@mui/icons-material/AccountBalanceWalletTwoTone";
+import CheckIcon from "@mui/icons-material/Check";
 import { useNavigate } from "react-router-dom";
 
 export default function useProductData(apiPath, id1, id2) {
@@ -64,6 +65,7 @@ export default function useProductData(apiPath, id1, id2) {
           { Header: "Произ. цена", accessor: "discount_price", align: "left" },
           { Header: "Производитель", accessor: "man_company", align: "left" },
           { Header: "Категория", accessor: "category", align: "left" },
+          { Header: "Статус", accessor: "status", align: "left" },
           { Header: "Расходы на маркетинг", accessor: "marketing_expenses", align: "left" },
           { Header: "Расходы на зарплату", accessor: "salary_expenses", align: "left" },
           { Header: "Внести расходы", accessor: "set_expenses", align: "left" },
@@ -76,6 +78,7 @@ export default function useProductData(apiPath, id1, id2) {
           .map((product) => ({
             name: (
               <MDTypography variant="caption" fontWeight="medium">
+                {console.log(product)}
                 {product.name}
               </MDTypography>
             ),
@@ -97,6 +100,11 @@ export default function useProductData(apiPath, id1, id2) {
             category: (
               <MDTypography variant="caption" fontWeight="medium">
                 {product.category.name}
+              </MDTypography>
+            ),
+            status: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {product.is_exist === null ? "-" : <CheckIcon />}
               </MDTypography>
             ),
             marketing_expenses: (
