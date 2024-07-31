@@ -153,7 +153,7 @@ export default function useReservationData(apiPath, month) {
           expiry_date: (
             <div style={{ display: "flex", alignItems: "center" }}>
               <MDTypography variant="caption" fontWeight="medium">
-                {format(new Date(rsrv.expire_date), "MM-dd-yyyy")}
+                {format(new Date(rsrv.date_implementation), "MM-dd-yyyy")}
               </MDTypography>
               {userRole === userRoles.HEAD_OF_ORDERS && (
                 <IconButton
