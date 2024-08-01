@@ -61,7 +61,7 @@ export default function useDoctorsData(
               bonus_payed: 0,
               bonus_remainder: 0,
               pre_investment: 0,
-              plan_price: 0,
+              monthly_plan: 0,
               details: [],
             });
           }
@@ -73,7 +73,7 @@ export default function useDoctorsData(
           doctorData.bonus_payed += report.bonus_payed;
           doctorData.bonus_remainder += report.bonus_remainder;
           doctorData.pre_investment += report.pre_investment;
-          doctorData.plan_price += report.plan_price;
+          doctorData.monthly_plan += report.monthly_plan;
 
           doctorData.details.push({
             product_name: report.product_name,
@@ -134,7 +134,7 @@ export default function useDoctorsData(
         ];
 
         const rows = Array.from(doctorMap.values()).map((doctorData) => {
-          const factPercent = (doctorData.fact_price * 100) / doctorData.plan_price || 0;
+          const factPercent = (doctorData.fact_price * 100) / doctorData.monthly_plan || 0;
           return {
             ...doctorData,
             factPercent, // Add fact_percent to row data
@@ -167,7 +167,7 @@ export default function useDoctorsData(
             ),
             plan_price: (
               <MDTypography variant="caption" fontWeight="medium">
-                {doctorData.plan_price.toLocaleString("ru-RU")}
+                {doctorData.monthly_plan?.toLocaleString("ru-RU")}
               </MDTypography>
             ),
             fact: (
@@ -182,7 +182,7 @@ export default function useDoctorsData(
             ),
             fact_percent: (
               <MDTypography variant="caption" fontWeight="medium">
-                {factPercent.toFixed(4)}
+                {factPercent.toFixed(2)}
               </MDTypography>
             ),
             bonus_amount: (
