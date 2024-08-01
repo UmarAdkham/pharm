@@ -21,7 +21,7 @@ export default function useBonusData(
     async function fetchBonuses() {
       try {
         const response = await axiosInstance.get(
-          `https://it-club.uz/dd/get-doctor-bonus-by-med-rep-id/${med_rep_id}?month_number=${month}`,
+          `/dd/get-doctor-bonus-by-med-rep-id/${med_rep_id}?month_number=${month}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,

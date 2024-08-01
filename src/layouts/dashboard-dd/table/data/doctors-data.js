@@ -186,6 +186,8 @@ export default function useDoctorsData(
           };
         });
 
+        overall.numberOfDoctors = rows.length;
+
         const newData = { columns, rows, overall };
 
         if (JSON.stringify(newData) !== JSON.stringify(previousDataRef.current)) {
