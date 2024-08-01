@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
+import Tooltip from "@mui/material/Tooltip"; // Import Tooltip from Material-UI
 
 export default function useDoctorsData(
   month,
@@ -106,6 +107,7 @@ export default function useDoctorsData(
           bonusLeft: reports.reduce((sum, item) => sum + (item.bonus_amount - item.bonus_payed), 0),
           pre_investment: reports.reduce((sum, item) => sum + item.pre_investment, 0),
           plan_price: reports.reduce((sum, item) => sum + item.plan_price, 0),
+          hasBonus: true,
         };
 
         handleTotalBonus(overall.bonus);
@@ -119,6 +121,7 @@ export default function useDoctorsData(
             Header: "Медицинская организация",
             accessor: "medical_organization_name",
             align: "left",
+            width: 100, // Set a fixed width for the column
           },
           { Header: "Общ. План (Сум)", accessor: "plan_price", align: "left" },
           { Header: "Факт", accessor: "fact", align: "left" },
@@ -156,9 +159,11 @@ export default function useDoctorsData(
               </MDTypography>
             ),
             medical_organization_name: (
-              <MDTypography variant="caption" fontWeight="medium">
-                {doctorData.medical_organization_name}
-              </MDTypography>
+              <Tooltip title={doctorData.medical_organization_name}>
+                <MDTypography variant="caption" fontWeight="medium">
+                  {doctorData.medical_organization_name}
+                </MDTypography>
+              </Tooltip>
             ),
             plan_price: (
               <MDTypography variant="caption" fontWeight="medium">

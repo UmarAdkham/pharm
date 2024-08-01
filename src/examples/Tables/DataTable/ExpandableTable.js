@@ -22,6 +22,7 @@ import DataTableHeadCell from "examples/Tables/DataTable/DataTableHeadCell";
 import DataTableBodyCell from "examples/Tables/DataTable/DataTableBodyCell";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import Tooltip from "@mui/material/Tooltip"; // Import Tooltip from Material-UI
 import { TableCell } from "@mui/material";
 
 const getRowBackgroundColor = (factPercent) => {
@@ -205,6 +206,7 @@ function ExpandableDataTable({
                       noBorder={noEndBorder && rows.length - 1 === key}
                       align={cell.column.align ? cell.column.align : "left"}
                       {...cell.getCellProps()}
+                      style={cell.column.id === "medical_organization_name" ? { width: 200 } : {}}
                     >
                       {cell.render("Cell")}
                     </DataTableBodyCell>
