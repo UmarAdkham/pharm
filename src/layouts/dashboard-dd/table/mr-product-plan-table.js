@@ -52,7 +52,7 @@ const ProductPlanTable = ({ medRepId }) => {
   const fetchData = async (startDate, endDate) => {
     try {
       const { data } = await axiosInstance.get(
-        `https://it-club.uz/dd/get-med-rep-product-plan-by-month-id/${medRepId}`,
+        `/dd/get-med-rep-product-plan-by-month-id/${medRepId}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -142,52 +142,54 @@ const ProductPlanTable = ({ medRepId }) => {
                     </TableCell>
                     <TableCell style={{ color: "#fff" }}></TableCell>
                   </TableRow>
-                  {data.plan.map((product, index) => {
-                    const totalDoctorFacts = product.doctor_plans.reduce(
-                      (sum, doctor) => sum + doctor.fact,
-                      0
-                    );
-                    return (
-                      <React.Fragment key={index}>
-                        <TableRow style={{ backgroundColor: getRowColor(index) }}>
-                          <TableCell>
-                            <b>{product.product}</b>
-                            <div>
-                              <IconButton
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleOpen();
-                                  setPlanToUpdate({
-                                    plan_id: product.id,
-                                    plan_amount: product.plan_amount,
-                                    product: product.product,
-                                  });
-                                  console.log(product);
-                                }}
-                                aria-label="update"
-                              >
-                                <DriveFileRenameOutlineOutlinedIcon />
-                              </IconButton>
-                            </div>
-                          </TableCell>
-                          <TableCell>План: {product.plan_amount}</TableCell>
-                          <TableCell>Факт: {totalDoctorFacts}</TableCell>
-                        </TableRow>
-                        {product.doctor_plans.map((doctor, idx) => (
-                          <TableRow key={idx} style={{ backgroundColor: getRowColor(index) }}>
-                            <TableCell>Имя доктора ({doctor.doctor_name})</TableCell>
-                            <TableCell>{doctor.monthly_plan}</TableCell>
-                            <TableCell>{doctor.fact}</TableCell>
+                  {data.plan
+                    .sort((a, b) => a.product.localeCompare(b.product))
+                    .map((product, index) => {
+                      const totalDoctorFacts = product.doctor_plans.reduce(
+                        (sum, doctor) => sum + doctor.fact,
+                        0
+                      );
+                      return (
+                        <React.Fragment key={index}>
+                          <TableRow style={{ backgroundColor: getRowColor(index) }}>
+                            <TableCell>
+                              <b>{product.product}</b>
+                              <div>
+                                <IconButton
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleOpen();
+                                    setPlanToUpdate({
+                                      plan_id: product.id,
+                                      plan_amount: product.plan_amount,
+                                      product: product.product,
+                                    });
+                                    console.log(product);
+                                  }}
+                                  aria-label="update"
+                                >
+                                  <DriveFileRenameOutlineOutlinedIcon />
+                                </IconButton>
+                              </div>
+                            </TableCell>
+                            <TableCell>План: {product.plan_amount}</TableCell>
+                            <TableCell>Факт: {totalDoctorFacts}</TableCell>
                           </TableRow>
-                        ))}
-                        <TableRow style={{ backgroundColor: "#a1a1a1" }}>
-                          <TableCell>Вакант</TableCell>
-                          <TableCell>{product.vakant}</TableCell>
-                          <TableCell></TableCell>
-                        </TableRow>
-                      </React.Fragment>
-                    );
-                  })}
+                          {product.doctor_plans.map((doctor, idx) => (
+                            <TableRow key={idx} style={{ backgroundColor: getRowColor(index) }}>
+                              <TableCell>Имя доктора ({doctor.doctor_name})</TableCell>
+                              <TableCell>{doctor.monthly_plan}</TableCell>
+                              <TableCell>{doctor.fact}</TableCell>
+                            </TableRow>
+                          ))}
+                          <TableRow style={{ backgroundColor: "#a1a1a1" }}>
+                            <TableCell>Вакант</TableCell>
+                            <TableCell>{product.vakant}</TableCell>
+                            <TableCell></TableCell>
+                          </TableRow>
+                        </React.Fragment>
+                      );
+                    })}
                 </>
               ) : (
                 <TableRow>

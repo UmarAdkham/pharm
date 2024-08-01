@@ -39,17 +39,17 @@ export default function useMrData(
           mrs = data;
         } else if (region !== "") {
           const { data } = await axiosInstance.get(
-            `https://it-club.uz/common/get-users-by-username?username=${region}`
+            `common/get-users-by-username?username=${region}`
           );
           mrs = data;
         } else if (ff_manager !== "") {
           const { data } = await axiosInstance.get(
-            `https://it-club.uz/common/get-users-by-username?username=${ff_manager}`
+            `common/get-users-by-username?username=${ff_manager}`
           );
           mrs = data.filter((e) => e.status === userRoles.MEDICAL_REPRESENTATIVE);
         } else if (product_manager !== "") {
           const { data } = await axiosInstance.get(
-            `https://it-club.uz/common/get-users-by-username?username=${product_manager}`
+            `common/get-users-by-username?username=${product_manager}`
           );
           mrs = data.filter((e) => e.status === userRoles.MEDICAL_REPRESENTATIVE);
         }
@@ -72,6 +72,8 @@ export default function useMrData(
         if (navigatePath === "/dd/mr-info") {
           columns.push({ Header: "Действия", accessor: "actions", align: "center" });
         }
+
+        mrs.sort((a, b) => a.username.localeCompare(b.username));
 
         const rows = mrs.map((mr) => ({
           username: (
