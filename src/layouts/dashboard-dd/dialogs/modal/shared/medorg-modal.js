@@ -66,7 +66,7 @@ function MedorgModal({ open, handleClose, handleSubmit, medorgToUpdate }) {
     handleSubmit(updatedMedorg);
     handleClose();
     // Trigger a refresh of data
-    location.reload();
+    // location.reload();
   };
 
   function LocationMarker() {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import PropTypes from "prop-types";
 import Card from "@mui/material/Card";
 import MDBox from "components/MDBox";
@@ -39,9 +39,11 @@ function DeputyDirectorBonusTable({ med_rep_id, med_rep_name }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [totalBonus, setTotalBonus] = useState(0);
-  const handleTotalBonus = (value) => {
+
+  const handleTotalBonus = useCallback((value) => {
     setTotalBonus(value);
-  };
+  }, []);
+
   const { columns, rows } = useBonusData(
     med_rep_id,
     month,

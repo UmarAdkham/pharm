@@ -157,7 +157,7 @@ export default function useReservationData(apiPath, month) {
           expiry_date: (
             <div style={{ display: "flex", alignItems: "center" }}>
               <MDTypography variant="caption" fontWeight="medium">
-                {format(new Date(rsrv.date_implementation), "MM-dd-yyyy")}
+                {format(new Date(rsrv.date_implementation), "dd/MM/yyyy")}
               </MDTypography>
               {userRole === userRoles.HEAD_OF_ORDERS && (
                 <IconButton
@@ -254,7 +254,7 @@ export default function useReservationData(apiPath, month) {
           ),
           date_reservation: (
             <MDTypography variant="caption" fontWeight="medium">
-              {format(new Date(rsrv.date), "MM-dd-yyyy")}
+              {format(new Date(rsrv.date), "dd/MM/yyyy")}
             </MDTypography>
           ),
           checked: getStatusIndicator(rsrv.checked),
@@ -452,7 +452,7 @@ export default function useReservationData(apiPath, month) {
       },
     })
       .then((response) => {
-        let filename = `${entity.company_name}_${format(new Date(rsrv.date), "MM-dd-yyyy")}`;
+        let filename = `${entity.company_name}_${format(new Date(rsrv.date), "dd/MM/yyyy")}`;
 
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");

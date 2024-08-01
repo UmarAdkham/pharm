@@ -96,7 +96,7 @@ const ViewReservationHistory = ({ open, handleClose, reservation }) => {
                     {dat.description}
                   </TableCell>
                   <TableCell style={{ textAlign: "center", padding: "10px" }}>
-                    {format(new Date(dat.date), "MM-dd-yyyy")}
+                    {format(new Date(dat.date), "dd/MM/yyyy")}
                   </TableCell>
                   <TableCell style={{ textAlign: "center", padding: "10px" }}>
                     {dat.amount.toLocaleString("ru-RU")}

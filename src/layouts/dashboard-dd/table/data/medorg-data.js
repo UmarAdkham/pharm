@@ -31,6 +31,7 @@ export default function useMedicalOrganizationData(apiPath) {
 
   const handleSubmit = async (updatedMedOrg) => {
     try {
+      console.log(updatedMedOrg);
       const response = await axiosInstance.put(
         `https://it-club.uz/common/update-medical-organization/${updatedMedOrg.id}`,
         updatedMedOrg,
@@ -66,7 +67,6 @@ export default function useMedicalOrganizationData(apiPath) {
       const rows = medicalOrganizations.map((medOrg) => ({
         name: (
           <MDTypography variant="caption" fontWeight="medium">
-            {console.log(medOrg)}
             {medOrg.name}
           </MDTypography>
         ),

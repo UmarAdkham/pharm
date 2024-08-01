@@ -41,7 +41,7 @@ export default function useDoctorPlanData(apiPath, openDialog, deleteDialogOpen,
           ),
           date: (
             <MDTypography variant="caption" fontWeight="medium">
-              {format(new Date(plan.date), "MM-dd-yyyy HH:mm")}
+              {format(new Date(plan.date), "dd/MM/yyyy HH:mm")}
             </MDTypography>
           ),
           status: (

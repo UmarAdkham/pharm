@@ -172,12 +172,12 @@ export default function useDoctorsData(
             ),
             fact: (
               <MDTypography variant="caption" fontWeight="medium">
-                {doctorData.fact}
+                {doctorData.fact?.toLocaleString("ru-RU")}
               </MDTypography>
             ),
             fact_price: (
               <MDTypography variant="caption" fontWeight="medium">
-                {doctorData.fact_price}
+                {doctorData.fact_price?.toLocaleString("ru-RU")}
               </MDTypography>
             ),
             fact_percent: (
@@ -187,22 +187,22 @@ export default function useDoctorsData(
             ),
             bonus_amount: (
               <MDTypography variant="caption" fontWeight="medium">
-                {doctorData.bonus_amount}
+                {doctorData.bonus_amount?.toLocaleString("ru-RU")}
               </MDTypography>
             ),
             bonus_payed: (
               <MDTypography variant="caption" fontWeight="medium">
-                {doctorData.bonus_payed}
+                {doctorData.bonus_payed?.toLocaleString("ru-RU")}
               </MDTypography>
             ),
             bonus_remainder: (
               <MDTypography variant="caption" fontWeight="medium">
-                {doctorData.bonus_remainder}
+                {doctorData.bonus_remainder?.toLocaleString("ru-RU")}
               </MDTypography>
             ),
             pre_investment: (
               <MDTypography variant="caption" fontWeight="medium">
-                {doctorData.pre_investment}
+                {doctorData.pre_investment?.toLocaleString("ru-RU")}
               </MDTypography>
             ),
           };

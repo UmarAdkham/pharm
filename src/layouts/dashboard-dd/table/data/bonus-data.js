@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
@@ -17,6 +17,10 @@ export default function useBonusData(
   const accessToken = useSelector((state) => state.auth.accessToken);
   const navigate = useNavigate();
 
+  const memoizedHandleTotalBonus = useCallback(handleTotalBonus, [handleTotalBonus]);
+  const memoizedSelectedProduct = useMemo(() => selectedProduct, [selectedProduct]);
+  const memoizedSelectedDoctor = useMemo(() => selectedDoctor, [selectedDoctor]);
+
   useEffect(() => {
     async function fetchBonuses() {
       try {
@@ -31,16 +35,13 @@ export default function useBonusData(
 
         const reports = response.data.filter((report) => {
           return (
-            (!selectedProduct || report.product_name === selectedProduct.name) &&
-            (!selectedDoctor || report.doctor_name === selectedDoctor.full_name)
+            (!memoizedSelectedProduct || report.product_name === memoizedSelectedProduct.name) &&
+            (!memoizedSelectedDoctor || report.doctor_name === memoizedSelectedDoctor.full_name)
           );
         });
 
-        const totalBonus = response.data.reduce((sum, item) => {
-          const bonusAmount = item.bonus_amount;
-          return sum + bonusAmount;
-        }, 0);
-        handleTotalBonus(totalBonus);
+        const totalBonus = reports.reduce((sum, item) => sum + item.bonus_amount, 0);
+        memoizedHandleTotalBonus(totalBonus);
 
         const columns = [
           { Header: "Доктор", accessor: "doctor", align: "left" },
@@ -68,12 +69,12 @@ export default function useBonusData(
           ),
           monthly_plan: (
             <MDTypography variant="caption" fontWeight="medium">
-              {report.monthly_plan}
+              {report.monthly_plan?.toLocaleString("ru-RU")}
             </MDTypography>
           ),
           fact: (
             <MDTypography variant="caption" fontWeight="medium">
-              {report.fact}
+              {report.fact?.toLocaleString("ru-RU")}
             </MDTypography>
           ),
           fact_percent: (
@@ -83,22 +84,22 @@ export default function useBonusData(
           ),
           bonus: (
             <MDTypography variant="caption" fontWeight="medium">
-              {report.bonus_amount}
+              {report.bonus_amount?.toLocaleString("ru-RU")}
             </MDTypography>
           ),
           bonus_paid: (
             <MDTypography variant="caption" fontWeight="medium">
-              {report.bonus_payed}
+              {report.bonus_payed?.toLocaleString("ru-RU")}
             </MDTypography>
           ),
           bonus_left: (
             <MDTypography variant="caption" fontWeight="medium">
-              {report.bonus_amount - report.bonus_payed}
+              {(report.bonus_amount - report.bonus_payed).toLocaleString("ru-RU")}
             </MDTypography>
           ),
           pre_investment: (
             <MDTypography variant="caption" fontWeight="medium">
-              {report.pre_investment}
+              {report.pre_investment?.toLocaleString("ru-RU")}
             </MDTypography>
           ),
           action: (
@@ -147,7 +148,14 @@ export default function useBonusData(
     }
 
     fetchBonuses();
-  }, [accessToken, med_rep_id, month, selectedProduct, selectedDoctor, handleTotalBonus]);
+  }, [
+    accessToken,
+    med_rep_id,
+    month,
+    memoizedSelectedProduct,
+    memoizedSelectedDoctor,
+    memoizedHandleTotalBonus,
+  ]);
 
   return data;
 }

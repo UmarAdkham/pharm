@@ -78,18 +78,17 @@ export default function useProductData(apiPath, id1, id2) {
           .map((product) => ({
             name: (
               <MDTypography variant="caption" fontWeight="medium">
-                {console.log(product)}
                 {product.name}
               </MDTypography>
             ),
             price: (
               <MDTypography variant="caption" fontWeight="medium">
-                {product.price}
+                {product.price?.toLocaleString("ru-RU")}
               </MDTypography>
             ),
             discount_price: (
               <MDTypography variant="caption" fontWeight="medium">
-                {product.discount_price}
+                {product.discount_price?.toLocaleString("ru-RU")}
               </MDTypography>
             ),
             man_company: (
@@ -118,12 +117,12 @@ export default function useProductData(apiPath, id1, id2) {
             ),
             marketing_expenses: (
               <MDTypography variant="caption" fontWeight="medium">
-                {product.marketing_expenses || "-"}
+                {product.marketing_expenses?.toLocaleString("ru-RU") || "-"}
               </MDTypography>
             ),
             salary_expenses: (
               <MDTypography variant="caption" fontWeight="medium">
-                {product.salary_expenses || "-"}
+                {product.salary_expenses?.toLocaleString("ru-RU") || "-"}
               </MDTypography>
             ),
             set_expenses: (
