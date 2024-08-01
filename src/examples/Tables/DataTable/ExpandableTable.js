@@ -24,6 +24,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import Tooltip from "@mui/material/Tooltip"; // Import Tooltip from Material-UI
 import { TableCell } from "@mui/material";
+import "./style.css"; // Import your CSS file
 
 const getRowBackgroundColor = (factPercent) => {
   if (factPercent >= 75) {
@@ -170,9 +171,11 @@ function ExpandableDataTable({
                 <DataTableHeadCell
                   key={idx}
                   {...column.getHeaderProps(isSorted && column.getSortByToggleProps())}
-                  width={column.width ? column.width : "auto"}
                   align={column.align ? column.align : "left"}
                   sorted={setSortedValue(column)}
+                  className={
+                    column.id === "medical_organization_name" ? "medical-organization-column" : ""
+                  }
                 >
                   {column.render("Header")}
                 </DataTableHeadCell>
@@ -206,7 +209,11 @@ function ExpandableDataTable({
                       noBorder={noEndBorder && rows.length - 1 === key}
                       align={cell.column.align ? cell.column.align : "left"}
                       {...cell.getCellProps()}
-                      style={cell.column.id === "medical_organization_name" ? { width: 200 } : {}}
+                      className={
+                        cell.column.id === "medical_organization_name"
+                          ? "medical-organization-column"
+                          : ""
+                      }
                     >
                       {cell.render("Cell")}
                     </DataTableBodyCell>

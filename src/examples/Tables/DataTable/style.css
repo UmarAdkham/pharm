@@ -1,0 +1,7 @@
+.medical-organization-column {
+  width: 200px !important;
+  max-width: 200px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}

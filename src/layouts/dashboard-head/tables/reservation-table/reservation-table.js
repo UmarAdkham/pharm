@@ -240,7 +240,7 @@ function ReservationTable() {
           showTotalEntries={false}
           isSorted={false}
           noEndBorder
-          entriesPerPage={false}
+          entriesPerPage={{ defaultValue: 100 }}
         />
       </MDBox>
       {ExpiryDateDialogComponent}

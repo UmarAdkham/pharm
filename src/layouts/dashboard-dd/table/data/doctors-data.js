@@ -121,7 +121,7 @@ export default function useDoctorsData(
             Header: "Медицинская организация",
             accessor: "medical_organization_name",
             align: "left",
-            width: 100, // Set a fixed width for the column
+            width: 200, // Set width to 200px
           },
           { Header: "Общ. План (Сум)", accessor: "plan_price", align: "left" },
           { Header: "Факт", accessor: "fact", align: "left" },

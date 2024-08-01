@@ -103,8 +103,17 @@ export default function useProductData(apiPath, id1, id2) {
               </MDTypography>
             ),
             status: (
-              <MDTypography variant="caption" fontWeight="medium">
-                {product.is_exist === null ? "-" : <CheckIcon />}
+              <MDTypography
+                variant="caption"
+                fontWeight="medium"
+                style={{
+                  backgroundColor: product.is_exist === null ? "#f77c48" : "#81c784",
+                  color: "white",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                }}
+              >
+                {product.is_exist === null ? "Ожидается" : "В наличии"}
               </MDTypography>
             ),
             marketing_expenses: (

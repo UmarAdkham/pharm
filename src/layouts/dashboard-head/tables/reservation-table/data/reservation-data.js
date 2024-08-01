@@ -100,25 +100,29 @@ export default function useReservationData(apiPath, month) {
         },
       });
 
-      const now = new Date();
-
-      const filteredReservations = response.data;
-
-      const reservations = filteredReservations.sort((a, b) => a.id - b.id);
+      // Sort the reservations by the 'date' property in descending order,
+      // and then by 'id' in descending order if the dates are the same.
+      const filteredReservations = response.data.sort((a, b) => {
+        const dateComparison = new Date(b.date) - new Date(a.date);
+        if (dateComparison !== 0) {
+          return dateComparison;
+        }
+        return b.id - a.id;
+      });
 
       const overallValues = {
-        numberOfInvoices: reservations.length,
-        invoiceAmount: reservations.reduce((sum, r) => sum + r.total_payable_with_nds, 0),
-        profit: reservations.reduce((sum, r) => sum + r.profit, 0),
-        debt: reservations.reduce((sum, r) => sum + r.debt, 0),
-        promo: reservations.reduce((sum, r) => {
+        numberOfInvoices: filteredReservations.length,
+        invoiceAmount: filteredReservations.reduce((sum, r) => sum + r.total_payable_with_nds, 0),
+        profit: filteredReservations.reduce((sum, r) => sum + r.profit, 0),
+        debt: filteredReservations.reduce((sum, r) => sum + r.debt, 0),
+        promo: filteredReservations.reduce((sum, r) => {
           const promo = r.pharmacy?.promo || r.hospital?.promo || 0;
           return sum + promo;
         }, 0),
       };
 
       let columns = [
-        { Header: "Дата  реализаци", accessor: "expiry_date", align: "left" },
+        { Header: "Дата реализаци", accessor: "expiry_date", align: "left" },
         { Header: "Сумма с/ф", accessor: "total_payable", align: "left" },
         { Header: "Номер с/ф", accessor: "invoice_number", align: "left" },
         { Header: "Контрагент", accessor: "company_name", align: "left" },
@@ -146,7 +150,7 @@ export default function useReservationData(apiPath, month) {
         );
       }
 
-      const rows = reservations.map((rsrv) => {
+      const rows = filteredReservations.map((rsrv) => {
         const entity = rsrv.pharmacy || rsrv.hospital || rsrv.wholesale;
         return {
           ...rsrv,
@@ -255,11 +259,9 @@ export default function useReservationData(apiPath, month) {
           ),
           checked: getStatusIndicator(rsrv.checked),
           check:
-            // Display Switch to toggle the value only for head of orders
             userRole === userRoles.HEAD_OF_ORDERS ? (
               <Switch checked={rsrv.checked} onChange={() => confirmToggle(rsrv)} color="warning" />
             ) : (
-              // Other userRoles can only see the value
               getStatusIndicator(rsrv.checked)
             ),
           man_company: (
