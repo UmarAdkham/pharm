@@ -55,6 +55,7 @@ export default function useBonusMrsData(month, order) {
                 0
               )) *
             100,
+          hasBonus: false,
         };
 
         const columns = [

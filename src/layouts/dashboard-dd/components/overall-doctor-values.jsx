@@ -43,7 +43,7 @@ const OverallValues = ({ overall }) => {
             {overall.factPercent?.toFixed(2)}%)
           </Typography>
         </Grid>
-        {overall.bonus && (
+        {overall.hasBonus && (
           <>
             <Grid item>
               <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#f2cc45", p: 1 }}>
@@ -82,6 +82,7 @@ OverallValues.propTypes = {
     bonusPaid: PropTypes.number,
     bonusLeft: PropTypes.number,
     pre_investment: PropTypes.number,
+    hasBonus: PropTypes.bool,
   }).isRequired,
 };
 

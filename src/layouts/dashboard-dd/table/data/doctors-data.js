@@ -102,6 +102,7 @@ export default function useDoctorsData(
           bonusPaid: reports.reduce((sum, item) => sum + item.bonus_payed, 0),
           bonusLeft: reports.reduce((sum, item) => sum + (item.bonus_amount - item.bonus_payed), 0),
           pre_investment: reports.reduce((sum, item) => sum + item.pre_investment, 0),
+          hasBonus: true,
         };
 
         handleTotalBonus(overall.bonus);
