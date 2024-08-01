@@ -24,6 +24,16 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { TableCell } from "@mui/material";
 
+const getRowBackgroundColor = (factPercent) => {
+  if (factPercent >= 75) {
+    return "#81c784";
+  } else if (factPercent >= 50) {
+    return "#f2cc45";
+  } else {
+    return "#f77c48";
+  }
+};
+
 function ExpandableDataTable({
   entriesPerPage,
   canSearch,
@@ -142,7 +152,7 @@ function ExpandableDataTable({
                 size="small"
                 fullWidth
                 onChange={({ currentTarget }) => {
-                  setSearch(search);
+                  setSearch(currentTarget.value);
                   onSearchChange(currentTarget.value);
                 }}
               />
@@ -173,6 +183,7 @@ function ExpandableDataTable({
           {page.map((row, key) => {
             prepareRow(row);
             const isExpanded = expandedRows[row.original.doctor_name.props.children];
+            const rowBackgroundColor = getRowBackgroundColor(row.original.factPercent); // Get the row background color
             return (
               <React.Fragment key={key}>
                 <TableRow
@@ -180,9 +191,7 @@ function ExpandableDataTable({
                   onClick={() => toggleRowExpansion(row.original.doctor_name.props.children)}
                   style={{
                     cursor: "pointer",
-                    backgroundColor: row.original.isHighlighted
-                      ? "#f0f0f0"
-                      : row.original.rowBackgroundColor,
+                    backgroundColor: rowBackgroundColor, // Apply the background color
                   }}
                 >
                   <DataTableBodyCell>
@@ -208,6 +217,9 @@ function ExpandableDataTable({
                       <DataTableBodyCell align="left">{detail.product_name}</DataTableBodyCell>
                       <DataTableBodyCell align="left">
                         Мес. план: {detail.monthly_plan}
+                      </DataTableBodyCell>
+                      <DataTableBodyCell align="left">
+                        Мес. план (сум): {detail.plan_price.toLocaleString("ru-RU")}
                       </DataTableBodyCell>
                       <DataTableBodyCell align="left">Факт визит: {detail.fact}</DataTableBodyCell>
                       <DataTableBodyCell align="left">

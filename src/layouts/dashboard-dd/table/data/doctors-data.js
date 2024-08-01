@@ -60,6 +60,7 @@ export default function useDoctorsData(
               bonus_payed: 0,
               bonus_remainder: 0,
               pre_investment: 0,
+              plan_price: 0,
               details: [],
             });
           }
@@ -71,10 +72,12 @@ export default function useDoctorsData(
           doctorData.bonus_payed += report.bonus_payed;
           doctorData.bonus_remainder += report.bonus_remainder;
           doctorData.pre_investment += report.pre_investment;
+          doctorData.plan_price += report.plan_price;
 
           doctorData.details.push({
             product_name: report.product_name,
             monthly_plan: report.monthly_plan,
+            plan_price: report.plan_price,
             fact: report.fact,
             fact_price: report.fact_price,
             bonus_amount: report.bonus_amount,
@@ -102,7 +105,7 @@ export default function useDoctorsData(
           bonusPaid: reports.reduce((sum, item) => sum + item.bonus_payed, 0),
           bonusLeft: reports.reduce((sum, item) => sum + (item.bonus_amount - item.bonus_payed), 0),
           pre_investment: reports.reduce((sum, item) => sum + item.pre_investment, 0),
-          hasBonus: true,
+          plan_price: reports.reduce((sum, item) => sum + item.plan_price, 0),
         };
 
         handleTotalBonus(overall.bonus);
@@ -117,8 +120,10 @@ export default function useDoctorsData(
             accessor: "medical_organization_name",
             align: "left",
           },
+          { Header: "Общ. План (Сум)", accessor: "plan_price", align: "left" },
           { Header: "Факт", accessor: "fact", align: "left" },
           { Header: "Факт поступ", accessor: "fact_price", align: "left" },
+          { Header: "Факт %", accessor: "fact_percent", align: "left" },
           { Header: "Бонус", accessor: "bonus_amount", align: "left" },
           { Header: "Бонус выплачен", accessor: "bonus_payed", align: "left" },
           { Header: "Остаток бонуса", accessor: "bonus_remainder", align: "left" },
@@ -126,8 +131,10 @@ export default function useDoctorsData(
         ];
 
         const rows = Array.from(doctorMap.values()).map((doctorData) => {
+          const factPercent = (doctorData.fact_price * 100) / doctorData.plan_price || 0;
           return {
             ...doctorData,
+            factPercent, // Add fact_percent to row data
             doctor_name: (
               <MDTypography variant="caption" fontWeight="medium">
                 {doctorData.doctor_name}
@@ -153,6 +160,11 @@ export default function useDoctorsData(
                 {doctorData.medical_organization_name}
               </MDTypography>
             ),
+            plan_price: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {doctorData.plan_price.toLocaleString("ru-RU")}
+              </MDTypography>
+            ),
             fact: (
               <MDTypography variant="caption" fontWeight="medium">
                 {doctorData.fact}
@@ -161,6 +173,11 @@ export default function useDoctorsData(
             fact_price: (
               <MDTypography variant="caption" fontWeight="medium">
                 {doctorData.fact_price}
+              </MDTypography>
+            ),
+            fact_percent: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {factPercent.toFixed(4)}
               </MDTypography>
             ),
             bonus_amount: (
@@ -185,8 +202,6 @@ export default function useDoctorsData(
             ),
           };
         });
-
-        overall.numberOfDoctors = rows.length;
 
         const newData = { columns, rows, overall };
 
