@@ -26,11 +26,10 @@ import PlanModal from "../dialogs/modal/shared/plan-modal";
 
 // eslint-disable-next-line react/prop-types
 const ProductPlanTable = ({ medRepId }) => {
-  // Set default dates to the first and last date of the current month
-  const currentMonth = dayjs().month(); // Current month (0-based index)
-  const currentYear = dayjs().year(); // Current year
-  const firstDate = dayjs(new Date(currentYear, currentMonth, 1)); // First date of the month
-  const lastDate = dayjs(new Date(currentYear, currentMonth + 1, 0)); // Last date of the month
+  const currentMonth = dayjs().month();
+  const currentYear = dayjs().year();
+  const firstDate = dayjs(new Date(currentYear, currentMonth, 1));
+  const lastDate = dayjs(new Date(currentYear, currentMonth + 1, 0));
 
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
@@ -74,10 +73,9 @@ const ProductPlanTable = ({ medRepId }) => {
   }, [startDate, endDate]);
 
   const getRowColor = (index) => {
-    return index % 2 === 0 ? "#90EE90" : "#FF8C00";
+    // return index % 2 === 0 ? "#90EE90" : "#FF8C00";
   };
 
-  // Calculate the total plan and plan_price
   const totalPlanAmount = data.plan
     ? data.plan.reduce((sum, item) => sum + item.plan_amount, 0)
     : 0;
@@ -159,7 +157,7 @@ const ProductPlanTable = ({ medRepId }) => {
                       );
                       return (
                         <React.Fragment key={index}>
-                          <TableRow style={{ backgroundColor: getRowColor(index) }}>
+                          <TableRow style={{ backgroundColor: "#90EE90" }}>
                             <TableCell>
                               <b>{product.product}</b>
                               <div>
@@ -172,7 +170,6 @@ const ProductPlanTable = ({ medRepId }) => {
                                       plan_amount: product.plan_amount,
                                       product: product.product,
                                     });
-                                    console.log(product);
                                   }}
                                   aria-label="update"
                                 >
@@ -185,11 +182,25 @@ const ProductPlanTable = ({ medRepId }) => {
                             <TableCell>Факт поступ: {totalDoctorFactPostupleniya}</TableCell>
                           </TableRow>
                           {product.doctor_plans.map((doctor, idx) => (
-                            <TableRow key={idx} style={{ backgroundColor: getRowColor(index) }}>
+                            <TableRow key={idx} style={{ backgroundColor: "#90EE90" }}>
                               <TableCell>Имя доктора ({doctor.doctor_name})</TableCell>
                               <TableCell>{doctor.monthly_plan}</TableCell>
                               <TableCell>{doctor.fact}</TableCell>
                               <TableCell>{doctor.fact_postupleniya}</TableCell>
+                            </TableRow>
+                          ))}
+                          {product.hospital_fact.map((hospital, idx) => (
+                            <TableRow key={idx} style={{ backgroundColor: "#fff3b5" }}>
+                              <TableCell colSpan={2}>Больница: {hospital.hospital_name}</TableCell>
+                              <TableCell>Факт: {hospital.fact}</TableCell>
+                              <TableCell></TableCell>
+                            </TableRow>
+                          ))}
+                          {product.pharmacy_hot_sale.map((pharmacy, idx) => (
+                            <TableRow key={idx} style={{ backgroundColor: "#c9daff" }}>
+                              <TableCell colSpan={2}>Аптека: {pharmacy.company_name}</TableCell>
+                              <TableCell>Продажа: {pharmacy.sale}</TableCell>
+                              <TableCell></TableCell>
                             </TableRow>
                           ))}
                           <TableRow style={{ backgroundColor: "#a1a1a1" }}>
