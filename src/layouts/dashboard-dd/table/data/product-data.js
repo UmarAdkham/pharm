@@ -8,6 +8,7 @@ import { IconButton } from "@mui/material";
 import AccountBalanceWalletTwoToneIcon from "@mui/icons-material/AccountBalanceWalletTwoTone";
 import CheckIcon from "@mui/icons-material/Check";
 import { useNavigate } from "react-router-dom";
+import MDBox from "../../../../components/MDBox";
 
 export default function useProductData(apiPath, id1, id2) {
   const [data, setData] = useState({ columns: [], rows: [] });
@@ -30,6 +31,15 @@ export default function useProductData(apiPath, id1, id2) {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const onChangeStatus = (productId) => {
+    setData((prevState) => ({
+      ...prevState,
+      rows: prevState.rows.map((row) =>
+        row.id === productId ? { ...row, is_exist: row.is_exist === null ? true : null } : row
+      ),
+    }));
   };
 
   const handleSubmit = async (udpatedProduct) => {
@@ -78,7 +88,6 @@ export default function useProductData(apiPath, id1, id2) {
           .map((product) => ({
             name: (
               <MDTypography variant="caption" fontWeight="medium">
-                {console.log(product)}
                 {product.name}
               </MDTypography>
             ),
@@ -103,9 +112,24 @@ export default function useProductData(apiPath, id1, id2) {
               </MDTypography>
             ),
             status: (
-              <MDTypography variant="caption" fontWeight="medium">
-                {product.is_exist === null ? "-" : <CheckIcon />}
-              </MDTypography>
+              <div
+                onClick={() => onChangeStatus(product.id)}
+                style={{
+                  backgroundColor: product.is_exist === null ? "orange" : "#42a5f5",
+                  padding: "8px",
+                  borderRadius: "4px",
+                }}
+              >
+                <MDTypography
+                  variant="caption"
+                  fontWeight="medium"
+                  style={{
+                    color: "white",
+                  }}
+                >
+                  {product.is_exist === null ? "Ожидается" : "Сделано"}
+                </MDTypography>
+              </div>
             ),
             marketing_expenses: (
               <MDTypography variant="caption" fontWeight="medium">
