@@ -129,14 +129,18 @@ const ProductPlanTable = ({ medRepId }) => {
               {data.plan && data.plan.length > 0 ? (
                 <>
                   <TableRow style={{ backgroundColor: "#000" }}>
-                    <TableCell style={{ color: "#fff" }}>Общ план: {totalPlanAmount}</TableCell>
+                    <TableCell colSpan={2} style={{ color: "#fff" }}>
+                      Общ план: {totalPlanAmount}
+                    </TableCell>
                     <TableCell style={{ color: "#fff" }}>
                       План продажа: <br /> {totalPlanPrice} сум
                     </TableCell>
                     <TableCell style={{ color: "#fff" }}></TableCell>
                   </TableRow>
                   <TableRow style={{ backgroundColor: "#000" }}>
-                    <TableCell style={{ color: "#fff" }}>Общ факт: {data.fact}</TableCell>
+                    <TableCell colSpan={2} style={{ color: "#fff" }}>
+                      Общ факт: {data.fact}
+                    </TableCell>
                     <TableCell style={{ color: "#fff" }}>
                       Факт продажа: <br /> {data.fact_price.toLocaleString("ru-RU")} сум
                     </TableCell>
@@ -147,6 +151,10 @@ const ProductPlanTable = ({ medRepId }) => {
                     .map((product, index) => {
                       const totalDoctorFacts = product.doctor_plans.reduce(
                         (sum, doctor) => sum + doctor.fact,
+                        0
+                      );
+                      const totalDoctorFactPostupleniya = product.doctor_plans.reduce(
+                        (sum, doctor) => sum + doctor.fact_postupleniya,
                         0
                       );
                       return (
@@ -174,16 +182,18 @@ const ProductPlanTable = ({ medRepId }) => {
                             </TableCell>
                             <TableCell>План: {product.plan_amount}</TableCell>
                             <TableCell>Факт: {totalDoctorFacts}</TableCell>
+                            <TableCell>Факт поступ: {totalDoctorFactPostupleniya}</TableCell>
                           </TableRow>
                           {product.doctor_plans.map((doctor, idx) => (
                             <TableRow key={idx} style={{ backgroundColor: getRowColor(index) }}>
                               <TableCell>Имя доктора ({doctor.doctor_name})</TableCell>
                               <TableCell>{doctor.monthly_plan}</TableCell>
                               <TableCell>{doctor.fact}</TableCell>
+                              <TableCell>{doctor.fact_postupleniya}</TableCell>
                             </TableRow>
                           ))}
                           <TableRow style={{ backgroundColor: "#a1a1a1" }}>
-                            <TableCell>Вакант</TableCell>
+                            <TableCell colSpan={2}>Вакант</TableCell>
                             <TableCell>{product.vakant}</TableCell>
                             <TableCell></TableCell>
                           </TableRow>
