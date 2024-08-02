@@ -91,7 +91,7 @@ const ProductPlanTable = ({ medRepId }) => {
             План по продукту
           </MDTypography>
         </MDBox>
-        <MDBox>
+        <MDBox sx={{ overflowX: "auto" }}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={["DatePicker", "DatePicker"]}>
               <DatePicker
