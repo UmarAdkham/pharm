@@ -33,15 +33,6 @@ export default function useProductData(apiPath, id1, id2) {
     setOpen(false);
   };
 
-  const onChangeStatus = (productId) => {
-    setData((prevState) => ({
-      ...prevState,
-      rows: prevState.rows.map((row) =>
-        row.id === productId ? { ...row, is_exist: row.is_exist === null ? true : null } : row
-      ),
-    }));
-  };
-
   const handleSubmit = async (udpatedProduct) => {
     try {
       const response = await axiosInstance.put(
@@ -113,7 +104,6 @@ export default function useProductData(apiPath, id1, id2) {
             ),
             status: (
               <div
-                onClick={() => onChangeStatus(product.id)}
                 style={{
                   backgroundColor: product.is_exist === null ? "orange" : "#42a5f5",
                   padding: "8px",
