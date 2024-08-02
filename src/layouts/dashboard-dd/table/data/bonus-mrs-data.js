@@ -37,6 +37,33 @@ export default function useBonusMrsData(month, order) {
 
         const mrs = response.data;
 
+        // Fetch fact_postupleniya for each medical representative
+        const fetchFactPostupleniya = async (medRepId) => {
+          const response = await axiosInstance.get(
+            `/dd/get-doctor-bonus-by-med-rep-id/${medRepId}?month_number=${month}`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+          return response.data.reduce((sum, item) => sum + item.fact_postupleniya, 0);
+        };
+
+        const factPostupleniyaPromises = mrs.map((mr) =>
+          fetchFactPostupleniya(mr.id).then((factPostupleniya) => ({
+            id: mr.id,
+            factPostupleniya,
+          }))
+        );
+
+        const factPostupleniyaResults = await Promise.all(factPostupleniyaPromises);
+
+        const factPostupleniyaMap = new Map();
+        factPostupleniyaResults.forEach((result) => {
+          factPostupleniyaMap.set(result.id, result.factPostupleniya);
+        });
+
         // Calculate overall statistics
         const overall = {
           numberOfDoctors: mrs.length,
@@ -64,6 +91,7 @@ export default function useBonusMrsData(month, order) {
           { Header: "План", accessor: "plan", align: "left" },
           { Header: "Факт", accessor: "fact", align: "left" },
           { Header: "Факт %", accessor: "fact_percent", align: "left" },
+          { Header: "Факт поступ", accessor: "fact_postupleniya", align: "left" }, // New column
         ];
 
         const rows = mrs.map((mr) => {
@@ -71,6 +99,7 @@ export default function useBonusMrsData(month, order) {
           const totalFact = mr.plan.reduce((acc, item) => acc + item.fact, 0);
           const factPercent = totalPlan > 0 ? (totalFact / totalPlan) * 100 : 0;
           const rowBackgroundColor = getRowBackgroundColor(factPercent);
+          const factPostupleniya = factPostupleniyaMap.get(mr.id) || 0;
 
           return {
             username: (
@@ -96,6 +125,11 @@ export default function useBonusMrsData(month, order) {
             fact_percent: (
               <MDTypography variant="caption" fontWeight="medium">
                 {factPercent.toFixed(2)}%
+              </MDTypography>
+            ),
+            fact_postupleniya: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {factPostupleniya}
               </MDTypography>
             ),
             onClick: () => {
