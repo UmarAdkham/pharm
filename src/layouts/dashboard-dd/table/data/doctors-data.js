@@ -90,28 +90,6 @@ export default function useDoctorsData(
           doctorMap.set(report.doctor_name, doctorData);
         });
 
-        const overall = {
-          numberOfDoctors: reports.length,
-          monthlyPlan: reports.reduce((sum, item) => sum + item.plan_price, 0),
-          fact: reports.reduce((sum, item) => sum + item.fact_price, 0),
-          factPercent:
-            reports.length > 0
-              ? reports.reduce((sum, item) => {
-                  // Skip items where plan_price is zero or undefined
-                  if (!item.plan_price) return sum;
-                  return sum + (item.fact_price * 100) / item.plan_price;
-                }, 0) / reports.length
-              : 0,
-          bonus: reports.reduce((sum, item) => sum + item.bonus_amount, 0),
-          bonusPaid: reports.reduce((sum, item) => sum + item.bonus_payed, 0),
-          bonusLeft: reports.reduce((sum, item) => sum + (item.bonus_amount - item.bonus_payed), 0),
-          pre_investment: reports.reduce((sum, item) => sum + item.pre_investment, 0),
-          plan_price: reports.reduce((sum, item) => sum + item.plan_price, 0),
-          hasBonus: true,
-        };
-
-        handleTotalBonus(overall.bonus);
-
         const columns = [
           { Header: "Имя врача", accessor: "doctor_name", align: "left" },
           { Header: "Медицинские представители", accessor: "med_rep", align: "left" },
@@ -207,6 +185,28 @@ export default function useDoctorsData(
             ),
           };
         });
+
+        const overall = {
+          numberOfDoctors: rows.length, // Count of rows
+          monthlyPlan: reports.reduce((sum, item) => sum + item.plan_price, 0),
+          fact: reports.reduce((sum, item) => sum + item.fact_price, 0),
+          factPercent:
+            reports.length > 0
+              ? reports.reduce((sum, item) => {
+                  // Skip items where plan_price is zero or undefined
+                  if (!item.plan_price) return sum;
+                  return sum + (item.fact_price * 100) / item.plan_price;
+                }, 0) / reports.length
+              : 0,
+          bonus: reports.reduce((sum, item) => sum + item.bonus_amount, 0),
+          bonusPaid: reports.reduce((sum, item) => sum + item.bonus_payed, 0),
+          bonusLeft: reports.reduce((sum, item) => sum + (item.bonus_amount - item.bonus_payed), 0),
+          pre_investment: reports.reduce((sum, item) => sum + item.pre_investment, 0),
+          plan_price: reports.reduce((sum, item) => sum + item.plan_price, 0),
+          hasBonus: true,
+        };
+
+        handleTotalBonus(overall.bonus);
 
         const newData = { columns, rows, overall };
 
