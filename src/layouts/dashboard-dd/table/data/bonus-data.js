@@ -49,6 +49,7 @@ export default function useBonusData(
           { Header: "Месячный план", accessor: "monthly_plan", align: "left" },
           { Header: "Факт", accessor: "fact", align: "left" },
           { Header: "Факт %", accessor: "fact_percent", align: "left" },
+          { Header: "Факт поступ.", accessor: "fact_postupleniya", align: "left" },
           { Header: "Бонус", accessor: "bonus", align: "left" },
           { Header: "Бонус выплачен", accessor: "bonus_paid", align: "left" },
           { Header: "Остаток бонуса", accessor: "bonus_left", align: "left" },
@@ -80,6 +81,11 @@ export default function useBonusData(
           fact_percent: (
             <MDTypography variant="caption" fontWeight="medium">
               {(report.fact * 100) / report.monthly_plan}%
+            </MDTypography>
+          ),
+          fact_postupleniya: (
+            <MDTypography variant="caption" fontWeight="medium">
+              {report.fact_postupleniya?.toLocaleString("ru-RU")}
             </MDTypography>
           ),
           bonus: (
