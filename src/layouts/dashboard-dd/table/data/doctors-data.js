@@ -14,6 +14,8 @@ export default function useDoctorsData(
   selectedMedRep,
   handleTotalBonus
 ) {
+  console.log("HEY");
+
   const [data, setData] = useState({ columns: [], rows: [], overall: {} });
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -68,7 +70,7 @@ export default function useDoctorsData(
 
           const doctorData = doctorMap.get(report.doctor_name);
           doctorData.fact += report.fact;
-          doctorData.fact_price += report.fact_price;
+          doctorData.fact_price += report.fact_postupleniya;
           doctorData.bonus_amount += report.bonus_amount;
           doctorData.bonus_payed += report.bonus_payed;
           doctorData.bonus_remainder += report.bonus_remainder;
@@ -80,7 +82,7 @@ export default function useDoctorsData(
             monthly_plan: report.monthly_plan,
             plan_price: report.plan_price,
             fact: report.fact,
-            fact_price: report.fact_price,
+            fact_price: report.fact_postupleniya,
             bonus_amount: report.bonus_amount,
             bonus_payed: report.bonus_payed,
             bonus_remainder: report.bonus_remainder,
@@ -101,7 +103,7 @@ export default function useDoctorsData(
             align: "left",
             width: 200, // Set width to 200px
           },
-          { Header: "Общ. План (Сум)", accessor: "plan_price", align: "left" },
+          { Header: "Общ. План", accessor: "plan_price", align: "left" },
           { Header: "Факт", accessor: "fact", align: "left" },
           { Header: "Факт поступ", accessor: "fact_price", align: "left" },
           { Header: "Факт %", accessor: "fact_percent", align: "left" },
@@ -112,6 +114,7 @@ export default function useDoctorsData(
         ];
 
         const rows = Array.from(doctorMap.values()).map((doctorData) => {
+          console.log(doctorData);
           const factPercent = (doctorData.fact_price * 100) / doctorData.monthly_plan || 0;
           return {
             ...doctorData,
@@ -155,7 +158,7 @@ export default function useDoctorsData(
             ),
             fact_price: (
               <MDTypography variant="caption" fontWeight="medium">
-                {doctorData.fact_price?.toLocaleString("ru-RU")}
+                {doctorData.fact_price}
               </MDTypography>
             ),
             fact_percent: (
