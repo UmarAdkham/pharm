@@ -281,8 +281,23 @@ export default function useReservationData(apiPath, month) {
               sx={{ color: "white" }}
               style={{ cursor: "pointer" }}
               onClick={() => {
-                navigate("/head/pay-reservation", {
-                  state: { reservationId: rsrv.id, type: getRsrvType(rsrv) },
+                const type = getRsrvType(rsrv);
+                let path = "/head/pay-reservation-";
+
+                switch (type) {
+                  case "pharmacy":
+                    path += "pharmacy";
+                    break;
+                  case "wholesale":
+                    path += "wholesale";
+                    break;
+                  case "hospital":
+                    path += "hospital";
+                    break;
+                }
+
+                navigate(path, {
+                  state: { reservationId: rsrv.id },
                 });
               }}
             >
