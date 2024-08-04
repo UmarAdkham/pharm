@@ -251,7 +251,7 @@ function HeadPayReservationWholesale() {
     const payload = {
       med_rep_id: selectedMedRep.id,
       pharmacy_id: selectedPharmacy.id,
-      total: parseInt(total, 10),
+      total: parseInt(total + remainderSum, 10),
       objects,
       description,
     };
