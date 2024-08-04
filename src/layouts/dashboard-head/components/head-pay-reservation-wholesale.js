@@ -235,7 +235,7 @@ function HeadPayReservationWholesale() {
       return;
     }
 
-    if (totalSum > total) {
+    if (totalSum > (total+remainderSum)) {
       setMessage({ color: "error", content: "Общая сумма не может быть больше указанной суммы" });
       return;
     }
