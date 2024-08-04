@@ -19,8 +19,23 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 
 // Authentication layout components
-import BasicLayout from "layouts/authentication/components/BasicLayout";
 import axiosInstance from "services/axiosInstance";
+import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
+
+const russianMonths = [
+  { label: "Январь", value: 1 },
+  { label: "Февраль", value: 2 },
+  { label: "Март", value: 3 },
+  { label: "Апрель", value: 4 },
+  { label: "Май", value: 5 },
+  { label: "Июнь", value: 6 },
+  { label: "Июль", value: 7 },
+  { label: "Август", value: 8 },
+  { label: "Сентябрь", value: 9 },
+  { label: "Октябрь", value: 10 },
+  { label: "Ноябрь", value: 11 },
+  { label: "Декабрь", value: 12 },
+];
 
 function HeadPayReservationPharmacy() {
   const navigate = useNavigate();
@@ -30,46 +45,105 @@ function HeadPayReservationPharmacy() {
 
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
-  const [pharmacies, setPharmacies] = useState([]);
-  const [medReps, setMedReps] = useState([]);
+  const [doctors, setDoctors] = useState([]);
   const [doctorProducts, setDoctorProducts] = useState([
-    { doctor: null, products: [], product: null, quantity: 1, amount: 1 },
+    {
+      doctor: null,
+      products: [],
+      product: null,
+      quantity: 0,
+      amount: 0,
+      monthNumber: new Date().getMonth() + 1,
+    },
   ]);
-  const [selectedPharmacy, setSelectedPharmacy] = useState(null);
-  const [selectedMedRep, setSelectedMedRep] = useState(null);
-  const [forceRender, setForceRender] = useState(false); // State variable to force re-render
+  const [total, setTotal] = useState();
+  const [debt, setDebt] = useState(0);
+  const [remainderSum, setRemainderSum] = useState(0);
+  const [unpayedProducts, setUnpayedProducts] = useState([]);
+  const [productNames, setProductNames] = useState({});
+  const [totalSum, setTotalSum] = useState(0);
 
   useEffect(() => {
-    const fetchMedReps = async () => {
+    const fetchDoctors = async () => {
       try {
-        const response = await axiosInstance.get("/common/get-med-reps");
-        setMedReps(response.data);
+        const response = await axiosInstance.get("/mr/get-doctors");
+        setDoctors(response.data);
       } catch (error) {
         console.log(error);
       }
     };
 
-    fetchMedReps();
+    fetchDoctors();
   }, []);
 
-  const fetchPharmacies = async (medRepId) => {
-    try {
-      const response = await axiosInstance.get(
-        `mr/get-pharmacy?user_id=${medRepId}`
-      );
-      setPharmacies(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  useEffect(() => {
+    const fetchReservationData = async () => {
+      try {
+        const response = await axiosInstance.get(
+          `https://it-club.uz/head/get-pharmacy-reservation-payed-remiainder/${reservationId}`
+        );
+        setDebt(response.data.debt);
+        setRemainderSum(response.data.remiainder_sum);
+        setUnpayedProducts(response.data.reservation_unpayed_products);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-  const handleMedRepChange = (newValue) => {
-    setSelectedMedRep(newValue);
-    if (newValue) {
-      fetchPharmacies(newValue.id);
+    if (reservationId) {
+      fetchReservationData();
+    }
+  }, [reservationId]);
+
+  useEffect(() => {
+    const fetchProductNames = async () => {
+      try {
+        const response = await axiosInstance.get("/common/get-product");
+        const products = response.data;
+        const productNamesMap = products.reduce((acc, product) => {
+          acc[product.id] = product.name;
+          return acc;
+        }, {});
+        setProductNames(productNamesMap);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchProductNames();
+  }, []);
+
+  useEffect(() => {
+    const calculateTotalSum = () => {
+      const unpaidTotal = unpayedProducts.reduce((acc, product) => {
+        return acc + product.quantity * product.price;
+      }, 0);
+
+      const doctorProductTotal = doctorProducts.reduce((acc, doctorProduct) => {
+        return acc + doctorProduct.quantity * doctorProduct.amount;
+      }, 0);
+
+      setTotalSum(unpaidTotal + doctorProductTotal);
+    };
+
+    calculateTotalSum();
+  }, [unpayedProducts, doctorProducts]);
+
+  const handleDoctorChange = async (index, value) => {
+    const updatedDoctorProducts = [...doctorProducts];
+    updatedDoctorProducts[index].doctor = value;
+
+    if (value) {
+      try {
+        const response = await axiosInstance.get(`/mr/doctor-attached-products/${value.id}`);
+        updatedDoctorProducts[index].products = response.data.map((item) => item.product);
+        setDoctorProducts(updatedDoctorProducts);
+      } catch (error) {
+        console.log(error);
+      }
     } else {
-      setPharmacies([]);
-      setSelectedPharmacy(null);
+      updatedDoctorProducts[index].products = [];
+      setDoctorProducts(updatedDoctorProducts);
     }
   };
 
@@ -79,10 +153,23 @@ function HeadPayReservationPharmacy() {
     setDoctorProducts(updatedDoctorProducts);
   };
 
+  const handleMonthChange = (index, value) => {
+    const updatedDoctorProducts = [...doctorProducts];
+    updatedDoctorProducts[index].monthNumber = value.value;
+    setDoctorProducts(updatedDoctorProducts);
+  };
+
   const handleAddDoctorProduct = () => {
     setDoctorProducts([
       ...doctorProducts,
-      { doctor: null, products: [], product: null, quantity: 1, amount: 1 },
+      {
+        doctor: null,
+        products: [],
+        product: null,
+        quantity: 1,
+        amount: 1,
+        monthNumber: new Date().getMonth() + 1,
+      },
     ]);
   };
 
@@ -95,30 +182,38 @@ function HeadPayReservationPharmacy() {
     event.preventDefault();
 
     if (
+      !total ||
       doctorProducts.some(
-        ({ doctor, product, quantity, amount }) => !doctor || !product || !quantity || !amount
+        ({ doctor, product, quantity, amount, monthNumber }) =>
+          !doctor || !product || !quantity || !amount || !monthNumber
       )
     ) {
       setMessage({ color: "error", content: "Пожалуйста, заполните все поля" });
       return;
     }
 
-    const objects = doctorProducts.map(({ doctor, product, quantity, amount }) => ({
+    if (totalSum > total) {
+      setMessage({ color: "error", content: "Общая сумма не может быть больше указанной суммы" });
+      return;
+    }
+
+    const objects = doctorProducts.map(({ doctor, product, quantity, amount, monthNumber }) => ({
       doctor_id: doctor?.id,
       product_id: product?.id,
-      quantity,
-      amount,
+      quantity: parseInt(quantity, 10),
+      amount: parseInt(amount, 10),
+      month_number: monthNumber,
     }));
 
     const payload = {
-      med_rep_id: selectedMedRep?.id,
-      pharmacy_id: selectedPharmacy?.id,
+      total: parseInt(total, 10),
       objects,
       description,
     };
 
     try {
-      await axiosInstance.post(`head/pay-pharmacy-reservation/${reservationId}`, payload, {
+      console.log(payload);
+      await axiosInstance.post(`head/pay-reservation/${reservationId}`, payload, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -142,7 +237,7 @@ function HeadPayReservationPharmacy() {
   };
 
   return (
-    <BasicLayout>
+    <DashboardLayout>
       <Card>
         <MDBox
           variant="gradient"
@@ -163,57 +258,113 @@ function HeadPayReservationPharmacy() {
           {message.content && <Alert severity={message.color}>{message.content}</Alert>}
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <MDBox mb={2}>
-              <Autocomplete
-                options={medReps}
-                getOptionLabel={(option) => option.full_name}
-                value={selectedMedRep}
-                onChange={(event, newValue) => handleMedRepChange(newValue)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Выберите медицинского представителя"
-                    variant="outlined"
-                  />
-                )}
+              <MDTypography variant="h6">
+                Дебитор по с/ф № 2322: {debt?.toLocaleString("ru-RU")} сум
+              </MDTypography>
+            </MDBox>
+            <MDBox mb={2}>
+              <TextField
+                label="Сумма"
+                type="number"
+                variant="outlined"
+                value={total}
+                onChange={(e) => setTotal(Number(e.target.value))}
+                InputProps={{ inputProps: { min: 0 } }}
                 fullWidth
               />
             </MDBox>
             <MDBox mb={2}>
-              <Tooltip
-                title={selectedMedRep ? "" : "Сначала выберите медицинского представителя"}
-                arrow
-                disableHoverListener={!!selectedMedRep}
-              >
-                <span style={{ width: "100%" }}>
-                  <Autocomplete
-                    options={pharmacies}
-                    getOptionLabel={(option) => option.company_name}
-                    value={selectedPharmacy}
-                    onChange={(event, newValue) => setSelectedPharmacy(newValue)}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Выберите аптеку"
-                        variant="outlined"
-                        disabled={!selectedMedRep}
-                      />
-                    )}
-                    fullWidth
-                  />
-                </span>
-              </Tooltip>
+              <MDTypography variant="h6">
+                Последний остаток {remainderSum} + сумма поступления{" "}
+                {total?.toLocaleString("ru-RU") || 0} ={" "}
+                {(remainderSum + total).toLocaleString("ru-RU") || 0} сум <br />
+              </MDTypography>
             </MDBox>
+            {unpayedProducts.map((product, index) => (
+              <MDBox key={index} mb={2} border={1} borderRadius="lg" p={2}>
+                <MDTypography variant="body1">
+                  Препарат: {productNames[product.product_id] || product.product_id}
+                </MDTypography>
+                <MDBox display="flex" justifyContent="space-between">
+                  <MDTypography variant="h6">Кол-во: {product.quantity}</MDTypography>
+                  <MDTypography variant="h6">
+                    Цена: {product.price?.toLocaleString("ru-RU")}
+                  </MDTypography>
+                </MDBox>
+                <MDBox display="flex" justifyContent="center" alignItems="center" mt={1}>
+                  <MDTypography variant="h6">
+                    Сумма: {(product.quantity * product.price)?.toLocaleString("ru-RU")}
+                  </MDTypography>
+                </MDBox>
+              </MDBox>
+            ))}
             {doctorProducts.map((doctorProduct, index) => (
               <div key={index}>
                 <MDBox mb={2} display="flex" alignItems="center">
-                  <TextField
-                    type="text"
-                    label="Продукт"
-                    variant="outlined"
-                    value={doctorProduct.product}
-                    onChange={(e) => handleDoctorProductChange(index, "product", e.target.value)}
+                  <Tooltip
+                    title={doctorProduct.doctor ? "" : "Сначала выберите доктора"}
+                    arrow
+                    disableHoverListener={!!doctorProduct.doctor}
+                  >
+                    <span style={{ width: "100%" }}>
+                      <Autocomplete
+                        options={doctors}
+                        getOptionLabel={(option) => option.full_name}
+                        value={doctorProduct.doctor}
+                        onChange={(event, newValue) => handleDoctorChange(index, newValue)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Доктор"
+                            variant="outlined"
+                            disabled={!doctorProduct.doctor}
+                          />
+                        )}
+                        fullWidth
+                      />
+                    </span>
+                  </Tooltip>
+                  <Autocomplete
+                    options={russianMonths}
+                    getOptionLabel={(option) => option.label}
+                    value={
+                      russianMonths.find((month) => month.value === doctorProduct.monthNumber) ||
+                      null
+                    }
+                    onChange={(event, newValue) => handleMonthChange(index, newValue)}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Месяц" variant="outlined" />
+                    )}
+                    fullWidth
                     style={{ marginLeft: 8, width: 200 }}
                   />
+                </MDBox>
+                <MDBox mb={2} display="flex" alignItems="center">
+                  <Tooltip
+                    title={doctorProduct.doctor ? "" : "Сначала выберите доктора"}
+                    arrow
+                    disableHoverListener={!!doctorProduct.doctor}
+                  >
+                    <span style={{ width: "100%" }}>
+                      <Autocomplete
+                        options={doctorProduct.products || []}
+                        getOptionLabel={(option) => option.name}
+                        value={doctorProduct.product}
+                        onChange={(event, newValue) =>
+                          handleDoctorProductChange(index, "product", newValue)
+                        }
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Продукт"
+                            variant="outlined"
+                            disabled={!doctorProduct.doctor}
+                          />
+                        )}
+                        fullWidth
+                      />
+                    </span>
+                  </Tooltip>
                   <TextField
                     type="number"
                     label="Количество"
@@ -221,17 +372,20 @@ function HeadPayReservationPharmacy() {
                     value={doctorProduct.quantity}
                     onChange={(e) => handleDoctorProductChange(index, "quantity", e.target.value)}
                     InputProps={{ inputProps: { min: 1 } }}
-                    style={{ marginLeft: 8, width: 100 }}
+                    style={{ marginLeft: 8, width: 200 }}
                   />
                   <TextField
                     type="number"
-                    label="Сумма"
+                    label="Цена"
                     variant="outlined"
                     value={doctorProduct.amount}
                     onChange={(e) => handleDoctorProductChange(index, "amount", e.target.value)}
                     InputProps={{ inputProps: { min: 1 } }}
-                    style={{ marginLeft: 8, width: 100 }}
+                    style={{ marginLeft: 8, width: 200 }}
                   />
+                  <MDTypography variant="h6" style={{ marginLeft: 8, width: 200 }}>
+                    Сумма: {(doctorProduct.quantity * doctorProduct.amount).toLocaleString("ru-RU")}
+                  </MDTypography>
                   {index > 0 && (
                     <IconButton onClick={() => handleRemoveDoctorProduct(index)}>
                       <DeleteIcon />
@@ -244,6 +398,11 @@ function HeadPayReservationPharmacy() {
               <IconButton onClick={handleAddDoctorProduct} color="default">
                 <AddIcon />
               </IconButton>
+            </MDBox>
+            <MDBox mb={2} display="flex" justifyContent="center">
+              <MDTypography variant="h6">
+                Общая сумма: {totalSum?.toLocaleString("ru-RU")}
+              </MDTypography>
             </MDBox>
             <MDBox mb={2}>
               <TextField
@@ -263,7 +422,7 @@ function HeadPayReservationPharmacy() {
           </MDBox>
         </MDBox>
       </Card>
-    </BasicLayout>
+    </DashboardLayout>
   );
 }
 
