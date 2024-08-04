@@ -19,8 +19,8 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 
 // Authentication layout components
-import BasicLayout from "layouts/authentication/components/BasicLayout";
 import axiosInstance from "services/axiosInstance";
+import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 
 const russianMonths = [
   { label: "Январь", value: 1 },
@@ -49,14 +49,23 @@ function HeadPayReservationWholesale() {
   const [pharmacies, setPharmacies] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [doctorProducts, setDoctorProducts] = useState([
-    { doctor: null, products: [], product: null, quantity: 0, amount: 0 },
+    {
+      doctor: null,
+      products: [],
+      product: null,
+      quantity: 0,
+      amount: 0,
+      monthNumber: new Date().getMonth() + 1,
+    },
   ]);
   const [selectedMedRep, setSelectedMedRep] = useState(null);
   const [selectedPharmacy, setSelectedPharmacy] = useState(null);
   const [total, setTotal] = useState();
-  const [monthNumber, setMonthNumber] = useState(new Date().getMonth() + 1); // Default to current month
   const [debt, setDebt] = useState(0);
   const [remainderSum, setRemainderSum] = useState(0);
+  const [unpayedProducts, setUnpayedProducts] = useState([]);
+  const [productNames, setProductNames] = useState({});
+  const [totalSum, setTotalSum] = useState(0);
 
   useEffect(() => {
     const fetchMedReps = async () => {
@@ -77,8 +86,9 @@ function HeadPayReservationWholesale() {
         const response = await axiosInstance.get(
           `https://it-club.uz/head/get-wholesale-reservation-payed-remiainder/${reservationId}`
         );
-        setDebt(response.data.debt.toLocaleString("ru-RU"));
+        setDebt(response.data.debt);
         setRemainderSum(response.data.remiainder_sum);
+        setUnpayedProducts(response.data.reservation_unpayed_products);
       } catch (error) {
         console.log(error);
       }
@@ -88,6 +98,40 @@ function HeadPayReservationWholesale() {
       fetchReservationData();
     }
   }, [reservationId]);
+
+  useEffect(() => {
+    const fetchProductNames = async () => {
+      try {
+        const response = await axiosInstance.get("/common/get-product");
+        const products = response.data;
+        const productNamesMap = products.reduce((acc, product) => {
+          acc[product.id] = product.name;
+          return acc;
+        }, {});
+        setProductNames(productNamesMap);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchProductNames();
+  }, []);
+
+  useEffect(() => {
+    const calculateTotalSum = () => {
+      const unpaidTotal = unpayedProducts.reduce((acc, product) => {
+        return acc + product.quantity * product.price;
+      }, 0);
+
+      const doctorProductTotal = doctorProducts.reduce((acc, doctorProduct) => {
+        return acc + doctorProduct.quantity * doctorProduct.amount;
+      }, 0);
+
+      setTotalSum(unpaidTotal + doctorProductTotal);
+    };
+
+    calculateTotalSum();
+  }, [unpayedProducts, doctorProducts]);
 
   const fetchPharmacies = async (medRepId) => {
     try {
@@ -110,7 +154,16 @@ function HeadPayReservationWholesale() {
   const handleMedRepChange = (newValue) => {
     setSelectedMedRep(newValue);
     setSelectedPharmacy(null); // Clear selected pharmacy
-    setDoctorProducts([{ doctor: null, products: [], product: null, quantity: 0, amount: 0 }]); // Clear doctor products
+    setDoctorProducts([
+      {
+        doctor: null,
+        products: [],
+        product: null,
+        quantity: 0,
+        amount: 0,
+        monthNumber: new Date().getMonth() + 1,
+      },
+    ]); // Clear doctor products
 
     if (newValue) {
       fetchPharmacies(newValue.id);
@@ -145,10 +198,23 @@ function HeadPayReservationWholesale() {
     setDoctorProducts(updatedDoctorProducts);
   };
 
+  const handleMonthChange = (index, value) => {
+    const updatedDoctorProducts = [...doctorProducts];
+    updatedDoctorProducts[index].monthNumber = value.value;
+    setDoctorProducts(updatedDoctorProducts);
+  };
+
   const handleAddDoctorProduct = () => {
     setDoctorProducts([
       ...doctorProducts,
-      { doctor: null, products: [], product: null, quantity: 1, amount: 1 },
+      {
+        doctor: null,
+        products: [],
+        product: null,
+        quantity: 1,
+        amount: 1,
+        monthNumber: new Date().getMonth() + 1,
+      },
     ]);
   };
 
@@ -164,27 +230,32 @@ function HeadPayReservationWholesale() {
       !selectedMedRep ||
       !selectedPharmacy ||
       !total ||
-      !monthNumber ||
       doctorProducts.some(
-        ({ doctor, product, quantity, amount }) => !doctor || !product || !quantity || !amount
+        ({ doctor, product, quantity, amount, monthNumber }) =>
+          !doctor || !product || !quantity || !amount || !monthNumber
       )
     ) {
       setMessage({ color: "error", content: "Пожалуйста, заполните все поля" });
       return;
     }
 
-    const objects = doctorProducts.map(({ doctor, product, quantity, amount }) => ({
+    if (totalSum > total) {
+      setMessage({ color: "error", content: "Общая сумма не может быть больше указанной суммы" });
+      return;
+    }
+
+    const objects = doctorProducts.map(({ doctor, product, quantity, amount, monthNumber }) => ({
       doctor_id: doctor?.id,
       product_id: product?.id,
       quantity: parseInt(quantity, 10),
       amount: parseInt(amount, 10),
+      month_number: monthNumber,
     }));
 
     const payload = {
       med_rep_id: selectedMedRep.id,
       pharmacy_id: selectedPharmacy.id,
       total: parseInt(total, 10),
-      month_number: monthNumber,
       objects,
       description,
     };
@@ -215,7 +286,7 @@ function HeadPayReservationWholesale() {
   };
 
   return (
-    <BasicLayout>
+    <DashboardLayout>
       <Card>
         <MDBox
           variant="gradient"
@@ -236,7 +307,9 @@ function HeadPayReservationWholesale() {
           {message.content && <Alert severity={message.color}>{message.content}</Alert>}
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <MDBox mb={2}>
-              <MDTypography variant="h6">Дебитор по с/ф № 2322: {debt} сум</MDTypography>
+              <MDTypography variant="h6">
+                Дебитор по с/ф № 2322: {debt?.toLocaleString("ru-RU")} сум
+              </MDTypography>
             </MDBox>
             <MDBox mb={2}>
               <TextField
@@ -250,9 +323,10 @@ function HeadPayReservationWholesale() {
               />
             </MDBox>
             <MDBox mb={2}>
-              <MDTypography variant="caption">
-                Последний остаток {remainderSum} + сумма поступления {total?.toLocaleString("ru-RU")}{" "}
-                сум = {(remainderSum + total).toLocaleString("ru-RU")} сум
+              <MDTypography variant="h6">
+                Последний остаток {remainderSum} + сумма поступления{" "}
+                {total?.toLocaleString("ru-RU") || 0} ={" "}
+                {(remainderSum + total).toLocaleString("ru-RU") || 0} сум <br />
               </MDTypography>
             </MDBox>
             <MDBox mb={2}>
@@ -292,19 +366,27 @@ function HeadPayReservationWholesale() {
                 </span>
               </Tooltip>
             </MDBox>
-            <MDBox mb={2}>
-              <Autocomplete
-                options={russianMonths}
-                getOptionLabel={(option) => option.label}
-                value={russianMonths.find((month) => month.value === monthNumber) || null}
-                onChange={(event, newValue) => setMonthNumber(newValue.value)}
-                renderInput={(params) => <TextField {...params} label="Месяц" variant="outlined" />}
-                fullWidth
-              />
-            </MDBox>
+            {unpayedProducts.map((product, index) => (
+              <MDBox key={index} mb={2} border={1} borderRadius="lg" p={2}>
+                <MDTypography variant="body1">
+                  Препарат: {productNames[product.product_id] || product.product_id}
+                </MDTypography>
+                <MDBox display="flex" justifyContent="space-between">
+                  <MDTypography variant="h6">Кол-во: {product.quantity}</MDTypography>
+                  <MDTypography variant="h6">
+                    Цена: {product.price?.toLocaleString("ru-RU")}
+                  </MDTypography>
+                </MDBox>
+                <MDBox display="flex" justifyContent="center" alignItems="center" mt={1}>
+                  <MDTypography variant="h6">
+                    Сумма: {(product.quantity * product.price)?.toLocaleString("ru-RU")}
+                  </MDTypography>
+                </MDBox>
+              </MDBox>
+            ))}
             {doctorProducts.map((doctorProduct, index) => (
               <div key={index}>
-                <MDBox mb={2}>
+                <MDBox mb={2} display="flex" alignItems="center">
                   <Tooltip
                     title={selectedMedRep ? "" : "Сначала выберите медицинского представителя"}
                     arrow
@@ -328,6 +410,20 @@ function HeadPayReservationWholesale() {
                       />
                     </span>
                   </Tooltip>
+                  <Autocomplete
+                    options={russianMonths}
+                    getOptionLabel={(option) => option.label}
+                    value={
+                      russianMonths.find((month) => month.value === doctorProduct.monthNumber) ||
+                      null
+                    }
+                    onChange={(event, newValue) => handleMonthChange(index, newValue)}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Месяц" variant="outlined" />
+                    )}
+                    fullWidth
+                    style={{ marginLeft: 8, width: 200 }}
+                  />
                 </MDBox>
                 <MDBox mb={2} display="flex" alignItems="center">
                   <Tooltip
@@ -362,17 +458,20 @@ function HeadPayReservationWholesale() {
                     value={doctorProduct.quantity}
                     onChange={(e) => handleDoctorProductChange(index, "quantity", e.target.value)}
                     InputProps={{ inputProps: { min: 1 } }}
-                    style={{ marginLeft: 8, width: 100 }}
+                    style={{ marginLeft: 8, width: 200 }}
                   />
                   <TextField
                     type="number"
-                    label="Сумма"
+                    label="Цена"
                     variant="outlined"
                     value={doctorProduct.amount}
                     onChange={(e) => handleDoctorProductChange(index, "amount", e.target.value)}
                     InputProps={{ inputProps: { min: 1 } }}
-                    style={{ marginLeft: 8, width: 100 }}
+                    style={{ marginLeft: 8, width: 200 }}
                   />
+                  <MDTypography variant="h6" style={{ marginLeft: 8, width: 200 }}>
+                    Сумма: {(doctorProduct.quantity * doctorProduct.amount).toLocaleString("ru-RU")}
+                  </MDTypography>
                   {index > 0 && (
                     <IconButton onClick={() => handleRemoveDoctorProduct(index)}>
                       <DeleteIcon />
@@ -385,6 +484,11 @@ function HeadPayReservationWholesale() {
               <IconButton onClick={handleAddDoctorProduct} color="default">
                 <AddIcon />
               </IconButton>
+            </MDBox>
+            <MDBox mb={2} display="flex" justifyContent="center">
+              <MDTypography variant="h6">
+                Общая сумма: {totalSum?.toLocaleString("ru-RU")}
+              </MDTypography>
             </MDBox>
             <MDBox mb={2}>
               <TextField
@@ -404,7 +508,7 @@ function HeadPayReservationWholesale() {
           </MDBox>
         </MDBox>
       </Card>
-    </BasicLayout>
+    </DashboardLayout>
   );
 }
 
