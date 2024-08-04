@@ -119,15 +119,11 @@ function HeadPayReservationWholesale() {
 
   useEffect(() => {
     const calculateTotalSum = () => {
-      const unpaidTotal = unpayedProducts.reduce((acc, product) => {
-        return acc + product.quantity * product.price;
-      }, 0);
-
       const doctorProductTotal = doctorProducts.reduce((acc, doctorProduct) => {
         return acc + doctorProduct.quantity * doctorProduct.amount;
       }, 0);
 
-      setTotalSum(unpaidTotal + doctorProductTotal);
+      setTotalSum(doctorProductTotal);
     };
 
     calculateTotalSum();
