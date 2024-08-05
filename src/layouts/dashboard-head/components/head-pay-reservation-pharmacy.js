@@ -108,7 +108,8 @@ function HeadPayReservationPharmacy() {
   useEffect(() => {
     const calculateTotalSum = () => {
       const doctorProductTotal = unpayedProducts.reduce((acc, product) => {
-        return acc + product.quantity * product.price;
+        const quantity = parseInt(product.newQuantity || product.quantity, 10);
+        return acc + quantity * product.price;
       }, 0);
 
       setTotalSum(doctorProductTotal);
@@ -131,7 +132,7 @@ function HeadPayReservationPharmacy() {
 
   const handleProductQuantityChange = (index, value) => {
     const updatedUnpayedProducts = [...unpayedProducts];
-    updatedUnpayedProducts[index] = { ...updatedUnpayedProducts[index], quantity: value };
+    updatedUnpayedProducts[index] = { ...updatedUnpayedProducts[index], newQuantity: value };
     setUnpayedProducts(updatedUnpayedProducts);
   };
 
@@ -148,13 +149,15 @@ function HeadPayReservationPharmacy() {
       return;
     }
 
-    const objects = unpayedProducts.map((product) => ({
-      product_id: product.product_id,
-      quantity: parseInt(product.quantity, 10),
-      amount: parseInt(product.price, 10),
-      month_number: doctorProducts[0].monthNumber,
-      doctor_id: doctorProducts[0].doctor?.id,
-    }));
+    const objects = unpayedProducts
+      .filter((product) => product.newQuantity)
+      .map((product) => ({
+        product_id: product.product_id,
+        quantity: parseInt(product.newQuantity, 10),
+        amount: parseInt(product.price, 10),
+        month_number: doctorProducts[0].monthNumber,
+        doctor_id: doctorProducts[0].doctor?.id,
+      }));
 
     const payload = {
       total: parseInt(total + remainderSum, 10),
@@ -163,6 +166,7 @@ function HeadPayReservationPharmacy() {
     };
 
     try {
+      console.log(payload);
       await axiosInstance.post(`head/pay-reservation/${reservationId}`, payload, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -218,16 +222,19 @@ function HeadPayReservationPharmacy() {
                 type="number"
                 variant="outlined"
                 value={total}
-                onChange={(e) => setTotal(Number(e.target.value))}
+                onChange={(e) => setTotal(parseFloat(e.target.value))}
                 InputProps={{ inputProps: { min: 0 } }}
                 fullWidth
               />
             </MDBox>
             <MDBox mb={2}>
               <MDTypography variant="h6">
-                Последний остаток {remainderSum} + сумма поступления{" "}
+                Последний остаток {remainderSum.toLocaleString("ru-RU")} + сумма поступления{" "}
                 {total?.toLocaleString("ru-RU") || 0} ={" "}
-                {total ? (remainderSum + total).toLocaleString("ru-RU") : 0} сум <br />
+                {total
+                  ? (remainderSum + total).toLocaleString("ru-RU")
+                  : remainderSum.toLocaleString("ru-RU")}{" "}
+                сум <br />
               </MDTypography>
             </MDBox>
             <MDBox mb={2}>
@@ -259,33 +266,48 @@ function HeadPayReservationPharmacy() {
             </MDBox>
             {unpayedProducts.map((product, index) => (
               <MDBox key={index} mb={2} border={1} borderRadius="lg" p={2}>
-                <MDTypography variant="body1">
-                  Препарат: {productNames[product.product_id] || product.product_id}
-                </MDTypography>
-                <MDBox display="flex" justifyContent="space-between">
-                  <MDTypography variant="h6">
-                    Кол-во:{" "}
+                <MDBox display="flex" alignItems="center" mb={2}>
+                  <MDTypography variant="body1" style={{ marginRight: 16 }}>
+                    Препарат:
+                  </MDTypography>
+                  <Autocomplete
+                    options={[{ name: productNames[product.product_id] || product.product_id }]}
+                    getOptionLabel={(option) => option.name}
+                    value={{ name: productNames[product.product_id] || product.product_id }}
+                    renderInput={(params) => <TextField {...params} variant="outlined" disabled />}
+                    fullWidth
+                  />
+                </MDBox>
+                <MDBox display="flex" justifyContent="space-between" mb={2}>
+                  <MDTypography variant="h6">Кол-во: {product.quantity}</MDTypography>
+                  <MDBox ml={2} flex={1}>
                     <TextField
                       type="number"
-                      value={product.quantity}
+                      label="Новое Кол-во"
+                      value={product.newQuantity || ""}
                       fullWidth
                       onChange={(e) => handleProductQuantityChange(index, e.target.value)}
+                      InputProps={{ inputProps: { min: 0 } }}
                     />
-                  </MDTypography>
-                  <MDTypography variant="h6">
-                    Цена: {product.price?.toLocaleString("ru-RU")}
-                  </MDTypography>
+                  </MDBox>
                 </MDBox>
-                <MDBox display="flex" justifyContent="center" alignItems="center" mt={1}>
+                <MDBox display="flex" justifyContent="space-between" mb={2}>
                   <MDTypography variant="h6">
-                    Сумма: {(product.quantity * product.price)?.toLocaleString("ru-RU")}
+                    Цена: {product.price?.toLocaleString("ru-RU")} сум
+                  </MDTypography>
+                  <MDTypography variant="h6">
+                    Сумма:{" "}
+                    {product.newQuantity
+                      ? (product.newQuantity * product.price)?.toLocaleString("ru-RU")
+                      : (product.quantity * product.price)?.toLocaleString("ru-RU")}{" "}
+                    сум
                   </MDTypography>
                 </MDBox>
               </MDBox>
             ))}
             <MDBox mb={2} display="flex" justifyContent="center">
               <MDTypography variant="h6">
-                Общая сумма: {totalSum?.toLocaleString("ru-RU")}
+                Общая сумма: {totalSum.toLocaleString("ru-RU")} сум
               </MDTypography>
             </MDBox>
             <MDBox mb={2}>
