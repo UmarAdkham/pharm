@@ -172,7 +172,7 @@ export default function useReservationData(apiPath, month) {
           ),
           total_payable: (
             <MDTypography variant="caption" fontWeight="medium">
-              {rsrv.id}
+              {rsrv.total_payable_with_nds?.toLocaleString("ru-RU")} сум
             </MDTypography>
           ),
           invoice_number: (
@@ -297,7 +297,7 @@ export default function useReservationData(apiPath, month) {
                 }
 
                 navigate(path, {
-                  state: { reservationId: rsrv.id },
+                  state: { reservationId: rsrv.id, invoice_number: rsrv.invoice_number },
                 });
               }}
             >
