@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -309,13 +308,18 @@ function HeadPayReservationPharmacy() {
                         value={doctorProduct.doctor}
                         onChange={(event, newValue) => handleDoctorChange(index, newValue)}
                         renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Доктор"
-                            variant="outlined"
-                            disabled={!doctorProduct.doctor}
-                          />
+                          <TextField {...params} label="Доктор" variant="outlined" />
                         )}
+                        inputValue={doctorProduct.doctor ? doctorProduct.doctor.full_name : ""}
+                        onInputChange={(event, newInputValue) => {
+                          const updatedDoctorProducts = [...doctorProducts];
+                          if (updatedDoctorProducts[index].doctor) {
+                            updatedDoctorProducts[index].doctor.full_name = newInputValue;
+                          } else {
+                            updatedDoctorProducts[index].doctor = { full_name: newInputValue };
+                          }
+                          setDoctorProducts(updatedDoctorProducts);
+                        }}
                         fullWidth
                       />
                     </span>
