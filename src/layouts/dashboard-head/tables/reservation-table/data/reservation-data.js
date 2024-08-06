@@ -7,6 +7,7 @@ import { IconButton, Switch, Tooltip, Snackbar, Alert, Button } from "@mui/mater
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import EditIcon from "@mui/icons-material/Edit";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import DeleteIcon from "@mui/icons-material/Delete";
 import ViewProductListDialog from "../../../dialogs/reservation-product-list-dialog";
 import axiosInstance from "services/axiosInstance";
 import ExpiryDateDialog from "layouts/dashboard-head/dialogs/edit-expiry-date-dialog";
@@ -138,6 +139,7 @@ export default function useReservationData(apiPath, month) {
         { Header: "Производитель", accessor: "man_company", align: "left" },
         { Header: "Промо", accessor: "promo", align: "left" },
         { Header: "Скачать", accessor: "download", align: "center" },
+        { Header: "Удалить", accessor: "delete", align: "center" }, // Added delete column
       ];
 
       if (userRole === userRoles.HEAD_OF_ORDERS) {
@@ -352,6 +354,21 @@ export default function useReservationData(apiPath, month) {
               </IconButton>
             </Tooltip>
           ),
+          delete: rsrv.checked ? (
+            <Tooltip title="Уже одобрено">
+              <span>
+                <IconButton sx={{ color: "red" }} disabled>
+                  <DeleteIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
+          ) : (
+            <Tooltip title="Удалить">
+              <IconButton sx={{ color: "red" }} onClick={() => handleDelete(rsrv)}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          ),
         };
       });
       setData({ columns, rows });
@@ -360,6 +377,44 @@ export default function useReservationData(apiPath, month) {
       console.error("Error fetching reservations", error);
     }
   }
+
+  const handleDelete = async (rsrv) => {
+    if (window.confirm("Вы уверены что хотите выполнить это действие?")) {
+      const type = getRsrvType(rsrv);
+      let url = "";
+
+      switch (type) {
+        case "pharmacy":
+          url = `https://it-club.uz/head/delete-reservation/${rsrv.id}`;
+          break;
+        case "wholesale":
+          url = `https://it-club.uz/head/delete-wholesale-reservation/${rsrv.id}`;
+          break;
+        case "hospital":
+          url = `https://it-club.uz/head/delete-hospital-reservation/${rsrv.id}`;
+          break;
+      }
+
+      try {
+        await axiosInstance.delete(url, null, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        // Remove deleted reservation from the table
+        setData((prevState) => ({
+          ...prevState,
+          rows: prevState.rows.filter((row) => row.id !== rsrv.id),
+        }));
+
+        setSnackbar({ open: true, message: "Бронирование удалено", severity: "success" });
+      } catch (error) {
+        console.log("Failed to delete reservation", error);
+        setSnackbar({ open: true, message: "Не удалось удалить бронирование", severity: "error" });
+      }
+    }
+  };
 
   function getRsrvType(rsrv) {
     if (rsrv.pharmacy) {
