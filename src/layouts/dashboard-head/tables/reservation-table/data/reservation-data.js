@@ -239,19 +239,35 @@ export default function useReservationData(apiPath, month) {
               <MDTypography variant="caption" fontWeight="medium">
                 {rsrv.discount ? `${rsrv.discount} %` : "0"}
               </MDTypography>
-              {userRole === userRoles.HEAD_OF_ORDERS && (
-                <IconButton
-                  size="small"
-                  onClick={() =>
-                    navigate("/head/set-discount", {
-                      state: { reservationId: rsrv.id, type: getRsrvType(rsrv) },
-                    })
-                  }
-                  style={{ marginLeft: "8px" }}
-                >
-                  <EditIcon fontSize="small" />
-                </IconButton>
-              )}
+              {userRole === userRoles.HEAD_OF_ORDERS &&
+                (rsrv.checked ? (
+                  <Tooltip title="Уже одобрено">
+                    <span>
+                      <IconButton
+                        size="small"
+                        onClick={() => {}}
+                        style={{ marginLeft: "8px" }}
+                        disabled
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+                ) : (
+                  <Tooltip title="Установить скидку">
+                    <IconButton
+                      size="small"
+                      onClick={() =>
+                        navigate("/head/set-discount", {
+                          state: { reservationId: rsrv.id, type: getRsrvType(rsrv) },
+                        })
+                      }
+                      style={{ marginLeft: "8px" }}
+                    >
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                ))}
             </div>
           ),
           date_reservation: (

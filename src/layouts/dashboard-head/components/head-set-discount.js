@@ -1,16 +1,12 @@
 /* eslint-disable prettier/prettier */
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
 import Alert from "@mui/material/Alert";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
+import TextField from "@mui/material/TextField";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -93,21 +89,15 @@ function HeadSetDiscount() {
           {message.content && <Alert severity={message.color}>{message.content}</Alert>}
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <MDBox mb={2}>
-              <FormControl fullWidth>
-                <InputLabel id="discount-select-label">Скидка</InputLabel>
-                <Select
-                  labelId="discount-select-label"
-                  id="discount-select"
-                  value={discountRate}
-                  label="Скидка"
-                  sx={{ height: "45px" }}
-                  onChange={(e) => setDiscountRate(e.target.value)}
-                >
-                  <MenuItem value={0}>0%</MenuItem>
-                  <MenuItem value={5}>5%</MenuItem>
-                  <MenuItem value={8}>8%</MenuItem>
-                </Select>
-              </FormControl>
+              <TextField
+                label="Скидка (%)"
+                type="number"
+                variant="outlined"
+                value={discountRate}
+                onChange={(e) => setDiscountRate(e.target.value)}
+                fullWidth
+                InputProps={{ inputProps: { min: 0, max: 100 } }}
+              />
             </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
