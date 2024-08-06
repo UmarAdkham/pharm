@@ -139,7 +139,6 @@ export default function useReservationData(apiPath, month) {
         { Header: "Производитель", accessor: "man_company", align: "left" },
         { Header: "Промо", accessor: "promo", align: "left" },
         { Header: "Скачать", accessor: "download", align: "center" },
-        { Header: "Удалить", accessor: "delete", align: "center" }, // Added delete column
       ];
 
       if (userRole === userRoles.HEAD_OF_ORDERS) {
@@ -148,7 +147,8 @@ export default function useReservationData(apiPath, month) {
           0,
           { Header: "Действие", accessor: "add", align: "left" },
           { Header: "История Поступлений", accessor: "view", align: "left" },
-          { Header: "Список продуктов", accessor: "product_list", align: "center" }
+          { Header: "Список продуктов", accessor: "product_list", align: "center" },
+          { Header: "Удалить", accessor: "delete", align: "center" } // Added delete column
         );
       }
 
