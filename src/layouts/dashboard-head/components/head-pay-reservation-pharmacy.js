@@ -7,7 +7,6 @@ import Card from "@mui/material/Card";
 import Alert from "@mui/material/Alert";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import Tooltip from "@mui/material/Tooltip";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -42,12 +41,7 @@ function HeadPayReservationPharmacy() {
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
   const [doctors, setDoctors] = useState([]);
-  const [doctorProducts, setDoctorProducts] = useState([
-    {
-      doctor: null,
-      monthNumber: new Date().getMonth() + 1,
-    },
-  ]);
+  const [doctorProducts, setDoctorProducts] = useState([]);
   const [total, setTotal] = useState();
   const [debt, setDebt] = useState(0);
   const [remainderSum, setRemainderSum] = useState(0);
@@ -55,18 +49,21 @@ function HeadPayReservationPharmacy() {
   const [productNames, setProductNames] = useState({});
   const [totalSum, setTotalSum] = useState(0);
 
-  useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        const response = await axiosInstance.get("/mr/get-doctors");
-        setDoctors(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchDoctors();
-  }, []);
+  const fetchDoctors = async (monthNumber, productId) => {
+    try {
+      const response = await axiosInstance.get(
+        `/dd/get-fact?month_number=${monthNumber}&product_id=${productId}`
+      );
+      const doctorsData = response.data.map((item) => ({
+        doctor_id: item.doctor_id,
+        doctor_name: item.doctor_name,
+      }));
+      return doctorsData;
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  };
 
   useEffect(() => {
     const fetchReservationData = async () => {
@@ -77,6 +74,17 @@ function HeadPayReservationPharmacy() {
         setDebt(response.data.debt);
         setRemainderSum(response.data.remiainder_sum);
         setUnpayedProducts(response.data.reservation_unpayed_products);
+        const initialDoctorProducts = await Promise.all(
+          response.data.reservation_unpayed_products.map(async (product) => {
+            const doctors = await fetchDoctors(new Date().getMonth() + 1, product.product_id);
+            setDoctors(doctors);
+            return {
+              doctor: null,
+              monthNumber: new Date().getMonth() + 1,
+            };
+          })
+        );
+        setDoctorProducts(initialDoctorProducts);
       } catch (error) {
         console.log(error);
       }
@@ -124,9 +132,11 @@ function HeadPayReservationPharmacy() {
     setDoctorProducts(updatedDoctorProducts);
   };
 
-  const handleMonthChange = (index, value) => {
+  const handleMonthChange = async (index, value) => {
     const updatedDoctorProducts = [...doctorProducts];
     updatedDoctorProducts[index] = { ...updatedDoctorProducts[index], monthNumber: value.value };
+    const doctors = await fetchDoctors(value.value, unpayedProducts[index].product_id);
+    setDoctors(doctors);
     setDoctorProducts(updatedDoctorProducts);
   };
 
@@ -151,12 +161,12 @@ function HeadPayReservationPharmacy() {
 
     const objects = unpayedProducts
       .filter((product) => product.newQuantity)
-      .map((product) => ({
+      .map((product, index) => ({
         product_id: product.product_id,
         quantity: parseInt(product.newQuantity, 10),
         amount: parseInt(product.price, 10),
-        month_number: doctorProducts[0].monthNumber,
-        doctor_id: doctorProducts[0].doctor?.id,
+        month_number: doctorProducts[index].monthNumber,
+        doctor_id: doctorProducts[index].doctor?.doctor_id,
       }));
 
     const payload = {
@@ -165,8 +175,9 @@ function HeadPayReservationPharmacy() {
       description,
     };
 
+    console.log(payload);
+
     try {
-      console.log(payload);
       await axiosInstance.post(`head/pay-reservation/${reservationId}`, payload, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -237,35 +248,36 @@ function HeadPayReservationPharmacy() {
                 сум <br />
               </MDTypography>
             </MDBox>
-            <MDBox mb={2}>
-              <Autocomplete
-                options={doctors}
-                getOptionLabel={(option) => option.full_name}
-                value={doctorProducts[0]?.doctor || null}
-                onChange={(event, newValue) => handleDoctorChange(0, newValue)}
-                renderInput={(params) => (
-                  <TextField {...params} label="Доктор" variant="outlined" />
-                )}
-                fullWidth
-              />
-            </MDBox>
-            <MDBox mb={2}>
-              <Autocomplete
-                options={russianMonths}
-                getOptionLabel={(option) => option.label}
-                value={
-                  russianMonths.find(
-                    (month) =>
-                      month.value === (doctorProducts[0]?.monthNumber || new Date().getMonth() + 1)
-                  ) || null
-                }
-                onChange={(event, newValue) => handleMonthChange(0, newValue)}
-                renderInput={(params) => <TextField {...params} label="Месяц" variant="outlined" />}
-                fullWidth
-              />
-            </MDBox>
             {unpayedProducts.map((product, index) => (
               <MDBox key={index} mb={2} border={1} borderRadius="lg" p={2}>
+                <MDBox display="flex" justifyContent="space-between" mb={2}>
+                  <Autocomplete
+                    options={doctors}
+                    getOptionLabel={(option) => option.doctor_name}
+                    value={doctorProducts[index]?.doctor || null}
+                    onChange={(event, newValue) => handleDoctorChange(index, newValue)}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Доктор" variant="outlined" />
+                    )}
+                    fullWidth
+                  />
+                  <Autocomplete
+                    options={russianMonths}
+                    getOptionLabel={(option) => option.label}
+                    value={
+                      russianMonths.find(
+                        (month) =>
+                          month.value ===
+                          (doctorProducts[index]?.monthNumber || new Date().getMonth() + 1)
+                      ) || null
+                    }
+                    onChange={(event, newValue) => handleMonthChange(index, newValue)}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Месяц" variant="outlined" />
+                    )}
+                    fullWidth
+                  />
+                </MDBox>
                 <MDBox display="flex" alignItems="center" mb={2}>
                   <MDTypography variant="body1" style={{ marginRight: 16 }}>
                     Препарат:
