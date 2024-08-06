@@ -154,7 +154,9 @@ function HeadPayReservationPharmacy() {
       return;
     }
 
-    if (totalSum > total + remainderSum) {
+    if (parseInt(totalSum) > parseInt(total + remainderSum)) {
+      console.log("TOTAL SUM: ", totalSum);
+      console.log("REMAINDER: ", totalSum + remainderSum);
       setMessage({ color: "error", content: "Общая сумма не может быть больше указанной суммы" });
       return;
     }
