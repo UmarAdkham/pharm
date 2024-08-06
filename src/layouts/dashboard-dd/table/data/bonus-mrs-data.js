@@ -97,9 +97,9 @@ export default function useBonusMrsData(month, order) {
         const rows = mrs.map((mr) => {
           const totalPlan = mr.plan.reduce((acc, item) => acc + item.plan_amount, 0);
           const totalFact = mr.plan.reduce((acc, item) => acc + item.fact, 0);
-          const factPercent = totalPlan > 0 ? (totalFact / totalPlan) * 100 : 0;
-          const rowBackgroundColor = getRowBackgroundColor(factPercent);
           const factPostupleniya = factPostupleniyaMap.get(mr.id) || 0;
+          const factPercent = totalPlan > 0 ? (factPostupleniya / totalPlan) * 100 : 0;
+          const rowBackgroundColor = getRowBackgroundColor(factPercent);
 
           return {
             username: (
