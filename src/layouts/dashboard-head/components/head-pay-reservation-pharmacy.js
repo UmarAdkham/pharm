@@ -69,7 +69,7 @@ function HeadPayReservationPharmacy() {
     const fetchReservationData = async () => {
       try {
         const response = await axiosInstance.get(
-          `https://it-club.uz/head/get-pharmacy-reservation-payed-remiainder/${reservationId}`
+          `/head/get-pharmacy-reservation-payed-remiainder/${reservationId}`
         );
         setDebt(response.data.debt);
         setRemainderSum(response.data.remiainder_sum);
@@ -149,7 +149,11 @@ function HeadPayReservationPharmacy() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!total || doctorProducts.some(({ doctor, monthNumber }) => !doctor || !monthNumber)) {
+    if (
+      !total ||
+      !description ||
+      doctorProducts.some(({ doctor, monthNumber }) => !doctor || !monthNumber)
+    ) {
       setMessage({ color: "error", content: "Пожалуйста, заполните все поля" });
       return;
     }
