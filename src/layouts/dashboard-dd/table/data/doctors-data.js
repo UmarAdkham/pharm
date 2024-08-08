@@ -192,7 +192,7 @@ export default function useDoctorsData(
         const overall = {
           numberOfDoctors: rows.length, // Count of rows
           monthlyPlan: reports.reduce((sum, item) => sum + item.plan_price, 0),
-          fact: reports.reduce((sum, item) => sum + item.fact_postupleniya, 0),
+          fact: reports.reduce((sum, item) => sum + item.fact_price, 0),
           factPercent:
             reports.length > 0
               ? reports.reduce((sum, item) => {
