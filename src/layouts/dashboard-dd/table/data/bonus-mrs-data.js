@@ -83,6 +83,11 @@ export default function useBonusMrsData(month, order) {
               )) *
             100,
           hasBonus: false,
+          totalHotSale: mrs.reduce(
+            (sum, mr) =>
+              sum + mr.plan.reduce((acc, item) => acc + item.hot_sales * item.hot_sales_price, 0),
+            0
+          ), // Calculate overall HotSale
         };
 
         const columns = [
@@ -91,7 +96,8 @@ export default function useBonusMrsData(month, order) {
           { Header: "План", accessor: "plan", align: "left" },
           { Header: "Факт", accessor: "fact", align: "left" },
           { Header: "Факт %", accessor: "fact_percent", align: "left" },
-          { Header: "Факт поступ", accessor: "fact_postupleniya", align: "left" }, // New column
+          { Header: "Факт поступ", accessor: "fact_postupleniya", align: "left" },
+          { Header: "Горячая продажа", accessor: "hot_sale", align: "left" },
         ];
 
         const rows = mrs.map((mr) => {
@@ -100,6 +106,11 @@ export default function useBonusMrsData(month, order) {
           const factPostupleniya = factPostupleniyaMap.get(mr.id) || 0;
           const factPercent = totalPlan > 0 ? (factPostupleniya / totalPlan) * 100 : 0;
           const rowBackgroundColor = getRowBackgroundColor(factPercent);
+
+          const totalHotSale = mr.plan.reduce(
+            (sum, item) => sum + item.hot_sales * item.hot_sales_price,
+            0
+          );
 
           return {
             username: (
@@ -130,6 +141,11 @@ export default function useBonusMrsData(month, order) {
             fact_postupleniya: (
               <MDTypography variant="caption" fontWeight="medium">
                 {factPostupleniya}
+              </MDTypography>
+            ),
+            hot_sale: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {totalHotSale.toLocaleString("ru-RU")} сум
               </MDTypography>
             ),
             onClick: () => {

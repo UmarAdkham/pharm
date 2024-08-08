@@ -79,7 +79,7 @@ function DeputyDirectorBonusTable({ med_rep_id, med_rep_name }) {
           <MDTypography variant="h6" gutterBottom>
             {med_rep_name} <br />
             <MDTypography variant="subtitle2" gutterBottom>
-              Общая сумма бонуса {totalBonus} сум
+              Общая сумма бонуса {totalBonus.toLocaleString("ru-RU")} сум
             </MDTypography>
           </MDTypography>
         </MDBox>

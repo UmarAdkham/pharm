@@ -43,6 +43,14 @@ const OverallValues = ({ overall }) => {
             {overall.factPercent?.toFixed(2)}%)
           </Typography>
         </Grid>
+        {overall.totalHotSale && (
+          <Grid item>
+            <Typography variant="button" fontWeight="medium">
+              Горячая продажа общ: {overall.totalHotSale?.toLocaleString("ru-RU")}{" "}
+              <span style={{ textTransform: "lowercase" }}>сум</span>
+            </Typography>
+          </Grid>
+        )}
         {overall.hasBonus && (
           <>
             <Grid item>
@@ -78,6 +86,7 @@ OverallValues.propTypes = {
     monthlyPlan: PropTypes.number.isRequired,
     fact: PropTypes.number.isRequired,
     factPercent: PropTypes.number.isRequired,
+    totalHotSale: PropTypes.number,
     bonus: PropTypes.number,
     bonusPaid: PropTypes.number,
     bonusLeft: PropTypes.number,
