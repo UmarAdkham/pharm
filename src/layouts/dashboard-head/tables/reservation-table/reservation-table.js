@@ -35,6 +35,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import userRoles from "constants/userRoles";
+import parseDate from "services/parseDate";
 
 function ReservationTable() {
   const navigate = useNavigate();
@@ -152,7 +153,7 @@ function ReservationTable() {
     if (selectedMonth !== "") {
       filtered = filtered.filter(
         (row) =>
-          new Date(row.date_reservation.props.children).getMonth() === parseInt(selectedMonth)
+          parseDate(row.date_reservation.props.children).getMonth() === parseInt(selectedMonth)
       );
     }
     if (selectedEntity) {
