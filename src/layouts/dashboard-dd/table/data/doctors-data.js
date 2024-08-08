@@ -14,8 +14,6 @@ export default function useDoctorsData(
   selectedMedRep,
   handleTotalBonus
 ) {
-  console.log("HEY");
-
   const [data, setData] = useState({ columns: [], rows: [], overall: {} });
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -114,7 +112,6 @@ export default function useDoctorsData(
         ];
 
         const rows = Array.from(doctorMap.values()).map((doctorData) => {
-          console.log(doctorData);
           const factPercent = (doctorData.fact_price * 100) / doctorData.monthly_plan || 0;
           return {
             ...doctorData,
@@ -189,23 +186,18 @@ export default function useDoctorsData(
           };
         });
 
+        const monthlyPlan = reports.reduce((sum, item) => sum + item.plan_price, 0);
+        const fact = reports.reduce((sum, item) => sum + item.fact_price, 0);
+
         const overall = {
           numberOfDoctors: rows.length, // Count of rows
-          monthlyPlan: reports.reduce((sum, item) => sum + item.plan_price, 0),
-          fact: reports.reduce((sum, item) => sum + item.fact_price, 0),
-          factPercent:
-            reports.length > 0
-              ? reports.reduce((sum, item) => {
-                  // Skip items where plan_price is zero or undefined
-                  if (!item.plan_price) return sum;
-                  return sum + (item.fact_price * 100) / item.plan_price;
-                }, 0) / reports.length
-              : 0,
+          monthlyPlan: monthlyPlan,
+          fact: fact,
+          factPercent: monthlyPlan > 0 ? (fact * 100) / monthlyPlan : 0,
           bonus: reports.reduce((sum, item) => sum + item.bonus_amount, 0),
           bonusPaid: reports.reduce((sum, item) => sum + item.bonus_payed, 0),
           bonusLeft: reports.reduce((sum, item) => sum + (item.bonus_amount - item.bonus_payed), 0),
           pre_investment: reports.reduce((sum, item) => sum + item.pre_investment, 0),
-          plan_price: reports.reduce((sum, item) => sum + item.plan_price, 0),
           hasBonus: true,
         };
 

@@ -64,24 +64,22 @@ export default function useBonusMrsData(month, order) {
           factPostupleniyaMap.set(result.id, result.factPostupleniya);
         });
 
+        // Calculate overall monthlyPlan and fact
+        const monthlyPlan = mrs.reduce(
+          (sum, mr) => sum + mr.plan.reduce((acc, item) => acc + item.plan_price, 0),
+          0
+        );
+        const fact = mrs.reduce(
+          (sum, mr) => sum + mr.plan.reduce((acc, item) => acc + item.fact_price, 0),
+          0
+        );
+
         // Calculate overall statistics
         const overall = {
           numberOfDoctors: mrs.length,
-          monthlyPlan: mrs.reduce(
-            (sum, mr) => sum + mr.plan.reduce((acc, item) => acc + item.plan_price, 0),
-            0
-          ),
-          fact: mrs.reduce(
-            (sum, mr) => sum + mr.plan.reduce((acc, item) => acc + item.fact_price, 0),
-            0
-          ),
-          factPercent:
-            (mrs.reduce((sum, mr) => sum + mr.plan.reduce((acc, item) => acc + item.fact, 0), 0) /
-              mrs.reduce(
-                (sum, mr) => sum + mr.plan.reduce((acc, item) => acc + item.plan_amount, 0),
-                0
-              )) *
-            100,
+          monthlyPlan: monthlyPlan,
+          fact: fact,
+          factPercent: monthlyPlan > 0 ? (fact * 100) / monthlyPlan : 0,
           hasBonus: false,
           totalHotSale: mrs.reduce(
             (sum, mr) =>

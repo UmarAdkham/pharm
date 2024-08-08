@@ -39,7 +39,7 @@ const OverallValues = ({ overall }) => {
         <Grid item>
           <Typography variant="button" fontWeight="medium">
             Факт общ: {overall.fact?.toLocaleString("ru-RU")}{" "}
-            <span style={{ textTransform: "lowercase" }}>сум</span> (
+            <span style={{ textTransform: "lowercase" }}>сум</span> ( ~
             {overall.factPercent?.toFixed(2)}%)
           </Typography>
         </Grid>
