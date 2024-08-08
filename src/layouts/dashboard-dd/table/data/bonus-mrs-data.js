@@ -105,10 +105,7 @@ export default function useBonusMrsData(month, order) {
           const factPercent = totalPlan > 0 ? (factPostupleniya / totalPlan) * 100 : 0;
           const rowBackgroundColor = getRowBackgroundColor(factPercent);
 
-          const totalHotSale = mr.plan.reduce(
-            (sum, item) => sum + item.hot_sales * item.hot_sales_price,
-            0
-          );
+          const totalHotSale = mr.plan.reduce((sum, item) => sum + item.hot_sales_price, 0);
 
           return {
             username: (
