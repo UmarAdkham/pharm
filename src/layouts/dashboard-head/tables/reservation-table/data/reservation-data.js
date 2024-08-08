@@ -292,7 +292,21 @@ export default function useReservationData(apiPath, month) {
               {entity.promo?.toLocaleString("ru-RU")}
             </MDTypography>
           ),
-          add: (
+          add: !rsrv.checked ? (
+            <Tooltip title="Сначала необходимо одобрить бронь">
+              <span>
+                <Button
+                  variant="contained"
+                  color="success"
+                  sx={{ color: "white" }}
+                  style={{ cursor: "not-allowed" }}
+                  disabled
+                >
+                  Поступление
+                </Button>
+              </span>
+            </Tooltip>
+          ) : (
             <Button
               variant="contained"
               color="success"
