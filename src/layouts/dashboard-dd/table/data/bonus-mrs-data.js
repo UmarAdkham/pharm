@@ -82,8 +82,7 @@ export default function useBonusMrsData(month, order) {
           factPercent: monthlyPlan > 0 ? (fact * 100) / monthlyPlan : 0,
           hasBonus: false,
           totalHotSale: mrs.reduce(
-            (sum, mr) =>
-              sum + mr.plan.reduce((acc, item) => acc + item.hot_sales * item.hot_sales_price, 0),
+            (sum, mr) => sum + mr.plan.reduce((acc, item) => acc + item.hot_sales_price, 0),
             0
           ), // Calculate overall HotSale
         };
