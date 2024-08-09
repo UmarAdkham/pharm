@@ -95,6 +95,7 @@ export default function useBonusMrsData(month, order) {
           { Header: "Факт %", accessor: "fact_percent", align: "left" },
           { Header: "Факт поступ", accessor: "fact_postupleniya", align: "left" },
           { Header: "Горячая продажа", accessor: "hot_sale", align: "left" },
+          { Header: "Вакант", accessor: "vakant", align: "left" }, // New Column
         ];
 
         const rows = mrs.map((mr) => {
@@ -105,6 +106,7 @@ export default function useBonusMrsData(month, order) {
           const rowBackgroundColor = getRowBackgroundColor(factPercent);
 
           const totalHotSale = mr.plan.reduce((sum, item) => sum + item.hot_sales_price, 0);
+          const totalVakant = mr.plan.reduce((sum, item) => sum + item.vakant, 0); // Sum of Vakant
 
           return {
             username: (
@@ -140,6 +142,11 @@ export default function useBonusMrsData(month, order) {
             hot_sale: (
               <MDTypography variant="caption" fontWeight="medium">
                 {totalHotSale.toLocaleString("ru-RU")} сум
+              </MDTypography>
+            ),
+            vakant: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {totalVakant} {/* Displaying Vakant */}
               </MDTypography>
             ),
             onClick: () => {
