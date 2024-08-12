@@ -6,7 +6,7 @@ import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRen
 import MDTypography from "components/MDTypography";
 import MedorgModal from "../../dialogs/modal/shared/medorg-modal";
 
-export default function useMedicalOrganizationData(apiPath) {
+export default function useMedicalOrganizationData(selectedRegion) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -33,7 +33,7 @@ export default function useMedicalOrganizationData(apiPath) {
     try {
       console.log(updatedMedOrg);
       const response = await axiosInstance.put(
-        `https://it-club.uz/common/update-medical-organization/${updatedMedOrg.id}`,
+        `common/update-medical-organization/${updatedMedOrg.id}`,
         updatedMedOrg,
         {
           headers: {
@@ -48,19 +48,26 @@ export default function useMedicalOrganizationData(apiPath) {
 
   const fetchMedicalOrganizations = async () => {
     try {
-      const response = await axiosInstance.get(apiPath, {
+      const response = await axiosInstance.get("common/get-medical-organization", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
 
-      const medicalOrganizations = response.data;
+      let medicalOrganizations = response.data.sort((a, b) => a.id - b.id);
+      console.log(selectedRegion);
+
+      // Filter based on selected region if provided
+      if (selectedRegion) {
+        medicalOrganizations = medicalOrganizations.filter(
+          (medOrg) => medOrg.region.id === selectedRegion.id
+        );
+      }
 
       const columns = [
         { Header: "Название", accessor: "name", align: "left" },
         { Header: "Адрес", accessor: "address", align: "left" },
         { Header: "Регион", accessor: "region", align: "left" },
-        // { Header: "Медицинский представитель", accessor: "medRep", align: "left" },
         { Header: "Действия", accessor: "action", align: "right" },
       ];
 
@@ -80,11 +87,6 @@ export default function useMedicalOrganizationData(apiPath) {
             {medOrg.region.name}
           </MDTypography>
         ),
-        // medRep: (
-        //   <MDTypography variant="caption" fontWeight="medium">
-        //     {medOrg.med_rep?.full_name}
-        //   </MDTypography>
-        // ),
         action: (
           <div>
             <IconButton
@@ -121,7 +123,7 @@ export default function useMedicalOrganizationData(apiPath) {
 
   useEffect(() => {
     fetchMedicalOrganizations();
-  }, [accessToken, apiPath, open]);
+  }, [accessToken, open, selectedRegion]);
 
   return data;
 }
