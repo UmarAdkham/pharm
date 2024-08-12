@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { Grid, Box, Typography } from "@mui/material";
 
 const OverallValues = ({ overall }) => {
+  console.log(overall);
+
   return (
     <Box
       p={2}
@@ -43,23 +45,22 @@ const OverallValues = ({ overall }) => {
             {overall.factPercent?.toFixed(2)}%)
           </Typography>
         </Grid>
-        {overall.totalHotSale && (
-          <Grid item>
-            <Typography variant="button" fontWeight="medium">
-              Горячая продажа общ: {overall.totalHotSale?.toLocaleString("ru-RU")}{" "}
-              <span style={{ textTransform: "lowercase" }}>сум</span>
-            </Typography>
-          </Grid>
-        )}
-        {overall.vacant && (
-          <Grid item>
-            <Typography variant="button" fontWeight="medium">
-              Вакант общ: {overall.vacant?.toLocaleString("ru-RU")}{" "}
-              <span style={{ textTransform: "lowercase" }}>сум</span>
-            </Typography>
-          </Grid>
-        )}
-        {overall.hasBonus && (
+        {!overall.hasBonus ? (
+          <>
+            <Grid item>
+              <Typography variant="button" fontWeight="medium">
+                Горячая продажа общ: {overall.totalHotSale?.toLocaleString("ru-RU")}{" "}
+                <span style={{ textTransform: "lowercase" }}>сум</span>
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography variant="button" fontWeight="medium">
+                Вакант общ: {overall.vacant?.toLocaleString("ru-RU")}{" "}
+                <span style={{ textTransform: "lowercase" }}>сум</span>
+              </Typography>
+            </Grid>
+          </>
+        ) : (
           <>
             <Grid item>
               <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#f2cc45", p: 1 }}>
