@@ -38,9 +38,11 @@ function HeadSetDiscount() {
     }
 
     try {
+      console.log(discountRate);
+
       const response = await axiosInstance.post(
         `https://it-club.uz/head/update-${
-          type === "pharmacy" ? "" : `${type}-` // because for pharmacy API does not have the word
+          type === "pharmacy" ? "" : `${type}-`
         }reservation-discount/${reservationId}?discount=${discountRate}`,
         {},
         {
@@ -91,10 +93,16 @@ function HeadSetDiscount() {
             <MDBox mb={2}>
               <TextField
                 label="Скидка (%)"
-                type="number"
+                type="text"
                 variant="outlined"
                 value={discountRate}
-                onChange={(e) => setDiscountRate(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow only numbers and a single dot
+                  if (/^\d*\.?\d*$/.test(value)) {
+                    setDiscountRate(value);
+                  }
+                }}
                 fullWidth
                 InputProps={{ inputProps: { min: 0, max: 100 } }}
               />
