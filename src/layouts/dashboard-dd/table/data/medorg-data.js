@@ -55,7 +55,6 @@ export default function useMedicalOrganizationData(selectedRegion) {
       });
 
       let medicalOrganizations = response.data.sort((a, b) => a.id - b.id);
-      console.log(selectedRegion);
 
       // Filter based on selected region if provided
       if (selectedRegion) {

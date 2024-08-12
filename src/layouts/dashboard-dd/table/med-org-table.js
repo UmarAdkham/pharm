@@ -31,7 +31,6 @@ function DeputyDirectorMedOrgTable({ title, navigatePath }) {
 
     fetchRegions();
   }, []);
-  console.log(selectedRegion);
 
   // Fetch and filter medical organization data based on selected region
   const { columns, rows } = useMedicalOrganizationData(selectedRegion);
