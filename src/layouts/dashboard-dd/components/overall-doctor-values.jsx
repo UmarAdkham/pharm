@@ -51,6 +51,14 @@ const OverallValues = ({ overall }) => {
             </Typography>
           </Grid>
         )}
+        {overall.vacant && (
+          <Grid item>
+            <Typography variant="button" fontWeight="medium">
+              Вакант общ: {overall.vacant?.toLocaleString("ru-RU")}{" "}
+              <span style={{ textTransform: "lowercase" }}>сум</span>
+            </Typography>
+          </Grid>
+        )}
         {overall.hasBonus && (
           <>
             <Grid item>
@@ -82,14 +90,15 @@ const OverallValues = ({ overall }) => {
 
 OverallValues.propTypes = {
   overall: PropTypes.shape({
-    numberOfDoctors: PropTypes.number.isRequired,
-    monthlyPlan: PropTypes.number.isRequired,
-    fact: PropTypes.number.isRequired,
-    factPercent: PropTypes.number.isRequired,
+    numberOfDoctors: PropTypes.number,
+    monthlyPlan: PropTypes.number,
+    fact: PropTypes.number,
+    factPercent: PropTypes.number,
     totalHotSale: PropTypes.number,
     bonus: PropTypes.number,
     bonusPaid: PropTypes.number,
     bonusLeft: PropTypes.number,
+    vacant: PropTypes.number,
     pre_investment: PropTypes.number,
     hasBonus: PropTypes.bool,
   }).isRequired,

@@ -73,6 +73,10 @@ export default function useBonusMrsData(month, order) {
           (sum, mr) => sum + mr.plan.reduce((acc, item) => acc + item.fact_price, 0),
           0
         );
+        const vacant = mrs.reduce(
+          (sum, mr) => sum + mr.plan.reduce((acc, item) => acc + item.vakant_price, 0),
+          0
+        );
 
         // Calculate overall statistics
         const overall = {
@@ -84,7 +88,8 @@ export default function useBonusMrsData(month, order) {
           totalHotSale: mrs.reduce(
             (sum, mr) => sum + mr.plan.reduce((acc, item) => acc + item.hot_sales_price, 0),
             0
-          ), // Calculate overall HotSale
+          ),
+          vacant: vacant,
         };
 
         const columns = [
