@@ -122,7 +122,7 @@ function DeputyDirectorAddDoctor() {
       );
 
       setMessage({ color: "success", content: "Доктор успешно добавлен" });
-      setTimeout(() => navigate(-1), 2000);
+      // setTimeout(() => navigate(-1), 2000);
     } catch (error) {
       setMessage({
         color: "error",

@@ -98,7 +98,7 @@ function DeputyDirectorAddPharmacy() {
       );
 
       setMessage({ color: "success", content: "Аптека успешно добавлена" });
-      setTimeout(() => navigate(-1), 2000);
+      // setTimeout(() => navigate(-1), 2000);
     } catch (error) {
       setMessage({
         color: "error",

@@ -88,7 +88,7 @@ function WholesaleManagerAddProduct() {
       setMessage({ color: "success", content: "Данные успешно добавлены" });
 
       setTimeout(() => {
-        navigate(-1);
+        // navigate(-1);
       }, 2000);
     } catch (error) {
       console.log(error);

@@ -51,7 +51,7 @@ function DeputyDirectorAddBonus() {
       setMessage({ color: "success", content: "Бонус добавлен" });
 
       setTimeout(() => {
-        navigate(-1);
+        // navigate(-1);
       }, 2000);
     } catch (error) {
       console.log(error);

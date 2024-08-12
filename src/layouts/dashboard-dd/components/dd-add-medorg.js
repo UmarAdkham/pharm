@@ -103,7 +103,7 @@ function DeputyDirectorAddMedOrganization() {
       );
 
       setMessage({ color: "success", content: "Медицинская организация успешно добавлена" });
-      setTimeout(() => navigate(-1), 2000);
+      // setTimeout(() => navigate(-1), 2000);
     } catch (error) {
       setMessage({
         color: "error",

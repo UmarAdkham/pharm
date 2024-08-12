@@ -213,7 +213,7 @@ function ReservationAdd() {
       setMessage({ color: "success", content: "Бронь успешно добавлена!" });
 
       setTimeout(() => {
-        navigate(-1);
+        // navigate(-1);
       }, 2000);
     } catch (error) {
       console.error("Failed to add reservation", error);

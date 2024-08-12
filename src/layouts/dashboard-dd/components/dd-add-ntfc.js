@@ -115,7 +115,7 @@ function DeputyDirectorAddNotification() {
       });
 
       setMessage({ color: "success", content: "Уведомление успешно добавлено" });
-      setTimeout(() => navigate(-1), 2000);
+      // setTimeout(() => navigate(-1), 2000);
     } catch (error) {
       setMessage({
         color: "error",

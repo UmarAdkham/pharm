@@ -111,7 +111,7 @@ function DeputyDirectorAddRegionalManager() {
 
       // Optional: Redirect after a delay
       setTimeout(() => {
-        navigate(-1);
+        // navigate(-1);
       }, 2000);
     } catch (error) {
       console.log(error);

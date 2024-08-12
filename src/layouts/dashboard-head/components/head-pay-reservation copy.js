@@ -46,7 +46,7 @@ function HeadPayReservation() {
       setMessage({ color: "success", content: "Поступление добавлено" });
 
       setTimeout(() => {
-        navigate(-1);
+        // navigate(-1);
       }, 2000);
     } catch (error) {
       console.log(error);
