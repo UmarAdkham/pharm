@@ -100,9 +100,9 @@ function DoctorModal({ open, handleClose, handleSubmit, doctorToUpdate }) {
       contact1: contact1,
       contact2: contact2,
       email: email,
-      category: categoryId,
-      speciality: specialityId,
-      medical_organization: medicalOrganizationId,
+      category_id: categoryId,
+      speciality_id: specialityId,
+      medical_organization_id: medicalOrganizationId,
     };
     handleSubmit(updatedDoctor);
     handleClose();
