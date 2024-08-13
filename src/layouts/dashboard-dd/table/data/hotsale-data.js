@@ -28,6 +28,7 @@ export default function useHotsaleData(med_rep_id, month) {
         const columns = [
           { Header: "Название компании", accessor: "company_name", align: "left" },
           { Header: "Тип", accessor: "type", align: "left" },
+          { Header: "Продукт", accessor: "product", align: "left" },
           { Header: "Горячая продажа", accessor: "sale", align: "left" },
           { Header: "Факт", accessor: "fact", align: "left" },
         ];
@@ -45,6 +46,11 @@ export default function useHotsaleData(med_rep_id, month) {
               type: (
                 <MDTypography variant="caption" fontWeight="medium">
                   Аптека
+                </MDTypography>
+              ),
+              product: (
+                <MDTypography variant="caption" fontWeight="medium">
+                  {report.product}
                 </MDTypography>
               ),
               sale: (
@@ -70,6 +76,11 @@ export default function useHotsaleData(med_rep_id, month) {
               type: (
                 <MDTypography variant="caption" fontWeight="medium">
                   Больница
+                </MDTypography>
+              ),
+              product: (
+                <MDTypography variant="caption" fontWeight="medium">
+                  {report.product}
                 </MDTypography>
               ),
               sale: (
