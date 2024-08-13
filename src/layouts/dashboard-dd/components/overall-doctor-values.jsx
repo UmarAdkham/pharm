@@ -55,7 +55,7 @@ const OverallValues = ({ overall }) => {
         </Grid>
         <Grid item>
           <Typography variant="button" fontWeight="medium">
-            План прек: {overall.monthlyPlan?.toLocaleString("ru-RU")}{" "}
+            План прик: {overall.monthlyPlan?.toLocaleString("ru-RU")}{" "}
             <span style={{ textTransform: "lowercase" }}>сум</span>
           </Typography>
         </Grid>
