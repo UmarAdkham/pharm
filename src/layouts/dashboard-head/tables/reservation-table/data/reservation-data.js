@@ -329,7 +329,11 @@ export default function useReservationData(apiPath, month) {
                 }
 
                 navigate(path, {
-                  state: { reservationId: rsrv.id, invoice_number: rsrv.invoice_number },
+                  state: {
+                    reservationId: rsrv.id,
+                    invoice_number: rsrv.invoice_number,
+                    med_rep_id: rsrv.pharmacy?.med_rep?.id,
+                  },
                 });
               }}
             >

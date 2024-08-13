@@ -36,7 +36,7 @@ function HeadPayReservationPharmacy() {
   const navigate = useNavigate();
   const { accessToken } = useSelector((state) => state.auth);
   const location = useLocation();
-  const { reservationId, invoice_number } = location.state || {}; // Add a default value
+  const { reservationId, invoice_number, med_rep_id } = location.state || {}; // Add a default value
 
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
@@ -51,8 +51,10 @@ function HeadPayReservationPharmacy() {
 
   const fetchDoctors = async (monthNumber, productId) => {
     try {
+      console.log(med_rep_id);
+      console.log(productId);
       const response = await axiosInstance.get(
-        `/dd/get-fact?month_number=${monthNumber}&product_id=${productId}`
+        `/dd/get-fact?month_number=${monthNumber}&med_rep_id=${med_rep_id}&product_id=${productId}`
       );
       const doctorsData = response.data.map((item) => ({
         doctor_id: item.doctor_id,
