@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import axios from "axios";
 import { Grid, Box, Typography } from "@mui/material";
 import axiosInstance from "services/axiosInstance";
 
@@ -9,15 +8,17 @@ const OverallValues = ({ overall }) => {
 
   useEffect(() => {
     // Make the axios request to fetch the plan_sum
-    axiosInstance
-      .get("common/get-all_plan_sum")
-      .then((response) => {
-        setPlanSum(response.data.plan_sum);
-      })
-      .catch((error) => {
-        console.error("Error fetching plan sum:", error);
-      });
-  }, []);
+    if (overall.month) {
+      axiosInstance
+        .get(`common/get-all_plan_sum?month_number=${overall.month}`)
+        .then((response) => {
+          setPlanSum(response.data.plan_sum);
+        })
+        .catch((error) => {
+          console.error("Error fetching plan sum:", error);
+        });
+    }
+  }, [overall]);
 
   return (
     <Box
@@ -122,6 +123,7 @@ OverallValues.propTypes = {
     vacant: PropTypes.number,
     pre_investment: PropTypes.number,
     hasBonus: PropTypes.bool,
+    month: PropTypes.number,
   }).isRequired,
 };
 

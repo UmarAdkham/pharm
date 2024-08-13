@@ -90,6 +90,7 @@ export default function useBonusMrsData(month, order) {
             0
           ),
           vacant: vacant,
+          month: month,
         };
 
         const columns = [
