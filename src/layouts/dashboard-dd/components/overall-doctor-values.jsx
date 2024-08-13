@@ -1,9 +1,23 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import axios from "axios";
 import { Grid, Box, Typography } from "@mui/material";
+import axiosInstance from "services/axiosInstance";
 
 const OverallValues = ({ overall }) => {
-  console.log(overall);
+  const [planSum, setPlanSum] = useState(null);
+
+  useEffect(() => {
+    // Make the axios request to fetch the plan_sum
+    axiosInstance
+      .get("common/get-all_plan_sum")
+      .then((response) => {
+        setPlanSum(response.data.plan_sum);
+      })
+      .catch((error) => {
+        console.error("Error fetching plan sum:", error);
+      });
+  }, []);
 
   return (
     <Box
@@ -34,7 +48,13 @@ const OverallValues = ({ overall }) => {
         </Grid>
         <Grid item>
           <Typography variant="button" fontWeight="medium">
-            План общ: {overall.monthlyPlan?.toLocaleString("ru-RU")}{" "}
+            План общ: {planSum?.toLocaleString("ru-RU")}{" "}
+            <span style={{ textTransform: "lowercase" }}>сум</span>
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Typography variant="button" fontWeight="medium">
+            План прек: {overall.monthlyPlan?.toLocaleString("ru-RU")}{" "}
             <span style={{ textTransform: "lowercase" }}>сум</span>
           </Typography>
         </Grid>
