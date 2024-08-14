@@ -116,7 +116,7 @@ function HeadPayReservationPharmacy() {
   useEffect(() => {
     const calculateTotalSum = () => {
       const doctorProductTotal = unpayedProducts.reduce((acc, product) => {
-        const quantity = parseInt(product.newQuantity || product.quantity, 10);
+        const quantity = parseInt(product.newQuantity || 0, 10);
         return acc + quantity * product.price;
       }, 0);
 
@@ -316,7 +316,7 @@ function HeadPayReservationPharmacy() {
                     Сумма:{" "}
                     {product.newQuantity
                       ? (product.newQuantity * product.price)?.toLocaleString("ru-RU")
-                      : (product.quantity * product.price)?.toLocaleString("ru-RU")}{" "}
+                      : 0}{" "}
                     сум
                   </MDTypography>
                 </MDBox>

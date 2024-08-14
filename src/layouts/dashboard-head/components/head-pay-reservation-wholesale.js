@@ -68,8 +68,6 @@ function HeadPayReservationWholesale() {
   }, []);
 
   const fetchDoctors = async (monthNumber, productId, medRepId) => {
-    console.log(medRepId);
-
     try {
       const response = await axiosInstance.get(
         `/dd/get-fact?month_number=${monthNumber}&med_rep_id=${medRepId}&product_id=${productId}`
@@ -97,7 +95,8 @@ function HeadPayReservationWholesale() {
             );
             return {
               product_id: product.product_id,
-              doctor: null,
+              doctor:
+                doctorProducts.find((dp) => dp.product_id === product.product_id)?.doctor || null,
               monthNumber: new Date().getMonth() + 1,
               doctors: doctors,
             };
@@ -150,7 +149,7 @@ function HeadPayReservationWholesale() {
   useEffect(() => {
     const calculateTotalSum = () => {
       const doctorProductTotal = unpayedProducts.reduce((acc, product) => {
-        const quantity = parseInt(product.newQuantity || product.quantity, 10);
+        const quantity = parseInt(product.newQuantity || 0, 10);
         return acc + quantity * product.price;
       }, 0);
 
@@ -203,6 +202,7 @@ function HeadPayReservationWholesale() {
     const updatedUnpayedProducts = [...unpayedProducts];
     updatedUnpayedProducts[index] = { ...updatedUnpayedProducts[index], newQuantity: value };
     setUnpayedProducts(updatedUnpayedProducts);
+    setDoctorProducts(doctorProducts); // Ensure doctorProducts are retained
   };
 
   const handleSubmit = async (event) => {
@@ -219,14 +219,21 @@ function HeadPayReservationWholesale() {
     }
 
     const objects = unpayedProducts
+      .map((product, originalIndex) => ({
+        ...product,
+        originalIndex,
+      }))
       .filter((product) => product.newQuantity)
-      .map((product, index) => ({
-        product_id: product.product_id,
-        quantity: parseInt(product.newQuantity, 10),
-        amount: parseInt(product.price, 10),
-        month_number: doctorProducts[index].monthNumber,
-        doctor_id: doctorProducts[index].doctor?.doctor_id || null, // Doctor is optional
-      }));
+      .map((product) => {
+        const doctorId = doctorProducts[product.originalIndex]?.doctor?.doctor_id || null;
+        return {
+          product_id: product.product_id,
+          quantity: parseInt(product.newQuantity, 10),
+          amount: parseInt(product.price, 10),
+          month_number: doctorProducts[product.originalIndex].monthNumber,
+          doctor_id: doctorId,
+        };
+      });
 
     const payload = {
       med_rep_id: selectedMedRep.id,
@@ -235,6 +242,8 @@ function HeadPayReservationWholesale() {
       objects,
       description,
     };
+
+    console.log(payload);
 
     try {
       await axiosInstance.post(`head/pay-wholesale-reservation/${reservationId}`, payload, {
@@ -407,7 +416,7 @@ function HeadPayReservationWholesale() {
                     Сумма:{" "}
                     {product.newQuantity
                       ? (product.newQuantity * product.price)?.toLocaleString("ru-RU")
-                      : (product.quantity * product.price)?.toLocaleString("ru-RU")}{" "}
+                      : 0}{" "}
                     сум
                   </MDTypography>
                 </MDBox>
