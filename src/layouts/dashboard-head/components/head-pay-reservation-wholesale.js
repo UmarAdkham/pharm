@@ -67,10 +67,12 @@ function HeadPayReservationWholesale() {
     fetchMedReps();
   }, []);
 
-  const fetchDoctors = async (monthNumber, productId) => {
+  const fetchDoctors = async (monthNumber, productId, medRepId) => {
+    console.log(medRepId);
+
     try {
       const response = await axiosInstance.get(
-        `/dd/get-fact?month_number=${monthNumber}&med_rep_id=${med_rep_id}&product_id=${productId}`
+        `/dd/get-fact?month_number=${monthNumber}&med_rep_id=${medRepId}&product_id=${productId}`
       );
       const doctorsData = response.data.map((item) => ({
         doctor_id: item.doctor_id,
@@ -84,6 +86,31 @@ function HeadPayReservationWholesale() {
   };
 
   useEffect(() => {
+    if (selectedMedRep) {
+      const fetchDoctorsForAllProducts = async () => {
+        const initialDoctorProducts = await Promise.all(
+          unpayedProducts.map(async (product) => {
+            const doctors = await fetchDoctors(
+              new Date().getMonth() + 1,
+              product.product_id,
+              selectedMedRep.id
+            );
+            return {
+              product_id: product.product_id,
+              doctor: null,
+              monthNumber: new Date().getMonth() + 1,
+              doctors: doctors,
+            };
+          })
+        );
+        setDoctorProducts(initialDoctorProducts);
+      };
+
+      fetchDoctorsForAllProducts();
+    }
+  }, [selectedMedRep, unpayedProducts]);
+
+  useEffect(() => {
     const fetchReservationData = async () => {
       try {
         const response = await axiosInstance.get(
@@ -92,17 +119,6 @@ function HeadPayReservationWholesale() {
         setDebt(response.data.debt);
         setRemainderSum(response.data.remiainder_sum);
         setUnpayedProducts(response.data.reservation_unpayed_products);
-        const initialDoctorProducts = await Promise.all(
-          response.data.reservation_unpayed_products.map(async (product) => {
-            const doctors = await fetchDoctors(new Date().getMonth() + 1, product.product_id);
-            setDoctors(doctors);
-            return {
-              doctor: null,
-              monthNumber: new Date().getMonth() + 1,
-            };
-          })
-        );
-        setDoctorProducts(initialDoctorProducts);
       } catch (error) {
         console.log(error);
       }
@@ -167,14 +183,19 @@ function HeadPayReservationWholesale() {
       fetchPharmacies(newValue.id);
     } else {
       setPharmacies([]);
+      setDoctorProducts([]);
     }
   };
 
   const handleMonthChange = async (index, value) => {
     const updatedDoctorProducts = [...doctorProducts];
     updatedDoctorProducts[index] = { ...updatedDoctorProducts[index], monthNumber: value.value };
-    const doctors = await fetchDoctors(value.value, unpayedProducts[index].product_id);
-    setDoctors(doctors);
+    const doctors = await fetchDoctors(
+      value.value,
+      unpayedProducts[index].product_id,
+      selectedMedRep.id
+    );
+    updatedDoctorProducts[index].doctors = doctors;
     setDoctorProducts(updatedDoctorProducts);
   };
 
@@ -187,13 +208,7 @@ function HeadPayReservationWholesale() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (
-      !selectedMedRep ||
-      !selectedPharmacy ||
-      !total ||
-      !description ||
-      doctorProducts.some(({ doctor, monthNumber }) => !doctor || !monthNumber)
-    ) {
+    if (!selectedMedRep || !selectedPharmacy || !total || !description) {
       setMessage({ color: "error", content: "Пожалуйста, заполните все поля" });
       return;
     }
@@ -210,7 +225,7 @@ function HeadPayReservationWholesale() {
         quantity: parseInt(product.newQuantity, 10),
         amount: parseInt(product.price, 10),
         month_number: doctorProducts[index].monthNumber,
-        doctor_id: doctorProducts[index].doctor?.doctor_id,
+        doctor_id: doctorProducts[index].doctor?.doctor_id || null, // Doctor is optional
       }));
 
     const payload = {
@@ -220,8 +235,6 @@ function HeadPayReservationWholesale() {
       objects,
       description,
     };
-
-    console.log(payload);
 
     try {
       await axiosInstance.post(`head/pay-wholesale-reservation/${reservationId}`, payload, {
@@ -233,7 +246,7 @@ function HeadPayReservationWholesale() {
       setMessage({ color: "success", content: "Поступление добавлено" });
 
       setTimeout(() => {
-        // navigate(-1);
+        navigate(-1);
       }, 2000);
     } catch (error) {
       console.log(error);
@@ -335,7 +348,7 @@ function HeadPayReservationWholesale() {
               <MDBox key={index} mb={2} border={1} borderRadius="lg" p={2}>
                 <MDBox display="flex" justifyContent="space-between" mb={2}>
                   <Autocomplete
-                    options={doctors}
+                    options={doctorProducts[index]?.doctors || []}
                     getOptionLabel={(option) => option.doctor_name}
                     value={doctorProducts[index]?.doctor || null}
                     onChange={(event, newValue) => handleDoctorChange(index, newValue)}
