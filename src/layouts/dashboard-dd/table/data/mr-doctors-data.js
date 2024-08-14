@@ -4,47 +4,49 @@ import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
 import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
 import { IconButton } from "@mui/material";
-import DoctorModal from "../../dialogs/modal/shared/doctor-modal";
+// import DoctorModal from "../../dialogs/modal/shared/doctor-modal";
+import { useNavigate } from "react-router-dom";
 
 export default function useDoctorData(apiPath, onRowClick) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
+  const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
-  const [doctorToUpdate, setDoctorToUpdate] = useState({
-    id: null,
-    full_name: "",
-    contact1: "",
-    contact2: "",
-    email: "",
-    category_id: null,
-    speciality_id: null,
-    medical_organization_id: null,
-  });
+  // const [doctorToUpdate, setDoctorToUpdate] = useState({
+  //   id: null,
+  //   full_name: "",
+  //   contact1: "",
+  //   contact2: "",
+  //   email: "",
+  //   category_id: null,
+  //   speciality_id: null,
+  //   medical_organization_id: null,
+  // });
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
+  // const handleOpen = () => {
+  //   setOpen(true);
+  // };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  // const handleClose = () => {
+  //   setOpen(false);
+  // };
 
-  const handleSubmit = async (updatedDoctor) => {
-    try {
-      const response = await axiosInstance.patch(
-        `https://it-club.uz/mr/update-doctor/${updatedDoctor.id}`,
-        { updatedDoctor },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-    } catch (error) {
-      console.error("Error updating medical organization:", error);
-    }
-  };
+  // const handleSubmit = async (updatedDoctor) => {
+  //   try {
+  //     const response = await axiosInstance.patch(
+  //       `https://it-club.uz/mr/update-doctor/${updatedDoctor.id}`,
+  //       { updatedDoctor },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${accessToken}`,
+  //         },
+  //       }
+  //     );
+  //   } catch (error) {
+  //     console.error("Error updating medical organization:", error);
+  //   }
+  // };
 
   useEffect(() => {
     async function fetchDoctors() {
@@ -62,7 +64,7 @@ export default function useDoctorData(apiPath, onRowClick) {
           { Header: "Специальность", accessor: "speciality", align: "left" },
           { Header: "Медицинская организация", accessor: "medical_organization", align: "left" },
           { Header: "Категория", accessor: "category", align: "left" },
-          { Header: "ДЕЙСТВИЯ", accessor: "action", align: "right" },
+          { Header: "Действия", accessor: "action", align: "right" },
         ];
 
         const rows = doctors.map((doctor) => ({
@@ -103,28 +105,18 @@ export default function useDoctorData(apiPath, onRowClick) {
               <IconButton
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleOpen();
-                  setDoctorToUpdate({
-                    id: doctor.id,
-                    full_name: doctor.full_name,
-                    contact1: doctor.contact1,
-                    contact2: doctor.contact2,
-                    email: doctor.email,
-                    category_id: doctor.category.id,
-                    speciality_id: doctor.speciality.id,
-                    medical_organization_id: doctor.medical_organization.id,
-                  });
+                  navigate("/dd/update-doctor", { state: { doctor_id: doctor.id } });
                 }}
                 aria-label="update"
               >
                 <DriveFileRenameOutlineOutlinedIcon />
               </IconButton>
-              <DoctorModal
+              {/* <DoctorModal
                 open={open}
                 handleClose={handleClose}
                 handleSubmit={handleSubmit}
                 doctorToUpdate={doctorToUpdate}
-              />
+              /> */}
             </div>
           ),
         }));

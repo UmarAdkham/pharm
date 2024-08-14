@@ -70,6 +70,7 @@ import DeputyDirectorBonusHistory from "layouts/dashboard-dd/components/dd-bonus
 import HeadPayReservationPharmacy from "layouts/dashboard-head/components/head-pay-reservation-pharmacy";
 import HeadPayReservationWholesale from "layouts/dashboard-head/components/head-pay-reservation-wholesale";
 import HeadPayReservationHospital from "layouts/dashboard-head/components/head-pay-reservation-hospital";
+import DeputyDirectorUpdateDoctor from "layouts/dashboard-dd/components/dd-update-doctor";
 
 const roleBasedRoutes = [
   {
@@ -162,6 +163,7 @@ const roleBasedRoutes = [
       { path: "add-pharmacy", component: <DeputyDirectorAddPharmacy /> },
       { path: "add-doctor", component: <DeputyDirectorAddDoctor /> },
       { path: "mr-info", component: <DeputyDirectorMRInfo /> },
+      { path: "update-doctor", component: <DeputyDirectorUpdateDoctor /> },
       { path: "process-reports", component: <DeputyDirectorProcessReports /> },
       { path: "bonus", component: <DeputyDirectorBonusMrs /> },
       { path: "bonus-report", component: <DeputyDirectorBonus /> },
