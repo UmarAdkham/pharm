@@ -10,6 +10,7 @@ import SearchControl from "../../../services/geoSearchController";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -18,7 +19,6 @@ import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 
 // Authentication layout components
-import BasicLayout from "layouts/authentication/components/BasicLayout";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 
@@ -37,7 +37,7 @@ function DeputyDirectorAddDoctor() {
   const { accessToken } = useSelector((state) => state.auth);
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
-  const [address, setAddress] = useState(""); // New state for address
+  const [address, setAddress] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [specialityId, setSpecialityId] = useState("");
   const [medicalOrganizationId, setMedicalOrganizationId] = useState("");
@@ -51,9 +51,10 @@ function DeputyDirectorAddDoctor() {
     contact1: "",
     contact2: "",
     email: "",
+    birth_date: "",
   });
 
-  const [message, setMessage] = useState({ color: "", content: "" });
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -103,8 +104,23 @@ function DeputyDirectorAddDoctor() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Validate all fields are filled
+    if (
+      !doctorData.full_name ||
+      !doctorData.contact1 ||
+      !doctorData.contact2 ||
+      !doctorData.email ||
+      !doctorData.birth_date ||
+      !categoryId ||
+      !specialityId ||
+      !medicalOrganizationId
+    ) {
+      setSnackbar({ open: true, message: "Все поля должны быть заполнены", severity: "error" });
+      return;
+    }
+
     try {
-      const response = await axios.post(
+      await axios.post(
         `https://it-club.uz/mr/add-doctor?user_id=${id}`,
         {
           ...doctorData,
@@ -121,16 +137,19 @@ function DeputyDirectorAddDoctor() {
         }
       );
 
-      setMessage({ color: "success", content: "Доктор успешно добавлен" });
-      // setTimeout(() => navigate(-1), 2000);
-    } catch (error) {
-      setMessage({
-        color: "error",
-        content:
-          "Не удалось добавить доктора. " +
-          (error.response?.data?.detail || "Пожалуйста, проверьте свои данные и попробуйте снова."),
+      setSnackbar({
+        open: true,
+        message: "Доктор успешно добавлен",
+        severity: "success",
       });
+    } catch (error) {
+      setSnackbar({ open: true, message: "Не удалось добавить доктора", severity: "error" });
+      console.error("Ошибка при добавлении доктора:", error);
     }
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
   };
 
   function LocationMarker() {
@@ -187,7 +206,6 @@ function DeputyDirectorAddDoctor() {
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
-          {message.content && <Alert severity={message.color}>{message.content}</Alert>}
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={4}>
@@ -231,6 +249,19 @@ function DeputyDirectorAddDoctor() {
                 />
               </Grid>
               <Grid item xs={12} md={4}>
+                <MDInput
+                  type="date"
+                  label="Дата рождения"
+                  fullWidth
+                  name="birth_date"
+                  value={doctorData.birth_date}
+                  onChange={handleChange}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
                 <FormControl fullWidth>
                   <InputLabel id="categories-label">Категория</InputLabel>
                   <Select
@@ -268,7 +299,7 @@ function DeputyDirectorAddDoctor() {
               </Grid>
               <Grid item xs={12} md={4}>
                 <FormControl fullWidth>
-                  <InputLabel id="medical-organizations-label">Медицинские Организации</InputLabel>
+                  <InputLabel id="medical-organizations-label">Медицинская Организация</InputLabel>
                   <Select
                     labelId="medical-organizations-label"
                     value={medicalOrganizationId}
@@ -312,7 +343,6 @@ function DeputyDirectorAddDoctor() {
               </Grid>
               <Grid item xs={12} md={12}>
                 <MDTypography variant="h6">Адрес: {address}</MDTypography>{" "}
-                {/* Display the address */}
               </Grid>
             </Grid>
             <MDBox mt={4} mb={1}>
@@ -323,6 +353,17 @@ function DeputyDirectorAddDoctor() {
           </MDBox>
         </MDBox>
       </Card>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000} // Snackbar will disappear after 3 seconds
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: "100%" }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </DashboardLayout>
   );
 }
