@@ -40,7 +40,6 @@ function HeadPayReservationPharmacy() {
 
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
-  const [doctors, setDoctors] = useState([]);
   const [doctorProducts, setDoctorProducts] = useState([]);
   const [total, setTotal] = useState();
   const [debt, setDebt] = useState(0);
@@ -51,8 +50,6 @@ function HeadPayReservationPharmacy() {
 
   const fetchDoctors = async (monthNumber, productId) => {
     try {
-      console.log(med_rep_id);
-      console.log(productId);
       const response = await axiosInstance.get(
         `/dd/get-fact?month_number=${monthNumber}&med_rep_id=${med_rep_id}&product_id=${productId}`
       );
@@ -79,10 +76,11 @@ function HeadPayReservationPharmacy() {
         const initialDoctorProducts = await Promise.all(
           response.data.reservation_unpayed_products.map(async (product) => {
             const doctors = await fetchDoctors(new Date().getMonth() + 1, product.product_id);
-            setDoctors(doctors);
             return {
+              product_id: product.product_id,
               doctor: null,
               monthNumber: new Date().getMonth() + 1,
+              doctors: doctors,
             };
           })
         );
@@ -136,9 +134,12 @@ function HeadPayReservationPharmacy() {
 
   const handleMonthChange = async (index, value) => {
     const updatedDoctorProducts = [...doctorProducts];
-    updatedDoctorProducts[index] = { ...updatedDoctorProducts[index], monthNumber: value.value };
-    const doctors = await fetchDoctors(value.value, unpayedProducts[index].product_id);
-    setDoctors(doctors);
+    updatedDoctorProducts[index] = {
+      ...updatedDoctorProducts[index],
+      monthNumber: value.value,
+    };
+    const doctors = await fetchDoctors(value.value, doctorProducts[index].product_id);
+    updatedDoctorProducts[index].doctors = doctors;
     setDoctorProducts(updatedDoctorProducts);
   };
 
@@ -161,8 +162,6 @@ function HeadPayReservationPharmacy() {
     }
 
     if (parseInt(totalSum) > parseInt(total + remainderSum)) {
-      console.log("TOTAL SUM: ", totalSum);
-      console.log("REMAINDER: ", totalSum + remainderSum);
       setMessage({ color: "error", content: "Общая сумма не может быть больше указанной суммы" });
       return;
     }
@@ -183,8 +182,6 @@ function HeadPayReservationPharmacy() {
       description,
     };
 
-    console.log(payload);
-
     try {
       await axiosInstance.post(`head/pay-reservation/${reservationId}`, payload, {
         headers: {
@@ -195,7 +192,7 @@ function HeadPayReservationPharmacy() {
       setMessage({ color: "success", content: "Поступление добавлено" });
 
       setTimeout(() => {
-        // navigate(-1);
+        navigate(-1);
       }, 2000);
     } catch (error) {
       console.log(error);
@@ -260,7 +257,7 @@ function HeadPayReservationPharmacy() {
               <MDBox key={index} mb={2} border={1} borderRadius="lg" p={2}>
                 <MDBox display="flex" justifyContent="space-between" mb={2}>
                   <Autocomplete
-                    options={doctors}
+                    options={doctorProducts[index]?.doctors || []}
                     getOptionLabel={(option) => option.doctor_name}
                     value={doctorProducts[index]?.doctor || null}
                     onChange={(event, newValue) => handleDoctorChange(index, newValue)}
