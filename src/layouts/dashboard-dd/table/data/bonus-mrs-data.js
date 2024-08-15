@@ -70,7 +70,7 @@ export default function useBonusMrsData(month, order) {
           0
         );
         const fact = mrs.reduce(
-          (sum, mr) => sum + mr.plan.reduce((acc, item) => acc + item.fact_price, 0),
+          (sum, mr) => sum + mr.plan.reduce((acc, item) => acc + item.fact_postupleniya_price, 0),
           0
         );
         const vacant = mrs.reduce(

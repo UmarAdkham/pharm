@@ -187,7 +187,7 @@ export default function useDoctorsData(
         });
 
         const monthlyPlan = reports.reduce((sum, item) => sum + item.plan_price, 0);
-        const fact = reports.reduce((sum, item) => sum + item.fact_price, 0);
+        const fact = reports.reduce((sum, item) => sum + item.fact_postupleniya_price, 0);
 
         const overall = {
           numberOfDoctors: rows.length, // Count of rows
