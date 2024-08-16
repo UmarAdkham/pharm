@@ -71,6 +71,7 @@ import HeadPayReservationPharmacy from "layouts/dashboard-head/components/head-p
 import HeadPayReservationWholesale from "layouts/dashboard-head/components/head-pay-reservation-wholesale";
 import HeadPayReservationHospital from "layouts/dashboard-head/components/head-pay-reservation-hospital";
 import DeputyDirectorUpdateDoctor from "layouts/dashboard-dd/components/dd-update-doctor";
+import DeputyDirectorDoctorDatabase from "./layouts/dashboard-dd/components/dd-doctor-database";
 
 const roleBasedRoutes = [
   {
@@ -171,6 +172,7 @@ const roleBasedRoutes = [
       { path: "add-bonus", component: <DeputyDirectorAddBonus /> },
       { path: "doctors", component: <DeputyDirectorDoctors /> },
       { path: "reservations", component: <HeadReservations /> },
+      { path: "doctors-data", component: <DeputyDirectorDoctorDatabase /> },
     ],
     sideNav: [
       {
@@ -256,6 +258,13 @@ const roleBasedRoutes = [
         key: "dd-reservations",
         icon: <Icon fontSize="small">book_online_icon</Icon>,
         route: "reservations",
+      },
+      {
+        type: "collapse",
+        name: "База врачей",
+        key: "dd-doctors-database",
+        icon: <Icon fontSize="small">medication</Icon>,
+        route: "doctors-data",
       },
       {
         type: "collapse",
