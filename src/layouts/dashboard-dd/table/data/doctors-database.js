@@ -10,7 +10,7 @@ export default function DoctorsDatabase() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function fetchBonuses() {
+    async function fetchDoctors() {
       try {
         const response = await axiosInstance.get(`/mr/get-all-doctors-with-plan`, {
           headers: {
@@ -30,38 +30,46 @@ export default function DoctorsDatabase() {
           { Header: "Доктор план", accessor: "doctor_plan", align: "left" },
         ];
 
-        const rows = doctors.map((doctor) => ({
-          full_name: (
-            <MDTypography variant="caption" fontWeight="medium">
-              {doctor.full_name}
-            </MDTypography>
-          ),
-          date_birthday: (
-            <MDTypography variant="caption" fontWeight="medium">
-              {doctor.birth_date === null ? "-" : doctor.birth_date}
-            </MDTypography>
-          ),
-          med_org: (
-            <MDTypography variant="caption" fontWeight="medium">
-              {doctor.medical_organization.name}
-            </MDTypography>
-          ),
-          speciality: (
-            <MDTypography variant="caption" fontWeight="medium">
-              {doctor.speciality.name}
-            </MDTypography>
-          ),
-          category: (
-            <MDTypography variant="caption" fontWeight="medium">
-              {doctor.category.name}
-            </MDTypography>
-          ),
-          doctor_plan: (
-            <MDTypography variant="caption" fontWeight="medium">
-              -
-            </MDTypography>
-          ),
-        }));
+        const rows = doctors.map((doctor) => {
+          // Calculate total monthly_plan for each doctor
+          const totalMonthlyPlan = doctor.doctormonthlyplan.reduce(
+            (sum, item) => sum + item.monthly_plan,
+            0
+          );
+
+          return {
+            full_name: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {doctor.full_name}
+              </MDTypography>
+            ),
+            date_birthday: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {doctor.birth_date ? doctor.birth_date : "-"}
+              </MDTypography>
+            ),
+            med_org: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {doctor.medical_organization?.name || "-"}
+              </MDTypography>
+            ),
+            speciality: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {doctor.speciality?.name || "-"}
+              </MDTypography>
+            ),
+            category: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {doctor.category?.name || "-"}
+              </MDTypography>
+            ),
+            doctor_plan: (
+              <MDTypography variant="caption" fontWeight="medium">
+                {totalMonthlyPlan}
+              </MDTypography>
+            ),
+          };
+        });
 
         setData({ columns, rows });
       } catch (error) {
@@ -69,7 +77,7 @@ export default function DoctorsDatabase() {
       }
     }
 
-    fetchBonuses();
+    fetchDoctors();
   }, [accessToken]);
 
   return data;
