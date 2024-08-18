@@ -23,6 +23,10 @@ const DeputyDirectorDoctorsDatabase = () => {
             columns,
             rows,
           }}
+          showTotalEntries={false}
+          isSorted={false}
+          noEndBorder
+          entriesPerPage={{ defaultValue: 1000 }}
         />
       </MDBox>
     </Card>

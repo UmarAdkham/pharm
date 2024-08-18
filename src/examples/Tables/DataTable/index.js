@@ -26,7 +26,7 @@ function DataTable({
   const defaultValue = entriesPerPage.defaultValue ? entriesPerPage.defaultValue : 10; // Set default to 10
   const entries = entriesPerPage.entries
     ? entriesPerPage.entries.map((el) => el.toString())
-    : ["5", "10", "15", "20", "25", "100"]; // Include 100 in the options
+    : ["5", "10", "15", "20", "25", "100", "1000"]; // Include 100, 1000in the options
 
   const columns = useMemo(
     () => [
@@ -260,7 +260,7 @@ function DataTable({
 
 // Setting default values for the props of DataTable
 DataTable.defaultProps = {
-  entriesPerPage: { defaultValue: 10, entries: [5, 10, 15, 20, 25, 100] }, // Set default to 10 and include 100 in options
+  entriesPerPage: { defaultValue: 10, entries: [5, 10, 15, 20, 25, 100, 1000] }, // Set default to 10 and include 100, 1000 in options
   canSearch: false,
   showTotalEntries: true,
   pagination: { variant: "gradient", color: "info" },
