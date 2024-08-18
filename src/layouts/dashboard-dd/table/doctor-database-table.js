@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import MDBox from "../../../components/MDBox";
 import MDTypography from "../../../components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
-import DoctorsDatabase from "./data/doctors-database";
+import DoctorsDatabase from "./data/doctor-database-data.js";
 
 const DeputyDirectorDoctorsDatabase = () => {
   const { columns, rows } = DoctorsDatabase();

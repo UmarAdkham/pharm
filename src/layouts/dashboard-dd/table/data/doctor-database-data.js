@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
 import { useNavigate } from "react-router-dom";
+import Tooltip from "@mui/material/Tooltip"; // Import Tooltip from Material UI
 
 export default function DoctorsDatabase() {
   const [data, setData] = useState({ columns: [], rows: [] });
@@ -37,6 +38,9 @@ export default function DoctorsDatabase() {
             0
           );
 
+          // Determine row background color based on totalMonthlyPlan
+          const rowBackgroundColor = totalMonthlyPlan === 0 ? "#e6e3e3" : "#88f2a1"; // Grey for 0, Green for more than 0
+
           return {
             full_name: (
               <MDTypography variant="caption" fontWeight="medium">
@@ -48,9 +52,17 @@ export default function DoctorsDatabase() {
                 {doctor.birth_date ? doctor.birth_date : "-"}
               </MDTypography>
             ),
-            med_org: (
+            med_org: doctor.medical_organization?.name ? (
+              <Tooltip title={doctor.medical_organization.name} arrow>
+                <MDTypography variant="caption" fontWeight="medium">
+                  {doctor.medical_organization.name.length > 20
+                    ? `${doctor.medical_organization.name.substring(0, 15)}...`
+                    : doctor.medical_organization.name}
+                </MDTypography>
+              </Tooltip>
+            ) : (
               <MDTypography variant="caption" fontWeight="medium">
-                {doctor.medical_organization?.name || "-"}
+                -
               </MDTypography>
             ),
             speciality: (
@@ -68,6 +80,7 @@ export default function DoctorsDatabase() {
                 {totalMonthlyPlan}
               </MDTypography>
             ),
+            rowBackgroundColor, // Add the background color to each row
           };
         });
 

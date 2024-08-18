@@ -10,7 +10,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 
 // Dashboard components
 import { Outlet, useNavigate } from "react-router-dom";
-import DeputyDirectorDoctorsDatabase from "../table/doctor-database";
+import DeputyDirectorDoctorsDatabase from "../table/doctor-database-table";
 
 function DeputyDirectorDoctorDatabase() {
   const navigate = useNavigate();
