@@ -10,7 +10,7 @@ import DataTable from "examples/Tables/DataTable";
 import useReservationData from "./data/reservation-data";
 import axiosInstance from "services/axiosInstance";
 import { useSelector } from "react-redux";
-import { Button, Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, Button, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import OverallReservationValues from "layouts/dashboard-dd/components/overall-reserve-values";
 
@@ -32,6 +32,13 @@ const monthNames = [
 import userRoles from "constants/userRoles";
 import parseDate from "services/parseDate";
 
+const entityTypes = [
+  { label: "Все", value: "all" },
+  { label: "Аптеки", value: "pharmacy" },
+  { label: "Больницы", value: "hospital" },
+  { label: "Оптовики", value: "wholesale" },
+];
+
 function ReservationTable() {
   const navigate = useNavigate();
   const [medReps, setMedReps] = useState([]);
@@ -43,6 +50,7 @@ function ReservationTable() {
   const [selectedMedRep, setSelectedMedRep] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedEntity, setSelectedEntity] = useState(null);
+  const [selectedType, setSelectedType] = useState("all");
   const [reservationApiPath, setReservationApiPath] = useState("head/get-all-reservations");
   const [filteredRows, setFilteredRows] = useState([]);
   const { accessToken, userRole } = useSelector((state) => state.auth);
@@ -63,7 +71,7 @@ function ReservationTable() {
 
   useEffect(() => {
     filterRows();
-  }, [rows, selectedMedRep, selectedMonth, selectedEntity]);
+  }, [rows, selectedMedRep, selectedMonth, selectedEntity, selectedType]);
 
   const fetchMedicalReps = async () => {
     try {
@@ -155,6 +163,10 @@ function ReservationTable() {
     setSelectedEntity(newValue);
   };
 
+  const handleTypeChange = (event) => {
+    setSelectedType(event.target.value);
+  };
+
   const filterRows = () => {
     let filtered = rows;
     if (selectedMedRep) {
@@ -171,7 +183,7 @@ function ReservationTable() {
       );
     }
     if (selectedEntity) {
-      if (selectedEntity.type == "Оптовик") {
+      if (selectedEntity.type === "Оптовик") {
         filtered = filtered.filter((row) => row.wholesale?.company_name === selectedEntity.name);
       } else {
         filtered = filtered.filter(
@@ -180,6 +192,9 @@ function ReservationTable() {
             row.hospital?.company_name === selectedEntity.company_name
         );
       }
+    }
+    if (selectedType !== "all") {
+      filtered = filtered.filter((row) => row[selectedType.toLowerCase()] !== undefined);
     }
     setFilteredRows(filtered);
   };
@@ -227,7 +242,7 @@ function ReservationTable() {
           <Autocomplete
             options={combinedEntities}
             getOptionLabel={(option) =>
-              `${option.type == "Оптовик" ? option.name : option.company_name} (${option.type})`
+              `${option.type === "Оптовик" ? option.name : option.company_name} (${option.type})`
             }
             value={selectedEntity}
             onChange={handleEntityChange}
@@ -236,6 +251,21 @@ function ReservationTable() {
             )}
             sx={{ minWidth: 200 }}
           />
+          <FormControl variant="outlined" size="small" sx={{ minWidth: 150 }}>
+            <InputLabel>Тип</InputLabel>
+            <Select
+              value={selectedType}
+              onChange={handleTypeChange}
+              sx={{ height: "35px" }}
+              label="Тип"
+            >
+              {entityTypes.map((type) => (
+                <MenuItem key={type.value} value={type.value}>
+                  {type.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           {userRole === userRoles.HEAD_OF_ORDERS && (
             <Button
               variant="contained"
