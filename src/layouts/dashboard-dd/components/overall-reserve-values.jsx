@@ -53,6 +53,12 @@ const OverallReservationValues = ({ overall }) => {
             <span style={{ textTransform: "lowercase" }}>сум</span>{" "}
           </Typography>
         </Grid>
+        <Grid item>
+          <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#a0d8eb", p: 1 }}>
+            Сумма брони: {overall.debt?.toLocaleString("ru-RU")}{" "}
+            <span style={{ textTransform: "lowercase" }}>сум</span>{" "}
+          </Typography>
+        </Grid>
       </Grid>
     </Box>
   );

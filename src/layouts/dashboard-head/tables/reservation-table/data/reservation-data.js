@@ -115,7 +115,7 @@ export default function useReservationData(apiPath, month) {
         numberOfInvoices: filteredReservations.length,
         invoiceAmount: filteredReservations.reduce((sum, r) => sum + r.total_payable_with_nds, 0),
         profit: filteredReservations.reduce((sum, r) => sum + r.profit, 0),
-        debt: filteredReservations.reduce((sum, r) => sum + r.debt, 0),
+        debt: filteredReservations.reduce((sum, r) => sum + (r.checked ? 0 : r.debt), 0),
         promo: filteredReservations.reduce((sum, r) => {
           const promo = r.pharmacy?.promo || r.hospital?.promo || 0;
           return sum + promo;

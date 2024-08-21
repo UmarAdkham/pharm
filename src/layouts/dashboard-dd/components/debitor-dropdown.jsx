@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { MenuItem, Select, FormControl, Box, Typography } from "@mui/material";
-import axios from "axios";
+import axiosInstance from "services/axiosInstance";
 
 const DebitorDropdown = () => {
   const [selectedValues, setSelectedValues] = useState({});
@@ -9,7 +9,7 @@ const DebitorDropdown = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://it-club.uz/head/get-all-reservations");
+        const response = await axiosInstance.get("head/get-all-reservations");
         const data = response.data;
 
         // Calculate total debt per manufactured company
@@ -18,7 +18,7 @@ const DebitorDropdown = () => {
             item.pharmacy?.manufactured_company ||
             item.hospital?.manufactured_company ||
             item.wholesale?.manufactured_company;
-          if (company) {
+          if (company && item.checked) {
             if (!acc[company]) {
               acc[company] = 0;
             }
@@ -48,7 +48,7 @@ const DebitorDropdown = () => {
           displayEmpty
           sx={{
             bgcolor: "#f77c48",
-            height: "40px",
+            height: "35px",
             "& .MuiSelect-select": {
               padding: "8px 16px",
               display: "flex",
