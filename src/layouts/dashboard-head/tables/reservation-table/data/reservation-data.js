@@ -160,6 +160,7 @@ export default function useReservationData(apiPath, month) {
         return {
           ...rsrv,
           isChecked: checked,
+          debtValue: rsrv.debt,
           expiry_date: (
             <div style={{ display: "flex", alignItems: "center" }}>
               <MDTypography variant="caption" fontWeight="medium">
@@ -242,7 +243,7 @@ export default function useReservationData(apiPath, month) {
           ),
           debt: (
             <MDTypography variant="caption" fontWeight="medium">
-              {rsrv.debt.toLocaleString("ru-RU")}
+              {rsrv.checked ? rsrv.debt.toLocaleString("ru-RU") : 0}
             </MDTypography>
           ),
           discount: (

@@ -207,10 +207,7 @@ function ReservationTable() {
       (sum, r) => sum + parseFloat(r.profit.props.children.replace(/\D/g, "")),
       0
     ),
-    debt: filteredRows.reduce(
-      (sum, r) => sum + parseFloat(r.isChecked ? 0 : r.debt.props.children.replace(/\D/g, "")),
-      0
-    ),
+    debt: filteredRows.reduce((sum, r) => sum + parseFloat(r.isChecked ? 0 : r.debtValue), 0),
     promo: filteredRows.reduce(
       (sum, r) => sum + parseFloat(r.promo?.props?.children.replace(/\D/g, "") || 0),
       0
