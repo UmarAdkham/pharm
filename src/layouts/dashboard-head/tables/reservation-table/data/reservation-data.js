@@ -139,6 +139,7 @@ export default function useReservationData(apiPath, month) {
         );
       }
 
+      let expired_debt = 0;
       const rows = filteredReservations.map((rsrv) => {
         const entity = rsrv.pharmacy || rsrv.hospital || rsrv.wholesale;
         const checked = rsrv.checked;
@@ -146,10 +147,15 @@ export default function useReservationData(apiPath, month) {
           new Date(),
           new Date(rsrv.date_implementation)
         );
+        // Make the row red if the implementation date was 31/60 days before and there is debt
         const rowBackgroundColor =
           daysSinceImplementation > (getRsrvType(rsrv) === "wholesale" ? 60 : 31) && rsrv.debt > 0
             ? "#f77c48"
             : "white";
+
+        if (rowBackgroundColor === "#f77c48") {
+          expired_debt += rsrv.debt;
+        }
 
         return {
           ...rsrv,
@@ -411,7 +417,7 @@ export default function useReservationData(apiPath, month) {
           rowBackgroundColor,
         };
       });
-      setData({ columns, rows });
+      setData({ columns, rows, expired_debt });
     } catch (error) {
       console.error("Error fetching reservations", error);
     }

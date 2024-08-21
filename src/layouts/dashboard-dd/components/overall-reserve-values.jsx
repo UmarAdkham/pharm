@@ -60,6 +60,12 @@ const OverallReservationValues = ({ overall, filteredRows }) => {
             <span style={{ textTransform: "lowercase" }}>сум</span>{" "}
           </Typography>
         </Grid>
+        <Grid item>
+          <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#a0d8eb", p: 1 }}>
+            Прос Дебиторка: {overall.expired_debt?.toLocaleString("ru-RU")}{" "}
+            <span style={{ textTransform: "lowercase" }}>сум</span>{" "}
+          </Typography>
+        </Grid>
       </Grid>
     </Box>
   );
@@ -72,6 +78,7 @@ OverallReservationValues.propTypes = {
     profit: PropTypes.number.isRequired,
     debt: PropTypes.number.isRequired,
     promo: PropTypes.number,
+    expired_debt: PropTypes.number,
   }).isRequired,
   filteredRows: PropTypes.array,
 };

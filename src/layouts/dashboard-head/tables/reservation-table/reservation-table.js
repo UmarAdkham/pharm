@@ -55,10 +55,8 @@ function ReservationTable() {
   const [filteredRows, setFilteredRows] = useState([]);
   const { accessToken, userRole } = useSelector((state) => state.auth);
 
-  const { columns, rows, ExpiryDateDialogComponent, SnackbarComponent } = useReservationData(
-    reservationApiPath,
-    selectedMonth
-  );
+  const { columns, rows, expired_debt, ExpiryDateDialogComponent, SnackbarComponent } =
+    useReservationData(reservationApiPath, selectedMonth);
 
   useEffect(() => {
     fetchMedicalReps();
@@ -217,6 +215,7 @@ function ReservationTable() {
       (sum, r) => sum + parseFloat(r.promo?.props?.children.replace(/\D/g, "") || 0),
       0
     ),
+    expired_debt,
   };
 
   return (
