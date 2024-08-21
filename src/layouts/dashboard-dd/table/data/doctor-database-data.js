@@ -3,10 +3,12 @@ import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
 import { useNavigate } from "react-router-dom";
-import Tooltip from "@mui/material/Tooltip"; // Import Tooltip from Material UI
+import Tooltip from "@mui/material/Tooltip";
+import CircularProgress from "@mui/material/CircularProgress"; // Import CircularProgress
 
-export default function DoctorsDatabase() {
+export default function useDoctorDatabaseData() {
   const [data, setData] = useState({ columns: [], rows: [] });
+  const [loading, setLoading] = useState(true); // Loading state
   const accessToken = useSelector((state) => state.auth.accessToken);
   const navigate = useNavigate();
 
@@ -20,7 +22,6 @@ export default function DoctorsDatabase() {
         });
 
         const doctors = response.data;
-        console.log(doctors);
 
         const columns = [
           { Header: "Фамилия Имя", accessor: "full_name", align: "left" },
@@ -32,14 +33,12 @@ export default function DoctorsDatabase() {
         ];
 
         const rows = doctors.map((doctor) => {
-          // Calculate total monthly_plan for each doctor
           const totalMonthlyPlan = doctor.doctormonthlyplan.reduce(
             (sum, item) => sum + item.monthly_plan,
             0
           );
 
-          // Determine row background color based on totalMonthlyPlan
-          const rowBackgroundColor = totalMonthlyPlan === 0 ? "#e6e3e3" : "#88f2a1"; // Grey for 0, Green for more than 0
+          const rowBackgroundColor = totalMonthlyPlan === 0 ? "#e6e3e3" : "#88f2a1";
 
           return {
             full_name: (
@@ -80,18 +79,20 @@ export default function DoctorsDatabase() {
                 {totalMonthlyPlan}
               </MDTypography>
             ),
-            rowBackgroundColor, // Add the background color to each row
+            rowBackgroundColor,
           };
         });
 
         setData({ columns, rows });
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false); // Set loading to false after data is fetched
       }
     }
 
     fetchDoctors();
   }, [accessToken]);
 
-  return data;
+  return { data, loading };
 }

@@ -1,12 +1,15 @@
 import Card from "@mui/material/Card";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import MDBox from "../../../components/MDBox";
 import MDTypography from "../../../components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
-import DoctorsDatabase from "./data/doctor-database-data.js";
+import CircularProgress from "@mui/material/CircularProgress"; // Import CircularProgress
+import useDoctorDatabaseData from "./data/doctor-database-data.js";
 
 const DeputyDirectorDoctorsDatabase = () => {
-  const { columns, rows } = DoctorsDatabase();
+  const { data, loading } = useDoctorDatabaseData();
+  const { columns, rows } = data;
+
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
@@ -18,16 +21,22 @@ const DeputyDirectorDoctorsDatabase = () => {
       </MDBox>
 
       <MDBox>
-        <DataTable
-          table={{
-            columns,
-            rows,
-          }}
-          showTotalEntries={false}
-          isSorted={false}
-          noEndBorder
-          entriesPerPage={{ defaultValue: 1000 }}
-        />
+        {loading ? (
+          <MDBox display="flex" justifyContent="center" alignItems="center" p={3}>
+            <CircularProgress />
+          </MDBox>
+        ) : (
+          <DataTable
+            table={{
+              columns,
+              rows,
+            }}
+            showTotalEntries={false}
+            isSorted={false}
+            noEndBorder
+            entriesPerPage={{ defaultValue: 1000 }}
+          />
+        )}
       </MDBox>
     </Card>
   );
