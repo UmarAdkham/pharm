@@ -37,6 +37,7 @@ function ReservationTable() {
   const [medReps, setMedReps] = useState([]);
   const [pharmacies, setPharmacies] = useState([]);
   const [hospitals, setHospitals] = useState([]);
+  const [wholesales, setWholesales] = useState([]);
   const [combinedEntities, setCombinedEntities] = useState([]);
   const [selectedPharmacy, setSelectedPharmacy] = useState("all");
   const [selectedMedRep, setSelectedMedRep] = useState(null);
@@ -53,11 +54,12 @@ function ReservationTable() {
     fetchMedicalReps();
     fetchPharmacies();
     fetchHospitals();
+    fetchWholesales();
   }, []);
 
   useEffect(() => {
     combineEntities();
-  }, [hospitals, pharmacies]);
+  }, [hospitals, pharmacies, wholesales]);
 
   useEffect(() => {
     filterRows();
@@ -65,7 +67,7 @@ function ReservationTable() {
 
   const fetchMedicalReps = async () => {
     try {
-      const response = await axiosInstance.get("https://it-club.uz/common/get-med-reps", {
+      const response = await axiosInstance.get("common/get-med-reps", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -78,7 +80,7 @@ function ReservationTable() {
 
   const fetchPharmacies = async () => {
     try {
-      const response = await axiosInstance.get("https://it-club.uz/mr/get-all-pharmacy", {
+      const response = await axiosInstance.get("mr/get-all-pharmacy", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -89,9 +91,9 @@ function ReservationTable() {
     }
   };
 
-  const fetchHospitals = async (medRepId) => {
+  const fetchHospitals = async () => {
     try {
-      const response = await axiosInstance.get(`https://it-club.uz/mr/get-hospitals`, {
+      const response = await axiosInstance.get(`mr/get-hospitals`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -99,6 +101,19 @@ function ReservationTable() {
       setHospitals(response.data);
     } catch (error) {
       console.error("Failed to fetch hospitals", error);
+    }
+  };
+
+  const fetchWholesales = async () => {
+    try {
+      const response = await axiosInstance.get(`ws/get-wholesales`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      setWholesales(response.data);
+    } catch (error) {
+      console.error("Failed to fetch wholesales", error);
     }
   };
 
@@ -111,6 +126,10 @@ function ReservationTable() {
       ...pharmacies.map((pharmacy) => ({
         ...pharmacy,
         type: "Аптека",
+      })),
+      ...wholesales.map((wholesale) => ({
+        ...wholesale,
+        type: "Оптовик",
       })),
     ];
     setCombinedEntities(combined);
@@ -152,11 +171,15 @@ function ReservationTable() {
       );
     }
     if (selectedEntity) {
-      filtered = filtered.filter(
-        (row) =>
-          row.pharmacy?.company_name === selectedEntity.company_name ||
-          row.hospital?.company_name === selectedEntity.company_name
-      );
+      if (selectedEntity.type == "Оптовик") {
+        filtered = filtered.filter((row) => row.wholesale?.company_name === selectedEntity.name);
+      } else {
+        filtered = filtered.filter(
+          (row) =>
+            row.pharmacy?.company_name === selectedEntity.company_name ||
+            row.hospital?.company_name === selectedEntity.company_name
+        );
+      }
     }
     setFilteredRows(filtered);
   };
@@ -203,7 +226,9 @@ function ReservationTable() {
           />
           <Autocomplete
             options={combinedEntities}
-            getOptionLabel={(option) => `${option.company_name} (${option.type})`}
+            getOptionLabel={(option) =>
+              `${option.type == "Оптовик" ? option.name : option.company_name} (${option.type})`
+            }
             value={selectedEntity}
             onChange={handleEntityChange}
             renderInput={(params) => (
