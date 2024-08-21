@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Grid, Box, Typography } from "@mui/material";
+import DebitorDropdown from "./debitor-dropdown";
 
 const OverallReservationValues = ({ overall }) => {
   return (
@@ -43,14 +44,12 @@ const OverallReservationValues = ({ overall }) => {
           </Typography>
         </Grid>
         <Grid item>
-          <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#f77c48", p: 1 }}>
-            Дебитор: {overall.debt?.toLocaleString("ru-RU")}
-            <span style={{ textTransform: "lowercase" }}>сум</span>{" "}
-          </Typography>
+          {/* Replace the Typography with DebitorDropdown */}
+          <DebitorDropdown />
         </Grid>
         <Grid item>
           <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#f2cc45", p: 1 }}>
-            Промо: {overall.promo?.toLocaleString("ru-RU")}
+            Промо: {overall.promo?.toLocaleString("ru-RU")}{" "}
             <span style={{ textTransform: "lowercase" }}>сум</span>{" "}
           </Typography>
         </Grid>
