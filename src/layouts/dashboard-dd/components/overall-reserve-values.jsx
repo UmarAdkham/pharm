@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import { Grid, Box, Typography } from "@mui/material";
 import DebitorDropdown from "./debitor-dropdown";
 
-const OverallReservationValues = ({ overall }) => {
+const OverallReservationValues = ({ overall, filteredRows }) => {
+  console.log(filteredRows);
   return (
     <Box
       p={2}
@@ -45,7 +46,7 @@ const OverallReservationValues = ({ overall }) => {
         </Grid>
         <Grid item>
           {/* Replace the Typography with DebitorDropdown */}
-          <DebitorDropdown />
+          <DebitorDropdown filteredRows={filteredRows} />
         </Grid>
         <Grid item>
           <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#f2cc45", p: 1 }}>
@@ -72,6 +73,7 @@ OverallReservationValues.propTypes = {
     debt: PropTypes.number.isRequired,
     promo: PropTypes.number,
   }).isRequired,
+  filteredRows: PropTypes.array,
 };
 
 export default OverallReservationValues;

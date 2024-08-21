@@ -40,13 +40,7 @@ export default function useReservationData(apiPath, month) {
   const handleClose = () => {
     setOpen(false);
   };
-  const [overall, setOverall] = useState({
-    numberOfInvoices: 0,
-    invoiceAmount: 0,
-    profit: 0,
-    debt: 0,
-    promo: 0,
-  });
+
   const { accessToken, userRole } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -111,17 +105,6 @@ export default function useReservationData(apiPath, month) {
         return b.id - a.id;
       });
 
-      const overallValues = {
-        numberOfInvoices: filteredReservations.length,
-        invoiceAmount: filteredReservations.reduce((sum, r) => sum + r.total_payable_with_nds, 0),
-        profit: filteredReservations.reduce((sum, r) => sum + r.profit, 0),
-        debt: filteredReservations.reduce((sum, r) => sum + (r.checked ? 0 : r.debt), 0),
-        promo: filteredReservations.reduce((sum, r) => {
-          const promo = r.pharmacy?.promo || r.hospital?.promo || 0;
-          return sum + promo;
-        }, 0),
-      };
-
       let columns = [
         { Header: "Дата реализаци", accessor: "expiry_date", align: "left" },
         { Header: "Сумма с/ф", accessor: "total_payable", align: "left" },
@@ -158,8 +141,10 @@ export default function useReservationData(apiPath, month) {
 
       const rows = filteredReservations.map((rsrv) => {
         const entity = rsrv.pharmacy || rsrv.hospital || rsrv.wholesale;
+        const checked = rsrv.checked;
         return {
           ...rsrv,
+          isChecked: checked,
           expiry_date: (
             <div style={{ display: "flex", alignItems: "center" }}>
               <MDTypography variant="caption" fontWeight="medium">
@@ -417,7 +402,6 @@ export default function useReservationData(apiPath, month) {
         };
       });
       setData({ columns, rows });
-      setOverall(overallValues);
     } catch (error) {
       console.error("Error fetching reservations", error);
     }
@@ -582,7 +566,6 @@ export default function useReservationData(apiPath, month) {
 
   return {
     ...data,
-    overall,
     ExpiryDateDialogComponent: (
       <>
         <ExpiryDateDialog

@@ -55,8 +55,10 @@ function ReservationTable() {
   const [filteredRows, setFilteredRows] = useState([]);
   const { accessToken, userRole } = useSelector((state) => state.auth);
 
-  const { columns, rows, ExpiryDateDialogComponent, SnackbarComponent, overall } =
-    useReservationData(reservationApiPath, selectedMonth);
+  const { columns, rows, ExpiryDateDialogComponent, SnackbarComponent } = useReservationData(
+    reservationApiPath,
+    selectedMonth
+  );
 
   useEffect(() => {
     fetchMedicalReps();
@@ -199,6 +201,24 @@ function ReservationTable() {
     setFilteredRows(filtered);
   };
 
+  // Calculate overall values based on the filtered rows
+  const overall = {
+    numberOfInvoices: filteredRows.length,
+    invoiceAmount: filteredRows.reduce((sum, r) => sum + parseFloat(r.total_payable_with_nds), 0),
+    profit: filteredRows.reduce(
+      (sum, r) => sum + parseFloat(r.profit.props.children.replace(/\D/g, "")),
+      0
+    ),
+    debt: filteredRows.reduce(
+      (sum, r) => sum + parseFloat(r.isChecked ? 0 : r.debt.props.children.replace(/\D/g, "")),
+      0
+    ),
+    promo: filteredRows.reduce(
+      (sum, r) => sum + parseFloat(r.promo?.props?.children.replace(/\D/g, "") || 0),
+      0
+    ),
+  };
+
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
@@ -280,7 +300,7 @@ function ReservationTable() {
           )}
         </MDBox>
       </MDBox>
-      <OverallReservationValues overall={overall} />
+      <OverallReservationValues overall={overall} filteredRows={filteredRows} />
       <MDBox>
         <DataTable
           table={{

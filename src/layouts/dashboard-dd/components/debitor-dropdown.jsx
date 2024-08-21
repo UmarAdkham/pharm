@@ -1,44 +1,44 @@
 import React, { useState, useEffect } from "react";
-import { MenuItem, Select, FormControl, Box, Typography } from "@mui/material";
-import axiosInstance from "services/axiosInstance";
+import { MenuItem, Select, FormControl, Box } from "@mui/material";
+import PropTypes from "prop-types";
 
-const DebitorDropdown = () => {
+const DebitorDropdown = ({ filteredRows }) => {
   const [selectedValues, setSelectedValues] = useState({});
   const [totalDebitor, setTotalDebitor] = useState(0);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosInstance.get("head/get-all-reservations");
-        const data = response.data;
+    const calculateDebt = () => {
+      if (!filteredRows || filteredRows.length === 0) return;
+      console.log(filteredRows);
 
-        // Calculate total debt per manufactured company
-        const companyDebts = data.reduce((acc, item) => {
-          const company =
-            item.pharmacy?.manufactured_company ||
-            item.hospital?.manufactured_company ||
-            item.wholesale?.manufactured_company;
-          if (company && item.checked) {
-            if (!acc[company]) {
-              acc[company] = 0;
-            }
-            acc[company] += item.debt;
+      // Calculate total debt per manufactured company based on filteredRows
+      const companyDebts = filteredRows.reduce((acc, item) => {
+        const company =
+          item.pharmacy?.manufactured_company ||
+          item.hospital?.manufactured_company ||
+          item.wholesale?.manufactured_company;
+
+        const debt = parseFloat(item.debt?.props?.children.replace(/\D/g, "") || 0);
+
+        if (company && item.isChecked) {
+          // Assuming "Проверено" means checked
+          if (!acc[company]) {
+            acc[company] = 0;
           }
-          return acc;
-        }, {});
+          acc[company] += debt;
+        }
+        return acc;
+      }, {});
 
-        setSelectedValues(companyDebts);
+      setSelectedValues(companyDebts);
 
-        // Calculate the total debt
-        const totalDebt = Object.values(companyDebts).reduce((acc, value) => acc + value, 0);
-        setTotalDebitor(totalDebt);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+      // Calculate the total debt
+      const totalDebt = Object.values(companyDebts || {}).reduce((acc, value) => acc + value, 0);
+      setTotalDebitor(totalDebt);
     };
 
-    fetchData();
-  }, []);
+    calculateDebt();
+  }, [filteredRows]);
 
   return (
     <Box sx={{ position: "relative", display: "inline-block" }}>
@@ -75,6 +75,10 @@ const DebitorDropdown = () => {
       </FormControl>
     </Box>
   );
+};
+
+DebitorDropdown.propTypes = {
+  filteredRows: PropTypes.array.isRequired,
 };
 
 export default DebitorDropdown;
