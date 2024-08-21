@@ -127,10 +127,6 @@ export default function useReservationData(apiPath, month) {
         { Header: "Сумма с/ф", accessor: "total_payable", align: "left" },
         { Header: "Номер с/ф", accessor: "invoice_number", align: "left" },
         { Header: "Контрагент", accessor: "company_name", align: "left" },
-        { Header: "Регион", accessor: "region", align: "left" },
-        { Header: "МП", accessor: "med_rep", align: "left" },
-        { Header: "Тип К/А", accessor: "type", align: "center" },
-        { Header: "ИНН", accessor: "ibt", align: "center" },
         { Header: "Поступление", accessor: "profit", align: "center" },
         { Header: "Дебитор", accessor: "debt", align: "center" },
         { Header: "Скидка %", accessor: "discount", align: "center" },
@@ -138,6 +134,10 @@ export default function useReservationData(apiPath, month) {
         { Header: "Одобрено", accessor: "check", align: "left" },
         { Header: "Производитель", accessor: "man_company", align: "left" },
         { Header: "Промо", accessor: "promo", align: "left" },
+        { Header: "Регион", accessor: "region", align: "left" },
+        { Header: "МП", accessor: "med_rep", align: "left" },
+        { Header: "Тип К/А", accessor: "type", align: "center" },
+        { Header: "ИНН", accessor: "ibt", align: "center" },
         { Header: "Скачать", accessor: "download", align: "center" },
       ];
 
@@ -145,10 +145,14 @@ export default function useReservationData(apiPath, month) {
         columns.splice(
           -1,
           0,
+          { Header: "Удалить", accessor: "delete", align: "center" } // Added delete column
+        );
+        columns.splice(
+          -6,
+          0,
           { Header: "Действие", accessor: "add", align: "left" },
           { Header: "История Поступлений", accessor: "view", align: "left" },
-          { Header: "Список продуктов", accessor: "product_list", align: "center" },
-          { Header: "Удалить", accessor: "delete", align: "center" } // Added delete column
+          { Header: "Список продуктов", accessor: "product_list", align: "center" }
         );
       }
 
@@ -200,9 +204,16 @@ export default function useReservationData(apiPath, month) {
             </MDTypography>
           ),
           company_name: (
-            <MDTypography variant="caption" fontWeight="medium">
-              {entity.company_name}
-            </MDTypography>
+            // <MDTypography variant="caption" fontWeight="medium">
+            //   {entity.company_name}
+            // </MDTypography>
+            <Tooltip title={entity.company_name} arrow>
+              <MDTypography variant="caption" fontWeight="medium">
+                {entity.company_name.length > 20
+                  ? `${entity.company_name.substring(0, 20)}...`
+                  : entity.company_name}
+              </MDTypography>
+            </Tooltip>
           ),
           region: (
             <MDTypography variant="caption" fontWeight="medium">
