@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import MDTypography from "components/MDTypography";
-import { format } from "date-fns";
+import { format, differenceInDays } from "date-fns"; // Importing differenceInDays
 import { IconButton, Switch, Tooltip, Snackbar, Alert, Button } from "@mui/material";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import EditIcon from "@mui/icons-material/Edit";
@@ -142,6 +142,15 @@ export default function useReservationData(apiPath, month) {
       const rows = filteredReservations.map((rsrv) => {
         const entity = rsrv.pharmacy || rsrv.hospital || rsrv.wholesale;
         const checked = rsrv.checked;
+        const daysSinceImplementation = differenceInDays(
+          new Date(),
+          new Date(rsrv.date_implementation)
+        );
+        const rowBackgroundColor =
+          daysSinceImplementation > (getRsrvType(rsrv) === "wholesale" ? 60 : 31) && rsrv.debt > 0
+            ? "#f77c48"
+            : "white";
+
         return {
           ...rsrv,
           isChecked: checked,
@@ -399,6 +408,7 @@ export default function useReservationData(apiPath, month) {
               </IconButton>
             </Tooltip>
           ),
+          rowBackgroundColor,
         };
       });
       setData({ columns, rows });
