@@ -4,7 +4,6 @@ import { Grid, Box, Typography } from "@mui/material";
 import DebitorDropdown from "./debitor-dropdown";
 
 const OverallReservationValues = ({ overall, filteredRows }) => {
-  console.log(filteredRows);
   return (
     <Box
       p={2}

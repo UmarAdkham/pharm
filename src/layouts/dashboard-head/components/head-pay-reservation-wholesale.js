@@ -208,11 +208,6 @@ function HeadPayReservationWholesale() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!selectedMedRep || !selectedPharmacy || !total || !description) {
-      setMessage({ color: "error", content: "Пожалуйста, заполните все поля" });
-      return;
-    }
-
     if (parseInt(totalSum) > parseInt(total + remainderSum)) {
       setMessage({ color: "error", content: "Общая сумма не может быть больше указанной суммы" });
       return;
@@ -235,16 +230,21 @@ function HeadPayReservationWholesale() {
         };
       });
 
+    if (!selectedMedRep || !selectedPharmacy || (!total && objects.length === 0) || !description) {
+      setMessage({ color: "error", content: "Пожалуйста, заполните все поля" });
+      return;
+    }
+
     const payload = {
       med_rep_id: selectedMedRep.id,
       pharmacy_id: selectedPharmacy.id,
-      total: parseInt(total + remainderSum, 10),
+      total: total ? parseInt(total + remainderSum, 10) : 0,
       objects,
       description,
     };
 
     console.log(payload);
-
+    console.log(reservationId);
     try {
       await axiosInstance.post(`head/pay-wholesale-reservation/${reservationId}`, payload, {
         headers: {

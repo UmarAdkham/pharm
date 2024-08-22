@@ -9,7 +9,6 @@ const DebitorDropdown = ({ filteredRows }) => {
   useEffect(() => {
     const calculateDebt = () => {
       if (!filteredRows || filteredRows.length === 0) return;
-      console.log(filteredRows);
 
       // Calculate total debt per manufactured company based on filteredRows
       const companyDebts = filteredRows.reduce((acc, item) => {
