@@ -14,16 +14,12 @@ export default function usePharmacyData(apiPath, onRowClick) {
     id: null,
     company_name: "",
     contact1: "",
-    contact2: "",
     email: "",
     brand_name: "",
     latitude: "",
     longitude: "",
     address: "",
-    bank_account_number: "",
     inter_branch_turnover: "",
-    classification_of_economic_activities: "",
-    VAT_payer_code: "",
     pharmacy_director: "",
     region_id: null,
   });
@@ -37,11 +33,10 @@ export default function usePharmacyData(apiPath, onRowClick) {
   };
 
   const handleSubmit = async (updatedPharmecy) => {
-    console.log("updatedPharmecy -> ", updatedPharmecy);
     try {
       const response = await axiosInstance.patch(
         `https://it-club.uz/mr/update-pharmacy/${updatedPharmecy.id}`,
-        { updatedPharmecy },
+        updatedPharmecy,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -111,12 +106,7 @@ export default function usePharmacyData(apiPath, onRowClick) {
                     id: pharmacy.id,
                     pharmacy_director: pharmacy.pharmacy_director,
                     contact1: pharmacy.contact1,
-                    contact2: pharmacy.contact2,
                     email: pharmacy.email,
-                    bank_account_number: pharmacy.bank_account_number,
-                    classification_of_economic_activities:
-                      pharmacy.classification_of_economic_activities,
-                    VAT_payer_code: pharmacy.VAT_payer_code,
                     brand_name: pharmacy.brand_name,
                     company_name: pharmacy.company_name,
                     inter_branch_turnover: pharmacy.inter_branch_turnover,

@@ -47,14 +47,10 @@ function DeputyDirectorAddPharmacy() {
   const [pharmacyData, setPharmacyData] = useState({
     company_name: "",
     contact1: "",
-    contact2: "",
     email: "",
     address: "",
     brand_name: "",
-    bank_account_number: "",
     inter_branch_turnover: "",
-    classification_of_economic_activities: "",
-    VAT_payer_code: "",
     pharmacy_director: "",
   });
 
@@ -174,6 +170,7 @@ function DeputyDirectorAddPharmacy() {
                   name="company_name"
                   value={pharmacyData.company_name}
                   onChange={handleChange}
+                  required
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -184,16 +181,7 @@ function DeputyDirectorAddPharmacy() {
                   name="contact1"
                   value={pharmacyData.contact1}
                   onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <MDInput
-                  type="text"
-                  label="Контакт 2"
-                  fullWidth
-                  name="contact2"
-                  value={pharmacyData.contact2}
-                  onChange={handleChange}
+                  required
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -204,6 +192,7 @@ function DeputyDirectorAddPharmacy() {
                   name="email"
                   value={pharmacyData.email}
                   onChange={handleChange}
+                  required
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -214,6 +203,7 @@ function DeputyDirectorAddPharmacy() {
                   name="address"
                   value={pharmacyData.address}
                   onChange={handleChange}
+                  required
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -224,46 +214,18 @@ function DeputyDirectorAddPharmacy() {
                   name="brand_name"
                   value={pharmacyData.brand_name}
                   onChange={handleChange}
+                  required
                 />
               </Grid>
               <Grid item xs={12} md={4}>
                 <MDInput
                   type="text"
-                  label="Номер банковского счета"
-                  fullWidth
-                  name="bank_account_number"
-                  value={pharmacyData.bank_account_number}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <MDInput
-                  type="text"
-                  label="Оборот между филиалами"
+                  label="ИНН"
                   fullWidth
                   name="inter_branch_turnover"
                   value={pharmacyData.inter_branch_turnover}
                   onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <MDInput
-                  type="text"
-                  label="Классификация экономических видов деятельности"
-                  fullWidth
-                  name="classification_of_economic_activities"
-                  value={pharmacyData.classification_of_economic_activities}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <MDInput
-                  type="text"
-                  label="Код плательщика НДС"
-                  fullWidth
-                  name="VAT_payer_code"
-                  value={pharmacyData.VAT_payer_code}
-                  onChange={handleChange}
+                  required
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -274,10 +236,11 @@ function DeputyDirectorAddPharmacy() {
                   name="pharmacy_director"
                   value={pharmacyData.pharmacy_director}
                   onChange={handleChange}
+                  required
                 />
               </Grid>
               <Grid item xs={12} md={4}>
-                <FormControl fullWidth>
+                <FormControl fullWidth required>
                   <InputLabel id="regions-label">Регионы</InputLabel>
                   <Select
                     labelId="regions-label"

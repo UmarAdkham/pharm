@@ -30,13 +30,9 @@ const PharmaciesModal = ({ open, handleClose, handleSubmit, pharmaciesToUpdate }
 
   const [companyName, setCompanyName] = useState("");
   const [contact1, setContact1] = useState("");
-  const [contact2, setContact2] = useState("");
   const [email, setEmail] = useState("");
   const [brandName, setBrandName] = useState("");
-  const [bankAccountNumber, setBankAccountNumber] = useState("");
   const [interBranchTurnover, setInterBranchTurnover] = useState("");
-  const [classificationOfEconomicActivities, setClassificationOfEconomicActivities] = useState("");
-  const [vatPayerCode, setVatPayerCode] = useState("");
   const [pharmacyDirector, setPharmacyDirector] = useState("");
 
   useEffect(() => {
@@ -47,19 +43,12 @@ const PharmaciesModal = ({ open, handleClose, handleSubmit, pharmaciesToUpdate }
         setLongitude(pharmaciesToUpdate.longitude);
         setMedRepId(pharmaciesToUpdate.med_rep_id);
         setRegionId(pharmaciesToUpdate.region_id);
-
         setCompanyName(pharmaciesToUpdate.company_name);
         setContact1(pharmaciesToUpdate.contact1);
-        setContact2(pharmaciesToUpdate.contact2);
         setEmail(pharmaciesToUpdate.email);
         setAddress(pharmaciesToUpdate.address);
         setBrandName(pharmaciesToUpdate.brand_name);
-        setBankAccountNumber(pharmaciesToUpdate.bank_account_number);
         setInterBranchTurnover(pharmaciesToUpdate.inter_branch_turnover);
-        setClassificationOfEconomicActivities(
-          pharmaciesToUpdate.classification_of_economic_activities
-        );
-        setVatPayerCode(pharmaciesToUpdate.VAT_payer_code);
         setPharmacyDirector(pharmaciesToUpdate.pharmacy_director);
       }
       fetchRegionsAndReps();
@@ -89,25 +78,29 @@ const PharmaciesModal = ({ open, handleClose, handleSubmit, pharmaciesToUpdate }
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    const updatedPharmecy = {
+    // Start with an empty object
+    const updatedPharmacy = {};
+
+    // Add only non-empty properties to the updatedPharmacy object
+    if (companyName) updatedPharmacy.company_name = companyName;
+    if (contact1) updatedPharmacy.contact1 = contact1;
+    if (email) updatedPharmacy.email = email;
+    if (address) updatedPharmacy.address = address;
+    if (brandName) updatedPharmacy.brand_name = brandName;
+    if (interBranchTurnover) updatedPharmacy.inter_branch_turnover = interBranchTurnover;
+    if (pharmacyDirector) updatedPharmacy.pharmacy_director = pharmacyDirector;
+    if (latitude) updatedPharmacy.latitude = latitude.toString();
+    if (longitude) updatedPharmacy.longitude = longitude.toString();
+    if (region_id) updatedPharmacy.region_id = region_id;
+    if (med_rep_id) updatedPharmacy.med_rep_id = med_rep_id;
+
+    // Spread pharmaciesToUpdate to include any other properties that should be updated
+    const finalPharmacyUpdate = {
       ...pharmaciesToUpdate,
-      company_name: companyName,
-      contact1,
-      contact2,
-      email,
-      address,
-      brand_name: brandName,
-      bank_account_number: bankAccountNumber,
-      inter_branch_turnover: interBranchTurnover,
-      classification_of_economic_activities: classificationOfEconomicActivities,
-      VAT_payer_code: vatPayerCode,
-      pharmacy_director: pharmacyDirector,
-      latitude: latitude.toString(),
-      longitude: longitude.toString(),
-      region_id,
-      med_rep_id,
+      ...updatedPharmacy,
     };
-    handleSubmit(updatedPharmecy);
+
+    handleSubmit(finalPharmacyUpdate);
     handleClose();
   };
 
@@ -166,15 +159,6 @@ const PharmaciesModal = ({ open, handleClose, handleSubmit, pharmaciesToUpdate }
             </Grid>
             <Grid item xs={12} md={4}>
               <MDInput
-                type="text"
-                label="Контакт 2"
-                fullWidth
-                value={contact2}
-                onChange={(e) => setContact2(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <MDInput
                 type="email"
                 label="Email"
                 fullWidth
@@ -203,37 +187,10 @@ const PharmaciesModal = ({ open, handleClose, handleSubmit, pharmaciesToUpdate }
             <Grid item xs={12} md={4}>
               <MDInput
                 type="text"
-                label="Номер банковского счета"
-                fullWidth
-                value={bankAccountNumber}
-                onChange={(e) => setBankAccountNumber(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <MDInput
-                type="text"
-                label="Оборот между филиалами"
+                label="ИНН"
                 fullWidth
                 value={interBranchTurnover}
                 onChange={(e) => setInterBranchTurnover(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <MDInput
-                type="text"
-                label="Классификация экономических видов деятельности"
-                fullWidth
-                value={classificationOfEconomicActivities}
-                onChange={(e) => setClassificationOfEconomicActivities(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <MDInput
-                type="text"
-                label="Код плательщика НДС"
-                fullWidth
-                value={vatPayerCode}
-                onChange={(e) => setVatPayerCode(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} md={4}>
