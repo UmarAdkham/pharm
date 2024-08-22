@@ -165,6 +165,7 @@ export default function useReservationData(apiPath, month) {
           ...rsrv,
           isChecked: checked,
           debtValue: rsrv.debt,
+          invoice_number_value: rsrv.invoice_number,
           expiry_date: (
             <div style={{ display: "flex", alignItems: "center" }}>
               <MDTypography variant="caption" fontWeight="medium">

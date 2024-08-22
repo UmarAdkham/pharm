@@ -10,7 +10,7 @@ import DataTable from "examples/Tables/DataTable";
 import useReservationData from "./data/reservation-data";
 import axiosInstance from "services/axiosInstance";
 import { useSelector } from "react-redux";
-import { Autocomplete, Button, TextField } from "@mui/material";
+import { Autocomplete, Button, TextField, Tooltip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import OverallReservationValues from "layouts/dashboard-dd/components/overall-reserve-values";
 
@@ -51,6 +51,7 @@ function ReservationTable() {
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedEntity, setSelectedEntity] = useState(null);
   const [selectedType, setSelectedType] = useState("all");
+  const [invoiceNumber, setInvoiceNumber] = useState("");
   const [reservationApiPath, setReservationApiPath] = useState("head/get-all-reservations");
   const [filteredRows, setFilteredRows] = useState([]);
   const { accessToken, userRole } = useSelector((state) => state.auth);
@@ -167,6 +168,14 @@ function ReservationTable() {
     setSelectedType(event.target.value);
   };
 
+  const handleInvoiceNumberChange = (event) => {
+    setInvoiceNumber(event.target.value);
+  };
+
+  const handleSearchByInvoiceNumber = () => {
+    filterRows();
+  };
+
   const filterRows = () => {
     let filtered = rows;
     if (selectedMedRep) {
@@ -196,6 +205,11 @@ function ReservationTable() {
     if (selectedType !== "all") {
       filtered = filtered.filter((row) => row[selectedType.toLowerCase()] !== undefined);
     }
+    if (invoiceNumber) {
+      filtered = filtered.filter((row) =>
+        row.invoice_number_value.toString().includes(invoiceNumber)
+      );
+    }
     setFilteredRows(filtered);
   };
 
@@ -223,7 +237,7 @@ function ReservationTable() {
             Брони
           </MDTypography>
         </MDBox>
-        <MDBox display="flex" gap={2}>
+        <MDBox display="flex" alignItems="center" gap={2}>
           <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
             <InputLabel>Месяц</InputLabel>
             <Select
@@ -282,11 +296,39 @@ function ReservationTable() {
               ))}
             </Select>
           </FormControl>
+          <MDBox display="flex" alignItems="center" gap={1}>
+            <TextField
+              label="Номер счета"
+              type="number"
+              value={invoiceNumber}
+              onChange={handleInvoiceNumberChange}
+              onKeyPress={(event) => {
+                if (event.key === "Enter") {
+                  handleSearchByInvoiceNumber();
+                }
+              }}
+              size="small"
+              sx={{ minWidth: 150 }}
+            />
+            <Tooltip title={invoiceNumber ? "" : "Сперва введите номер счета"} arrow>
+              <span>
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={handleSearchByInvoiceNumber}
+                  sx={{ height: "35px", color: "white" }}
+                  disabled={!invoiceNumber} // Disable if invoiceNumber is empty
+                >
+                  Поиск
+                </Button>
+              </span>
+            </Tooltip>
+          </MDBox>
           {userRole === userRoles.HEAD_OF_ORDERS && (
             <Button
               variant="contained"
               color="success"
-              sx={{ color: "white" }}
+              sx={{ color: "white", minWidth: 100 }}
               onClick={() => {
                 navigate("/head/add-reservation");
               }}
