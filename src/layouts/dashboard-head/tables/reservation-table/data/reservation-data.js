@@ -149,8 +149,12 @@ export default function useReservationData(apiPath, month) {
         );
         // Make the row red if the implementation date was 31/60 days before and there is debt
         const rowBackgroundColor =
-          daysSinceImplementation > (getRsrvType(rsrv) === "wholesale" ? 60 : 31) && rsrv.debt > 0
+          rsrv.checked &&
+          daysSinceImplementation > (getRsrvType(rsrv) === "wholesale" ? 60 : 30) &&
+          rsrv.debt > 5000
             ? "#f77c48"
+            : rsrv.checked && rsrv.debt < 5000
+            ? "#88f2a1"
             : "white";
 
         if (rowBackgroundColor === "#f77c48") {
