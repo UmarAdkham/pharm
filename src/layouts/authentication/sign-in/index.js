@@ -57,9 +57,6 @@ function Basic() {
       );
 
       setMessage({ color: "success", content: "Вход выполнен успешно! Перенаправление..." });
-      setTimeout(() => {
-        navigate(roleBasedRedirect[response.data.role]);
-      }, 2000); // Redirect to dashboard after 2 seconds
     } catch (error) {
       // Handle errors here
       setMessage({
