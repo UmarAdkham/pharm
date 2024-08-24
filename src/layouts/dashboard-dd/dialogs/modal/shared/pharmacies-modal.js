@@ -17,6 +17,7 @@ import Grid from "@mui/material/Grid";
 // Authentication layout components
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useSelector } from "react-redux";
+import MapComponent from "layouts/dashboard-dd/components/map-component";
 
 const PharmaciesModal = ({ open, handleClose, handleSubmit, pharmaciesToUpdate }) => {
   const accessToken = useSelector((state) => state.auth.accessToken);
@@ -34,6 +35,8 @@ const PharmaciesModal = ({ open, handleClose, handleSubmit, pharmaciesToUpdate }
   const [brandName, setBrandName] = useState("");
   const [interBranchTurnover, setInterBranchTurnover] = useState("");
   const [pharmacyDirector, setPharmacyDirector] = useState("");
+
+  console.log(pharmaciesToUpdate);
 
   useEffect(() => {
     if (open) {
@@ -110,23 +113,25 @@ const PharmaciesModal = ({ open, handleClose, handleSubmit, pharmaciesToUpdate }
         setLatitude(e.latlng.lat);
         setLongitude(e.latlng.lng);
       },
-      move() {
-        setLatitude(map.getCenter().lat);
-        setLongitude(map.getCenter().lng);
-      },
+      // move() {
+      //   setLatitude(map.getCenter().lat);
+      //   setLongitude(map.getCenter().lng);
+      // },
     });
+
+    const handleDragEnd = (e) => {
+      const marker = e.target;
+      const position = marker.getLatLng();
+      setLatitude(position.lat);
+      setLongitude(position.lng);
+    };
 
     return latitude !== 0 && longitude !== 0 ? (
       <Marker
         position={[latitude, longitude]}
         draggable={true}
         eventHandlers={{
-          dragend(e) {
-            const marker = e.target;
-            const position = marker.getLatLng();
-            setLatitude(position.lat);
-            setLongitude(position.lng);
-          },
+          dragend: handleDragEnd,
         }}
       ></Marker>
     ) : null;
@@ -222,8 +227,13 @@ const PharmaciesModal = ({ open, handleClose, handleSubmit, pharmaciesToUpdate }
             </Grid>
             <Grid item xs={12} md={12}>
               <MDBox mb={2} style={{ height: "200px" }}>
-                <MapContainer
+                {/* <MapContainer
                   center={[51.505, -0.09]}
+                  zoom={13}
+                  style={{ height: "100%", width: "100%" }}
+                > */}
+                <MapContainer
+                  center={[latitude || 51.505, longitude || -0.09]} // Default to London coordinates if not set
                   zoom={13}
                   style={{ height: "100%", width: "100%" }}
                 >
@@ -237,6 +247,7 @@ const PharmaciesModal = ({ open, handleClose, handleSubmit, pharmaciesToUpdate }
                     setAddress={setAddress}
                   />
                   <LocationMarker />
+                  <MapComponent latitude={latitude} longitude={longitude} />
                 </MapContainer>
               </MDBox>
             </Grid>

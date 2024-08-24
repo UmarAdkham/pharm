@@ -41,7 +41,6 @@ function DeputyDirectorAddPharmacy() {
   const [longitude, setLongitude] = useState(0);
   const [regionId, setRegionId] = useState("");
   const [regions, setRegions] = useState([]);
-  console.log(location.state);
   const { id } = location.state || {};
 
   const [pharmacyData, setPharmacyData] = useState({
