@@ -118,6 +118,7 @@ export default function useReservationData(apiPath, month) {
         { Header: "Одобрено", accessor: "check", align: "left" },
         { Header: "Производитель", accessor: "man_company", align: "left" },
         { Header: "Промо", accessor: "promo", align: "left" },
+        { Header: "Возврат цена", accessor: "returned_price", align: "left" },
         { Header: "Регион", accessor: "region", align: "left" },
         { Header: "МП", accessor: "med_rep", align: "left" },
         { Header: "Тип К/А", accessor: "type", align: "center" },
@@ -129,7 +130,7 @@ export default function useReservationData(apiPath, month) {
         columns.splice(
           -1,
           0,
-          { Header: "Возврат", accessor: "return", align: "center" }, // Added delete column
+          { Header: "Возвратить", accessor: "return", align: "center" }, // Added delete column
           { Header: "Удалить", accessor: "delete", align: "center" } // Added delete column
         );
         columns.splice(
@@ -311,6 +312,11 @@ export default function useReservationData(apiPath, month) {
               {entity.promo?.toLocaleString("ru-RU")}
             </MDTypography>
           ),
+          returned_price: (
+            <MDTypography variant="caption" fontWeight="medium">
+              {rsrv.returned_price?.toLocaleString("ru-RU")}
+            </MDTypography>
+          ),
           add: !rsrv.checked ? (
             <Tooltip title="Сначала необходимо одобрить бронь">
               <span>
@@ -407,21 +413,30 @@ export default function useReservationData(apiPath, month) {
               </IconButton>
             </Tooltip>
           ),
-          return: (
-            <Tooltip title="Возврат">
-              <span>
-                <IconButton
-                  onClick={() =>
-                    navigate("/head/return-product", {
-                      state: { reservationId: rsrv.id, reservationType: getRsrvType(rsrv) },
-                    })
-                  }
-                >
-                  <AssignmentReturnIcon />
-                </IconButton>
-              </span>
-            </Tooltip>
-          ),
+          return:
+            getRsrvType(rsrv) !== "wholesale" ? (
+              <Tooltip title="Возврат">
+                <span>
+                  <IconButton
+                    onClick={() =>
+                      navigate("/head/return-product", {
+                        state: { reservationId: rsrv.id, reservationType: getRsrvType(rsrv) },
+                      })
+                    }
+                  >
+                    <AssignmentReturnIcon />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            ) : (
+              <Tooltip title="Возврат не осуществим оптовикам">
+                <span>
+                  <IconButton disabled>
+                    <AssignmentReturnIcon />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            ),
           delete: rsrv.checked ? (
             <Tooltip title="Уже одобрено">
               <span>

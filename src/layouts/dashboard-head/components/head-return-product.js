@@ -48,7 +48,7 @@ function HeadReturnProduct() {
         }, {});
         setProductNames(productNamesMap);
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error("Ошибка при получении продуктов:", error);
       }
     };
 
@@ -72,12 +72,12 @@ function HeadReturnProduct() {
 
         const reservationProducts = response.data.reservation_unpayed_products.map((product) => ({
           ...product,
-          name: productNames[product.product_id] || "Unknown Product",
+          name: productNames[product.product_id] || "Неизвестный продукт",
         }));
 
         setProducts(reservationProducts);
       } catch (error) {
-        console.error("Error fetching reservation products:", error);
+        console.error("Ошибка при получении продуктов по бронированию:", error);
       }
     };
 
@@ -97,7 +97,7 @@ function HeadReturnProduct() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!selectedProduct || !quantity) {
-      setMessage({ color: "error", content: "Please select a product and enter a quantity." });
+      setMessage({ color: "error", content: "Пожалуйста, выберите продукт и укажите количество." });
       return;
     }
 
@@ -112,14 +112,14 @@ function HeadReturnProduct() {
         }
       );
 
-      setMessage({ color: "success", content: "Product returned successfully!" });
+      setMessage({ color: "success", content: "Продукт успешно возвращен!" });
 
       // Optional: Redirect or other actions after a successful submission
       setTimeout(() => {
         setMessage({ color: "", content: "" });
       }, 2000);
     } catch (error) {
-      console.error("Error returning product:", error);
+      console.error("Ошибка при возврате продукта:", error);
       setMessage({
         color: "error",
         content:
@@ -145,7 +145,7 @@ function HeadReturnProduct() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Return Product
+            Возврат продукта
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -157,13 +157,13 @@ function HeadReturnProduct() {
                 getOptionLabel={(option) => option.name}
                 onChange={handleProductChange}
                 renderInput={(params) => (
-                  <TextField {...params} label="Select Product" variant="outlined" fullWidth />
+                  <TextField {...params} label="Выберите продукт" variant="outlined" fullWidth />
                 )}
               />
             </MDBox>
             <MDBox mb={2}>
               <TextField
-                label="Quantity"
+                label="Количество"
                 type="number"
                 variant="outlined"
                 value={quantity}
@@ -173,7 +173,7 @@ function HeadReturnProduct() {
             </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
-                Return Product
+                Вернуть продукт
               </MDButton>
             </MDBox>
           </MDBox>
