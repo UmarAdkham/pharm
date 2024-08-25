@@ -72,6 +72,7 @@ import HeadPayReservationWholesale from "layouts/dashboard-head/components/head-
 import HeadPayReservationHospital from "layouts/dashboard-head/components/head-pay-reservation-hospital";
 import DeputyDirectorUpdateDoctor from "layouts/dashboard-dd/components/dd-update-doctor";
 import DeputyDirectorDoctorDatabase from "./layouts/dashboard-dd/components/dd-doctor-database";
+import HeadReturnProduct from "layouts/dashboard-head/components/head-return-product";
 
 const roleBasedRoutes = [
   {
@@ -522,6 +523,7 @@ const roleBasedRoutes = [
       { path: "pay-reservation-wholesale", component: <HeadPayReservationWholesale /> },
       { path: "pay-reservation-hospital", component: <HeadPayReservationHospital /> },
       { path: "add-reservation", component: <ReservationAdd /> },
+      { path: "return-product", component: <HeadReturnProduct /> },
 
       // Wholesale manager routes
       { path: "companies", component: <WholesaleManagerCompanies /> },

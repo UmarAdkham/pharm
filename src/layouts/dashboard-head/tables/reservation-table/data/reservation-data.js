@@ -8,6 +8,7 @@ import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import EditIcon from "@mui/icons-material/Edit";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AssignmentReturnIcon from "@mui/icons-material/AssignmentReturn";
 import ViewProductListDialog from "../../../dialogs/reservation-product-list-dialog";
 import axiosInstance from "services/axiosInstance";
 import ExpiryDateDialog from "layouts/dashboard-head/dialogs/edit-expiry-date-dialog";
@@ -128,6 +129,7 @@ export default function useReservationData(apiPath, month) {
         columns.splice(
           -1,
           0,
+          { Header: "Возврат", accessor: "return", align: "center" }, // Added delete column
           { Header: "Удалить", accessor: "delete", align: "center" } // Added delete column
         );
         columns.splice(
@@ -403,6 +405,21 @@ export default function useReservationData(apiPath, month) {
               >
                 <RemoveRedEyeIcon />
               </IconButton>
+            </Tooltip>
+          ),
+          return: (
+            <Tooltip title="Возврат">
+              <span>
+                <IconButton
+                  onClick={() =>
+                    navigate("/head/return-product", {
+                      state: { reservationId: rsrv.id, reservationType: getRsrvType(rsrv) },
+                    })
+                  }
+                >
+                  <AssignmentReturnIcon />
+                </IconButton>
+              </span>
             </Tooltip>
           ),
           delete: rsrv.checked ? (
