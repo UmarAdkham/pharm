@@ -73,6 +73,7 @@ import HeadPayReservationHospital from "layouts/dashboard-head/components/head-p
 import DeputyDirectorUpdateDoctor from "layouts/dashboard-dd/components/dd-update-doctor";
 import DeputyDirectorDoctorDatabase from "./layouts/dashboard-dd/components/dd-doctor-database";
 import HeadReturnProduct from "layouts/dashboard-head/components/head-return-product";
+import DeputyDirectorUpdateProduct from "layouts/dashboard-dd/components/dd-update-product";
 
 const roleBasedRoutes = [
   {
@@ -151,6 +152,7 @@ const roleBasedRoutes = [
       { path: "manufacturer-companies", component: <DeputyDirectorManufacturerCompanies /> },
       { path: "add-manufacturer-company", component: <DeputyDirectorAddManufacturerCompany /> },
       { path: "products", component: <DeputyDirectorProducts /> },
+      { path: "update-product", component: <DeputyDirectorUpdateProduct /> },
       { path: "add-product", component: <DeputyDirectorAddProduct /> },
       { path: "edit-product-expenses", component: <DeputyDirectorEditProductExpenses /> },
       { path: "regions", component: <DeputyDirectorRegions /> },

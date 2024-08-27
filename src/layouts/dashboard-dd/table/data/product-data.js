@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
-import ProductModal from "layouts/dashboard-dd/dialogs/modal/shared/product-modal";
 import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
 import { IconButton, Switch } from "@mui/material";
 import AccountBalanceWalletTwoToneIcon from "@mui/icons-material/AccountBalanceWalletTwoTone";
@@ -12,40 +11,6 @@ export default function useProductData(apiPath, id1, id2) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
   const navigate = useNavigate();
-
-  const [open, setOpen] = useState(false);
-  const [productData, setProductData] = useState({
-    id: null,
-    name: "",
-    price: 0,
-    discount_price: 0,
-    man_company_id: null,
-    category_id: null,
-  });
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleSubmit = async (updatedProduct) => {
-    try {
-      await axiosInstance.put(
-        `https://it-club.uz/common/update-product/${updatedProduct.id}`,
-        updatedProduct,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-    } catch (error) {
-      console.error("не удалось обновить продукт:", error);
-    }
-  };
 
   const handleToggleSubmit = async (product) => {
     const confirmationMessage = product.is_exist
@@ -62,15 +27,11 @@ export default function useProductData(apiPath, id1, id2) {
     };
 
     try {
-      await axiosInstance.put(
-        `https://it-club.uz/common/update-product/${product.id}`,
-        updatedProduct,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      await axiosInstance.put(`/common/update-product/${product.id}`, updatedProduct, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
       // Re-fetch the data to ensure the state is updated
       fetchProducts();
@@ -171,26 +132,12 @@ export default function useProductData(apiPath, id1, id2) {
             <div>
               <IconButton
                 onClick={() => {
-                  handleOpen();
-                  setProductData({
-                    id: product.id,
-                    name: product.name,
-                    price: product.price,
-                    discount_price: product.discount_price,
-                    man_company_id: product.man_company.id,
-                    category_id: product.category.id,
-                  });
+                  navigate("/dd/update-product", { state: { productToUpdate: product } }); // Navigate with state
                 }}
                 aria-label="update"
               >
                 <DriveFileRenameOutlineOutlinedIcon />
               </IconButton>
-              <ProductModal
-                open={open}
-                handleClose={handleClose}
-                handleSubmit={handleSubmit}
-                productToUpdate={productData}
-              />
             </div>
           ),
           toggle_exist: (

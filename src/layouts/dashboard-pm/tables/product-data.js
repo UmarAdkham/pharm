@@ -2,31 +2,16 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
-import ProductModal from "layouts/dashboard-dd/dialogs/modal/shared/product-modal";
 import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRenameOutlineOutlined";
 import { IconButton } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export default function useProductData(apiPath, id1, id2) {
+  const navigate = useNavigate();
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
 
   const [open, setOpen] = useState(false);
-  const [productData, setProductData] = useState({
-    id: null,
-    name: "",
-    price: 0,
-    discount_price: 0,
-    man_company_id: null,
-    category_id: null,
-  });
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const handleSubmit = async (udpatedProduct) => {
     try {
@@ -97,26 +82,12 @@ export default function useProductData(apiPath, id1, id2) {
               <div>
                 <IconButton
                   onClick={() => {
-                    handleOpen();
-                    setProductData({
-                      id: product.id,
-                      name: product.name,
-                      price: product.price,
-                      discount_price: product.discount_price,
-                      man_company_id: product.man_company.id,
-                      category_id: product.category.id,
-                    });
+                    navigate("/dd/update-product", { state: { productToUpdate: product } }); // Navigate with state
                   }}
                   aria-label="update"
                 >
                   <DriveFileRenameOutlineOutlinedIcon />
                 </IconButton>
-                <ProductModal
-                  open={open}
-                  handleClose={handleClose}
-                  handleSubmit={handleSubmit}
-                  productToUpdate={productData}
-                />
               </div>
             ),
           }));
