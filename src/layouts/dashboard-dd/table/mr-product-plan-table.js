@@ -72,15 +72,21 @@ const ProductPlanTable = ({ medRepId }) => {
     fetchData(startDate, endDate);
   }, [startDate, endDate]);
 
-  const getRowColor = (index) => {
-    // return index % 2 === 0 ? "#90EE90" : "#FF8C00";
-  };
-
   const totalPlanAmount = data.plan
     ? data.plan.reduce((sum, item) => sum + item.plan_amount, 0)
     : 0;
   const totalPlanPrice = data.plan
     ? data.plan.reduce((sum, item) => sum + item.plan_price, 0).toLocaleString("ru-RU")
+    : 0;
+
+  // Calculate the total hospital fact across all products
+  const totalHospitalFact = data.plan
+    ? data.plan.reduce(
+        (sum, item) =>
+          sum +
+          item.hospital_fact.reduce((hospitalSum, hospital) => hospitalSum + hospital.fact, 0),
+        0
+      )
     : 0;
 
   return (
@@ -127,7 +133,7 @@ const ProductPlanTable = ({ medRepId }) => {
               {data.plan && data.plan.length > 0 ? (
                 <>
                   <TableRow style={{ backgroundColor: "#000" }}>
-                    <TableCell colSpan={2} style={{ color: "#fff" }}>
+                    <TableCell colSpan={3} style={{ color: "#fff" }}>
                       Общ план: {totalPlanAmount}
                     </TableCell>
                     <TableCell style={{ color: "#fff" }}>
@@ -136,8 +142,11 @@ const ProductPlanTable = ({ medRepId }) => {
                     <TableCell style={{ color: "#fff" }}></TableCell>
                   </TableRow>
                   <TableRow style={{ backgroundColor: "#000" }}>
-                    <TableCell colSpan={2} style={{ color: "#fff" }}>
+                    <TableCell colSpan={1} style={{ color: "#fff" }}>
                       Общ факт: {data.fact}
+                    </TableCell>
+                    <TableCell colSpan={2} style={{ color: "#fff" }}>
+                      Общ Больн. факт: {totalHospitalFact}
                     </TableCell>
                     <TableCell style={{ color: "#fff" }}>
                       Факт продажа: <br /> {data.fact_price.toLocaleString("ru-RU")} сум
@@ -155,6 +164,13 @@ const ProductPlanTable = ({ medRepId }) => {
                         (sum, doctor) => sum + doctor.fact_postupleniya,
                         0
                       );
+
+                      // Calculate the total hospital facts for this particular product
+                      const totalHospitalFactsForProduct = product.hospital_fact.reduce(
+                        (sum, hospital) => sum + hospital.fact,
+                        0
+                      );
+
                       return (
                         <React.Fragment key={index}>
                           <TableRow style={{ backgroundColor: "#90EE90" }}>
@@ -180,33 +196,31 @@ const ProductPlanTable = ({ medRepId }) => {
                             <TableCell>План: {product.plan_amount}</TableCell>
                             <TableCell>Факт: {totalDoctorFacts}</TableCell>
                             <TableCell>Факт поступ: {totalDoctorFactPostupleniya}</TableCell>
+                            <TableCell>Больн. факт: {totalHospitalFactsForProduct}</TableCell>
                           </TableRow>
                           {product.doctor_plans.map((doctor, idx) => (
                             <TableRow key={idx} style={{ backgroundColor: "#90EE90" }}>
                               <TableCell>Имя доктора ({doctor.doctor_name})</TableCell>
                               <TableCell>{doctor.monthly_plan}</TableCell>
                               <TableCell>{doctor.fact}</TableCell>
-                              <TableCell>{doctor.fact_postupleniya}</TableCell>
+                              <TableCell colSpan={2}>{doctor.fact_postupleniya}</TableCell>
                             </TableRow>
                           ))}
                           {product.hospital_fact.map((hospital, idx) => (
                             <TableRow key={idx} style={{ backgroundColor: "#fff3b5" }}>
-                              <TableCell colSpan={2}>Больница: {hospital.hospital_name}</TableCell>
+                              <TableCell colSpan={4}>Больница: {hospital.hospital_name}</TableCell>
                               <TableCell>Факт: {hospital.fact}</TableCell>
-                              <TableCell></TableCell>
                             </TableRow>
                           ))}
                           {product.pharmacy_hot_sale.map((pharmacy, idx) => (
                             <TableRow key={idx} style={{ backgroundColor: "#c9daff" }}>
-                              <TableCell colSpan={2}>Аптека: {pharmacy.company_name}</TableCell>
+                              <TableCell colSpan={4}>Аптека: {pharmacy.company_name}</TableCell>
                               <TableCell>Продажа: {pharmacy.sale}</TableCell>
-                              <TableCell></TableCell>
                             </TableRow>
                           ))}
                           <TableRow style={{ backgroundColor: "#a1a1a1" }}>
-                            <TableCell colSpan={2}>Вакант</TableCell>
+                            <TableCell colSpan={4}>Вакант</TableCell>
                             <TableCell>{product.vakant}</TableCell>
-                            <TableCell></TableCell>
                           </TableRow>
                         </React.Fragment>
                       );
