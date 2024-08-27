@@ -38,31 +38,31 @@ export default function useBonusMrsData(month, order) {
         const mrs = response.data;
 
         // Fetch fact_postupleniya for each medical representative
-        const fetchFactPostupleniya = async (medRepId) => {
-          const response = await axiosInstance.get(
-            `/dd/get-doctor-bonus-by-med-rep-id/${medRepId}?month_number=${month}`,
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            }
-          );
-          return response.data.reduce((sum, item) => sum + item.fact_postupleniya, 0);
-        };
+        // const fetchFactPostupleniya = async (medRepId) => {
+        //   const response = await axiosInstance.get(
+        //     `/dd/get-doctor-bonus-by-med-rep-id/${medRepId}?month_number=${month}`,
+        //     {
+        //       headers: {
+        //         Authorization: `Bearer ${accessToken}`,
+        //       },
+        //     }
+        //   );
+        //   return response.data.reduce((sum, item) => sum + item.fact_postupleniya, 0);
+        // };
 
-        const factPostupleniyaPromises = mrs.map((mr) =>
-          fetchFactPostupleniya(mr.id).then((factPostupleniya) => ({
-            id: mr.id,
-            factPostupleniya,
-          }))
-        );
+        // const factPostupleniyaPromises = mrs.map((mr) =>
+        //   fetchFactPostupleniya(mr.id).then((factPostupleniya) => ({
+        //     id: mr.id,
+        //     factPostupleniya,
+        //   }))
+        // );
 
-        const factPostupleniyaResults = await Promise.all(factPostupleniyaPromises);
+        // const factPostupleniyaResults = await Promise.all(factPostupleniyaPromises);
 
-        const factPostupleniyaMap = new Map();
-        factPostupleniyaResults.forEach((result) => {
-          factPostupleniyaMap.set(result.id, result.factPostupleniya);
-        });
+        // const factPostupleniyaMap = new Map();
+        // factPostupleniyaResults.forEach((result) => {
+        //   factPostupleniyaMap.set(result.id, result.factPostupleniya);
+        // });
 
         // Calculate overall monthlyPlan and fact
         const monthlyPlan = mrs.reduce(
@@ -107,7 +107,7 @@ export default function useBonusMrsData(month, order) {
         const rows = mrs.map((mr) => {
           const totalPlan = mr.plan.reduce((acc, item) => acc + item.plan_amount, 0);
           const totalFact = mr.plan.reduce((acc, item) => acc + item.fact, 0);
-          const factPostupleniya = factPostupleniyaMap.get(mr.id) || 0;
+          const factPostupleniya = mr.plan.reduce((acc, item) => acc + item.fact_postupleniya, 0);
           const factPercent = totalPlan > 0 ? (factPostupleniya / totalPlan) * 100 : 0;
           const rowBackgroundColor = getRowBackgroundColor(factPercent);
 

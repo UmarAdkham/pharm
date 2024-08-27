@@ -7,6 +7,7 @@ import Card from "@mui/material/Card";
 import Alert from "@mui/material/Alert";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
+import Switch from "@mui/material/Switch"; // Import the Switch component
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -48,6 +49,9 @@ function HeadPayReservationPharmacy() {
   const [productNames, setProductNames] = useState({});
   const [totalSum, setTotalSum] = useState(0);
 
+  // Add a new state to track the bonus for each product
+  const [bonusState, setBonusState] = useState(unpayedProducts.map(() => true));
+
   const fetchDoctors = async (monthNumber, productId) => {
     try {
       const response = await axiosInstance.get(
@@ -85,6 +89,7 @@ function HeadPayReservationPharmacy() {
           })
         );
         setDoctorProducts(initialDoctorProducts);
+        setBonusState(response.data.reservation_unpayed_products.map(() => true)); // Initialize bonus state
       } catch (error) {
         console.log(error);
       }
@@ -149,6 +154,12 @@ function HeadPayReservationPharmacy() {
     setUnpayedProducts(updatedUnpayedProducts);
   };
 
+  const handleBonusChange = (index, value) => {
+    const newBonusState = [...bonusState];
+    newBonusState[index] = value;
+    setBonusState(newBonusState);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -172,6 +183,7 @@ function HeadPayReservationPharmacy() {
         product_id: product.product_id,
         quantity: parseInt(product.newQuantity, 10),
         amount: parseInt(product.price, 10),
+        bonus: bonusState[index], // Include the bonus state
         month_number: doctorProducts[index].monthNumber,
         doctor_id: doctorProducts[index].doctor?.doctor_id,
       }));
@@ -181,6 +193,8 @@ function HeadPayReservationPharmacy() {
       objects,
       description,
     };
+
+    console.log(payload);
 
     try {
       await axiosInstance.post(`head/pay-reservation/${reservationId}`, payload, {
@@ -307,6 +321,15 @@ function HeadPayReservationPharmacy() {
                       InputProps={{ inputProps: { min: 0 } }}
                     />
                   </MDBox>
+                </MDBox>
+                <MDBox display="flex" alignItems="center" mb={2}>
+                  <MDTypography variant="h6" style={{ marginRight: 16 }}>
+                    Бонус:
+                  </MDTypography>
+                  <Switch
+                    checked={bonusState[index]}
+                    onChange={(e) => handleBonusChange(index, e.target.checked)}
+                  />
                 </MDBox>
                 <MDBox display="flex" justifyContent="space-between" mb={2}>
                   <MDTypography variant="h6">

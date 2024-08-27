@@ -8,6 +8,7 @@ import Alert from "@mui/material/Alert";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import Tooltip from "@mui/material/Tooltip";
+import Switch from "@mui/material/Switch"; // Import the Switch component
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -45,7 +46,6 @@ function HeadPayReservationWholesale() {
   const [pharmacies, setPharmacies] = useState([]);
   const [selectedMedRep, setSelectedMedRep] = useState(null);
   const [selectedPharmacy, setSelectedPharmacy] = useState(null);
-  const [doctors, setDoctors] = useState([]);
   const [doctorProducts, setDoctorProducts] = useState([]);
   const [total, setTotal] = useState();
   const [debt, setDebt] = useState(0);
@@ -53,6 +53,9 @@ function HeadPayReservationWholesale() {
   const [unpayedProducts, setUnpayedProducts] = useState([]);
   const [productNames, setProductNames] = useState({});
   const [totalSum, setTotalSum] = useState(0);
+
+  // Initialize bonus state with true for each product
+  const [bonusState, setBonusState] = useState([]);
 
   useEffect(() => {
     const fetchMedReps = async () => {
@@ -118,6 +121,7 @@ function HeadPayReservationWholesale() {
         setDebt(response.data.debt);
         setRemainderSum(response.data.remiainder_sum);
         setUnpayedProducts(response.data.reservation_unpayed_products);
+        setBonusState(response.data.reservation_unpayed_products.map(() => true)); // Initialize bonus state to true
       } catch (error) {
         console.log(error);
       }
@@ -205,6 +209,12 @@ function HeadPayReservationWholesale() {
     setDoctorProducts(doctorProducts); // Ensure doctorProducts are retained
   };
 
+  const handleBonusChange = (index, value) => {
+    const newBonusState = [...bonusState];
+    newBonusState[index] = value;
+    setBonusState(newBonusState);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -225,6 +235,7 @@ function HeadPayReservationWholesale() {
           product_id: product.product_id,
           quantity: parseInt(product.newQuantity, 10),
           amount: parseInt(product.price, 10),
+          bonus: bonusState[product.originalIndex], // Include the bonus state
           month_number: doctorProducts[product.originalIndex].monthNumber,
           doctor_id: doctorId,
         };
@@ -244,7 +255,7 @@ function HeadPayReservationWholesale() {
     };
 
     console.log(payload);
-    console.log(reservationId);
+
     try {
       await axiosInstance.post(`head/pay-wholesale-reservation/${reservationId}`, payload, {
         headers: {
@@ -407,6 +418,15 @@ function HeadPayReservationWholesale() {
                       InputProps={{ inputProps: { min: 0 } }}
                     />
                   </MDBox>
+                </MDBox>
+                <MDBox display="flex" alignItems="center" mb={2}>
+                  <MDTypography variant="h6" style={{ marginRight: 16 }}>
+                    Бонус:
+                  </MDTypography>
+                  <Switch
+                    checked={bonusState[index]}
+                    onChange={(e) => handleBonusChange(index, e.target.checked)}
+                  />
                 </MDBox>
                 <MDBox display="flex" justifyContent="space-between" mb={2}>
                   <MDTypography variant="h6">
