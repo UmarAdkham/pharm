@@ -7,10 +7,6 @@ import { useSelector } from "react-redux";
 // @mui material components
 import Card from "@mui/material/Card";
 import Alert from "@mui/material/Alert";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 
@@ -31,6 +27,9 @@ function HeadReturnProduct() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
+  const [price, setPrice] = useState(0); // State for product price
+  const [availableQuantity, setAvailableQuantity] = useState(0); // State for available quantity
+  const [totalAmount, setTotalAmount] = useState(0); // State for total amount
 
   useEffect(() => {
     // Fetch all products to map product_id to product name
@@ -88,16 +87,44 @@ function HeadReturnProduct() {
 
   const handleProductChange = (event, newValue) => {
     setSelectedProduct(newValue);
+    setPrice(newValue ? newValue.price : 0); // Set price of selected product
+    setAvailableQuantity(newValue ? newValue.quantity : 0); // Set available quantity
+    setTotalAmount(0); // Reset total amount when changing product
+    setQuantity(""); // Reset quantity when changing product
+    setMessage({ color: "", content: "" }); // Clear any previous error messages
   };
 
   const handleQuantityChange = (event) => {
-    setQuantity(event.target.value);
+    const value = event.target.value;
+    setQuantity(value);
+
+    if (selectedProduct) {
+      if (value > selectedProduct.quantity) {
+        setMessage({
+          color: "error",
+          content: "Количество не может превышать доступное количество.",
+        });
+        setTotalAmount(0); // Reset total amount if error
+      } else {
+        setMessage({ color: "", content: "" }); // Clear error message
+        const calculatedTotal = value * selectedProduct.price; // Calculate total amount
+        setTotalAmount(calculatedTotal);
+      }
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!selectedProduct || !quantity) {
       setMessage({ color: "error", content: "Пожалуйста, выберите продукт и укажите количество." });
+      return;
+    }
+
+    if (quantity > selectedProduct.quantity) {
+      setMessage({
+        color: "error",
+        content: "Количество не может превышать доступное количество.",
+      });
       return;
     }
 
@@ -161,6 +188,19 @@ function HeadReturnProduct() {
                 )}
               />
             </MDBox>
+
+            <MDBox mb={2}>
+              <MDTypography variant="h6">
+                Цена: {price.toLocaleString("ru-RU") || 0} сум
+              </MDTypography>
+            </MDBox>
+
+            {selectedProduct && (
+              <MDBox mb={2}>
+                <MDTypography variant="h6">Доступное количество: {availableQuantity}</MDTypography>
+              </MDBox>
+            )}
+
             <MDBox mb={2}>
               <TextField
                 label="Количество"
@@ -171,8 +211,23 @@ function HeadReturnProduct() {
                 fullWidth
               />
             </MDBox>
+
+            <MDBox mb={2}>
+              <MDTypography variant="h6">
+                Сумма: {totalAmount.toLocaleString("ru-RU") || 0} сум
+              </MDTypography>
+            </MDBox>
+
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={
+                  !selectedProduct || !quantity || message.color === "error" // Disable button if there's an error message or required fields are empty
+                }
+              >
                 Вернуть продукт
               </MDButton>
             </MDBox>
