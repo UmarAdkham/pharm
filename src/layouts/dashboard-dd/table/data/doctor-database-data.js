@@ -4,11 +4,13 @@ import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
 import { useNavigate } from "react-router-dom";
 import Tooltip from "@mui/material/Tooltip";
-import CircularProgress from "@mui/material/CircularProgress"; // Import CircularProgress
 
 export default function useDoctorDatabaseData() {
   const [data, setData] = useState({ columns: [], rows: [] });
   const [loading, setLoading] = useState(true); // Loading state
+  const [doctorsWithPlansCount, setDoctorsWithPlansCount] = useState(0);
+  const [doctorsWithoutPlansCount, setDoctorsWithoutPlansCount] = useState(0);
+  const [filter, setFilter] = useState("all"); // New state for filtering
   const accessToken = useSelector((state) => state.auth.accessToken);
   const navigate = useNavigate();
 
@@ -32,56 +34,71 @@ export default function useDoctorDatabaseData() {
           { Header: "Доктор план", accessor: "doctor_plan", align: "left" },
         ];
 
-        const rows = doctors.map((doctor) => {
-          const totalMonthlyPlan = doctor.doctormonthlyplan.reduce(
-            (sum, item) => sum + item.monthly_plan,
-            0
-          );
+        let withPlansCount = 0;
+        let withoutPlansCount = 0;
 
-          const rowBackgroundColor = totalMonthlyPlan === 0 ? "#e6e3e3" : "#88f2a1";
+        const rows = doctors
+          .map((doctor) => {
+            const totalMonthlyPlan = doctor.doctormonthlyplan.reduce(
+              (sum, item) => sum + item.monthly_plan,
+              0
+            );
 
-          return {
-            full_name: (
-              <MDTypography variant="caption" fontWeight="medium">
-                {doctor.full_name}
-              </MDTypography>
-            ),
-            date_birthday: (
-              <MDTypography variant="caption" fontWeight="medium">
-                {doctor.birth_date ? doctor.birth_date : "-"}
-              </MDTypography>
-            ),
-            med_org: doctor.medical_organization?.name ? (
-              <Tooltip title={doctor.medical_organization.name} arrow>
+            if (totalMonthlyPlan > 0) {
+              withPlansCount++;
+            } else {
+              withoutPlansCount++;
+            }
+
+            const rowBackgroundColor = totalMonthlyPlan === 0 ? "#e6e3e3" : "#88f2a1";
+
+            return {
+              full_name: (
                 <MDTypography variant="caption" fontWeight="medium">
-                  {doctor.medical_organization.name.length > 20
-                    ? `${doctor.medical_organization.name.substring(0, 15)}...`
-                    : doctor.medical_organization.name}
+                  {doctor.full_name}
                 </MDTypography>
-              </Tooltip>
-            ) : (
-              <MDTypography variant="caption" fontWeight="medium">
-                -
-              </MDTypography>
-            ),
-            speciality: (
-              <MDTypography variant="caption" fontWeight="medium">
-                {doctor.speciality?.name || "-"}
-              </MDTypography>
-            ),
-            category: (
-              <MDTypography variant="caption" fontWeight="medium">
-                {doctor.category?.name || "-"}
-              </MDTypography>
-            ),
-            doctor_plan: (
-              <MDTypography variant="caption" fontWeight="medium">
-                {totalMonthlyPlan}
-              </MDTypography>
-            ),
-            rowBackgroundColor,
-          };
-        });
+              ),
+              date_birthday: (
+                <MDTypography variant="caption" fontWeight="medium">
+                  {doctor.birth_date ? doctor.birth_date : "-"}
+                </MDTypography>
+              ),
+              med_org: doctor.medical_organization?.name ? (
+                <Tooltip title={doctor.medical_organization.name} arrow>
+                  <MDTypography variant="caption" fontWeight="medium">
+                    {doctor.medical_organization.name.length > 20
+                      ? `${doctor.medical_organization.name.substring(0, 15)}...`
+                      : doctor.medical_organization.name}
+                  </MDTypography>
+                </Tooltip>
+              ) : (
+                <MDTypography variant="caption" fontWeight="medium">
+                  -
+                </MDTypography>
+              ),
+              speciality: (
+                <MDTypography variant="caption" fontWeight="medium">
+                  {doctor.speciality?.name || "-"}
+                </MDTypography>
+              ),
+              category: (
+                <MDTypography variant="caption" fontWeight="medium">
+                  {doctor.category?.name || "-"}
+                </MDTypography>
+              ),
+              doctor_plan: (
+                <MDTypography variant="caption" fontWeight="medium">
+                  {totalMonthlyPlan}
+                </MDTypography>
+              ),
+              hasPlan: totalMonthlyPlan > 0, // To help with filtering and sorting
+              rowBackgroundColor,
+            };
+          })
+          .sort((a, b) => (a.hasPlan === b.hasPlan ? 0 : a.hasPlan ? -1 : 1)); // Sort rows: doctors with plans first
+
+        setDoctorsWithPlansCount(withPlansCount);
+        setDoctorsWithoutPlansCount(withoutPlansCount);
 
         setData({ columns, rows });
       } catch (error) {
@@ -94,5 +111,5 @@ export default function useDoctorDatabaseData() {
     fetchDoctors();
   }, [accessToken]);
 
-  return { data, loading };
+  return { data, loading, doctorsWithPlansCount, doctorsWithoutPlansCount, setFilter };
 }
