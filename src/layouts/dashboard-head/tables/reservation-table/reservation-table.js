@@ -94,7 +94,16 @@ function ReservationTable() {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      setPharmacies(response.data);
+
+      // Remove duplicates based on 'company_name' while keeping unique objects
+      const seen = new Set();
+      const uniquePharmacies = response.data.filter((pharmacy) => {
+        const duplicate = seen.has(pharmacy.company_name);
+        seen.add(pharmacy.company_name);
+        return !duplicate;
+      });
+
+      setPharmacies(uniquePharmacies);
     } catch (error) {
       console.error("Failed to fetch pharmacies", error);
     }
@@ -141,6 +150,7 @@ function ReservationTable() {
         type: "Оптовик",
       })),
     ];
+
     setCombinedEntities(combined);
   };
 
