@@ -12,6 +12,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import { useLocation, useParams } from "react-router-dom";
 import DeputyDirectorBonusTable from "../table/bonus-table";
 import DeputyDirectorHotsaleTable from "../table/hotsale-table";
+import DeputyDirectorHospitalFactTable from "../table/hospital-fact-table";
 
 function DeputyDirectorBonus() {
   const location = useLocation();
@@ -24,6 +25,9 @@ function DeputyDirectorBonus() {
           <Grid container spacing={3}>
             <Grid item xs={12} lg={12}>
               <DeputyDirectorBonusTable med_rep_id={id} med_rep_name={full_name} />
+            </Grid>
+            <Grid item xs={12} lg={12}>
+              <DeputyDirectorHospitalFactTable med_rep_id={id} />
             </Grid>
             <Grid item xs={12} lg={12}>
               <DeputyDirectorHotsaleTable med_rep_id={id} />

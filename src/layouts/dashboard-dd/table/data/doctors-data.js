@@ -139,7 +139,9 @@ export default function useDoctorsData(
             medical_organization_name: (
               <Tooltip title={doctorData.medical_organization_name}>
                 <MDTypography variant="caption" fontWeight="medium">
-                  {doctorData.medical_organization_name}
+                  {doctorData.medical_organization_name.length > 20
+                    ? `${doctorData.medical_organization_name.substring(0, 20)}...`
+                    : doctorData.medical_organization_name}
                 </MDTypography>
               </Tooltip>
             ),

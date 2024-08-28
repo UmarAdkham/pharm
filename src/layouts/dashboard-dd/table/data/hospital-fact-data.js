@@ -4,7 +4,7 @@ import axiosInstance from "services/axiosInstance";
 import MDTypography from "components/MDTypography";
 import { useNavigate } from "react-router-dom";
 
-export default function useHotsaleData(med_rep_id, month) {
+export default function useHospitalFactData(med_rep_id, month) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
   const navigate = useNavigate();
@@ -26,17 +26,19 @@ export default function useHotsaleData(med_rep_id, month) {
         const columns = [
           { Header: "Название компании", accessor: "company_name", align: "left" },
           { Header: "Продукт", accessor: "product", align: "left" },
-          { Header: "Горячая продажа", accessor: "sale", align: "left" },
+          { Header: "Факт", accessor: "fact", align: "left" },
         ];
 
+        let totalFact = 0;
         const rows = [];
 
         reports.forEach((report) => {
-          report.pharmacy_hot_sale.forEach((pharmacy) => {
+          report.hospital_fact.forEach((hospital) => {
+            totalFact += hospital.fact;
             rows.push({
               company_name: (
                 <MDTypography variant="caption" fontWeight="medium">
-                  {pharmacy.company_name}
+                  {hospital.hospital_name}
                 </MDTypography>
               ),
               product: (
@@ -44,16 +46,16 @@ export default function useHotsaleData(med_rep_id, month) {
                   {report.product}
                 </MDTypography>
               ),
-              sale: (
+              fact: (
                 <MDTypography variant="caption" fontWeight="medium">
-                  {pharmacy.sale}
+                  {hospital.fact}
                 </MDTypography>
               ),
             });
           });
         });
 
-        setData({ columns, rows });
+        setData({ columns, rows, totalFact });
       } catch (error) {
         console.error(error);
       }
