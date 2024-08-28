@@ -143,6 +143,7 @@ export default function useReservationData(apiPath, month) {
       }
 
       let expired_debt = 0;
+      let expired_debt_value = 0;
       const rows = filteredReservations.map((rsrv) => {
         const entity = rsrv.pharmacy || rsrv.hospital || rsrv.wholesale;
         const checked = rsrv.checked;
@@ -161,13 +162,17 @@ export default function useReservationData(apiPath, month) {
             : "white";
 
         if (rowBackgroundColor === "#f77c48") {
-          expired_debt += rsrv.debt;
+          expired_debt += rsrv.debt; // calculating overall expired_debt
+          expired_debt_value = rsrv.debt; // needed for displaying company-based expired-debt
         }
 
         return {
           ...rsrv,
           isChecked: checked,
           debtValue: rsrv.debt,
+          profitValue: rsrv.profit,
+          promoValue: entity.promo,
+          expiredDebtValue: expired_debt_value,
           invoice_number_value: rsrv.invoice_number,
           expiry_date: (
             <div style={{ display: "flex", alignItems: "center" }}>

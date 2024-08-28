@@ -2,6 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Grid, Box, Typography } from "@mui/material";
 import DebitorDropdown from "./debitor-dropdown";
+import ProfitDropdown from "./profit-dropdown";
+import PromoDropdown from "./promo-dropdown";
+import UncheckedDebitorDropdown from "./unchecked-debitor-dropdown";
+import ExpiredDebitorDropdown from "./expired-debitor-dropdown";
 
 const OverallReservationValues = ({ overall, filteredRows }) => {
   return (
@@ -38,32 +42,36 @@ const OverallReservationValues = ({ overall, filteredRows }) => {
           </Typography>
         </Grid>
         <Grid item>
-          <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#81c784", p: 1 }}>
+          {/* <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#81c784", p: 1 }}>
             Поступление: {overall.profit?.toLocaleString("ru-RU")}{" "}
             <span style={{ textTransform: "lowercase" }}>сум</span>{" "}
-          </Typography>
+          </Typography> */}
+          <ProfitDropdown filteredRows={filteredRows} />
         </Grid>
         <Grid item>
           {/* Replace the Typography with DebitorDropdown */}
           <DebitorDropdown filteredRows={filteredRows} />
         </Grid>
         <Grid item>
-          <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#f2cc45", p: 1 }}>
+          {/* <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#f2cc45", p: 1 }}>
             Промо: {overall.promo?.toLocaleString("ru-RU")}{" "}
             <span style={{ textTransform: "lowercase" }}>сум</span>{" "}
-          </Typography>
+          </Typography> */}
+          <PromoDropdown filteredRows={filteredRows} />
         </Grid>
         <Grid item>
-          <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#a0d8eb", p: 1 }}>
+          {/* <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#a0d8eb", p: 1 }}>
             Сумма брони: {overall.debt?.toLocaleString("ru-RU")}{" "}
             <span style={{ textTransform: "lowercase" }}>сум</span>{" "}
-          </Typography>
+          </Typography> */}
+          <UncheckedDebitorDropdown filteredRows={filteredRows} />
         </Grid>
         <Grid item>
-          <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#a0d8eb", p: 1 }}>
+          {/* <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#a0d8eb", p: 1 }}>
             Прос Дебиторка: {overall.expired_debt?.toLocaleString("ru-RU")}{" "}
             <span style={{ textTransform: "lowercase" }}>сум</span>{" "}
-          </Typography>
+          </Typography> */}
+          <ExpiredDebitorDropdown filteredRows={filteredRows} />
         </Grid>
       </Grid>
     </Box>

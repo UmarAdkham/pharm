@@ -8,7 +8,7 @@ import DataTable from "examples/Tables/DataTable";
 import useProductData from "./product-data";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import SelectCategory from "layouts/dashboard-dd/components/category-menu";
+import SelectCategory from "layouts/dashboard-dd/elements/category-menu";
 // import SelectCategory from "../components/category-menu";
 // import ManagersMenu from "../components/managers-menu";
 

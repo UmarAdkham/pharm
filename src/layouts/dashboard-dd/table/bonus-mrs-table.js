@@ -5,7 +5,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import useBonusMrsData from "./data/bonus-mrs-data";
-import OverallValues from "../components/overall-doctor-values"; // Import OverallValues component
+import OverallValues from "../elements/overall-doctor-values"; // Import OverallValues component
 import { Select, MenuItem, FormControl, InputLabel, Tooltip, IconButton } from "@mui/material";
 import SortIcon from "@mui/icons-material/Sort";
 

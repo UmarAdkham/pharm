@@ -17,7 +17,7 @@ import Grid from "@mui/material/Grid";
 // Authentication layout components
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useSelector } from "react-redux";
-import MapComponent from "layouts/dashboard-dd/components/map-component";
+import MapComponent from "layouts/dashboard-dd/elements/map-component";
 
 const PharmaciesModal = ({ open, handleClose, handleSubmit, pharmaciesToUpdate }) => {
   const accessToken = useSelector((state) => state.auth.accessToken);

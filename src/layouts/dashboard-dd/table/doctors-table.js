@@ -4,7 +4,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
 import useDoctorsData from "./data/doctors-data";
-import OverallValues from "../components/overall-doctor-values";
+import OverallValues from "../elements/overall-doctor-values";
 import {
   Select,
   MenuItem,

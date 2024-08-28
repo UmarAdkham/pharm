@@ -12,7 +12,7 @@ import axiosInstance from "services/axiosInstance";
 import { useSelector } from "react-redux";
 import { Autocomplete, Button, TextField, Tooltip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import OverallReservationValues from "layouts/dashboard-dd/components/overall-reserve-values";
+import OverallReservationValues from "layouts/dashboard-dd/elements/overall-reserve-values";
 
 const monthNames = [
   "Январь",

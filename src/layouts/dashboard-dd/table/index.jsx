@@ -23,14 +23,14 @@ import userRoles from "constants/userRoles";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import VisitDialog from "../dialogs/visit-dialog";
-import SelectCategory from "../components/category-menu";
+import SelectCategory from "../elements/category-menu";
 import useProductCategoryData from "./data/product-category-data";
 import PharmacyInfoDialog from "../dialogs/pharmacy-info-dialog";
 import DoctorInfoDialog from "../dialogs/doctor-info-dialog";
 import ConfirmDialog from "../dialogs/confirm-dialog";
 import NotificationDialog from "../dialogs/notification-dialog";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import ManagersMenu from "../components/managers-menu";
+import ManagersMenu from "../elements/managers-menu";
 import months from "../../../constants/months"; // Import the Russian month names
 
 function DeputyDirectorTable({
