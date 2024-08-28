@@ -43,7 +43,7 @@ function DeputyDirectorHospitalFactTable({ med_rep_id }) {
         <MDBox display="flex" alignItems="center">
           {/* Adjusted to uppercase and added margin */}
           <MDTypography variant="h6" gutterBottom sx={{ ml: 3, mr: 3, textTransform: "uppercase" }}>
-            Общ факт: {totalFact.toLocaleString("ru-RU")}
+            Общ факт: {totalFact?.toLocaleString("ru-RU")}
           </MDTypography>
           <FormControl variant="outlined" sx={{ minWidth: 120 }}>
             <InputLabel id="month-select-label">Месяц</InputLabel>
