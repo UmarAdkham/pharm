@@ -120,6 +120,8 @@ export default function useReservationData(apiPath, month) {
         { Header: "Промо", accessor: "promo", align: "left" },
         { Header: "Возврат цена", accessor: "returned_price", align: "left" },
         { Header: "Регион", accessor: "region", align: "left" },
+        { Header: "История Поступлений", accessor: "view", align: "left" },
+        { Header: "Список продуктов", accessor: "product_list", align: "center" },
         { Header: "МП", accessor: "med_rep", align: "left" },
         { Header: "Тип К/А", accessor: "type", align: "center" },
         { Header: "ИНН", accessor: "ibt", align: "center" },
@@ -133,13 +135,7 @@ export default function useReservationData(apiPath, month) {
           { Header: "Возвратить", accessor: "return", align: "center" }, // Added delete column
           { Header: "Удалить", accessor: "delete", align: "center" } // Added delete column
         );
-        columns.splice(
-          -6,
-          0,
-          { Header: "Действие", accessor: "add", align: "left" },
-          { Header: "История Поступлений", accessor: "view", align: "left" },
-          { Header: "Список продуктов", accessor: "product_list", align: "center" }
-        );
+        columns.splice(-8, 0, { Header: "Действие", accessor: "add", align: "left" });
       }
 
       let expired_debt = 0;
