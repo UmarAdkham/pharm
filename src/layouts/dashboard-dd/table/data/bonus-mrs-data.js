@@ -9,7 +9,6 @@ export default function useBonusMrsData(month, order) {
   const [loading, setLoading] = useState(true);
   const accessToken = useSelector((state) => state.auth.accessToken);
   const navigate = useNavigate();
-
   const previousDataRef = useRef(data);
 
   useEffect(() => {
@@ -22,6 +21,27 @@ export default function useBonusMrsData(month, order) {
         return "#f77c48";
       }
     };
+
+    async function fetchHospitalFacts(medRepId) {
+      try {
+        const response = await axiosInstance.get(
+          `/dd/get-med-rep-product-plan-by-month-id/${medRepId}?month_number=${month}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        const hospitalFactData = response.data.plan.flatMap((planItem) => planItem.hospital_fact);
+        const totalHospitalFactPrice = hospitalFactData.reduce((sum, item) => sum + item.fact, 0);
+
+        return totalHospitalFactPrice;
+      } catch (error) {
+        console.error(`Error fetching hospital facts for medRepId ${medRepId}:`, error);
+        return 0; // Return 0 if there's an error
+      }
+    }
 
     async function fetchUsers() {
       setLoading(true);
@@ -36,33 +56,6 @@ export default function useBonusMrsData(month, order) {
         );
 
         const mrs = response.data;
-
-        // Fetch fact_postupleniya for each medical representative
-        // const fetchFactPostupleniya = async (medRepId) => {
-        //   const response = await axiosInstance.get(
-        //     `/dd/get-doctor-bonus-by-med-rep-id/${medRepId}?month_number=${month}`,
-        //     {
-        //       headers: {
-        //         Authorization: `Bearer ${accessToken}`,
-        //       },
-        //     }
-        //   );
-        //   return response.data.reduce((sum, item) => sum + item.fact_postupleniya, 0);
-        // };
-
-        // const factPostupleniyaPromises = mrs.map((mr) =>
-        //   fetchFactPostupleniya(mr.id).then((factPostupleniya) => ({
-        //     id: mr.id,
-        //     factPostupleniya,
-        //   }))
-        // );
-
-        // const factPostupleniyaResults = await Promise.all(factPostupleniyaPromises);
-
-        // const factPostupleniyaMap = new Map();
-        // factPostupleniyaResults.forEach((result) => {
-        //   factPostupleniyaMap.set(result.id, result.factPostupleniya);
-        // });
 
         // Calculate overall monthlyPlan and fact
         const monthlyPlan = mrs.reduce(
@@ -101,66 +94,76 @@ export default function useBonusMrsData(month, order) {
           { Header: "Факт %", accessor: "fact_percent", align: "left" },
           { Header: "Факт поступ", accessor: "fact_postupleniya", align: "left" },
           { Header: "Горячая продажа", accessor: "hot_sale", align: "left" },
-          { Header: "Вакант", accessor: "vakant", align: "left" }, // New Column
+          { Header: "Больница факт", accessor: "hospital_fact_price", align: "left" },
+          { Header: "Вакант", accessor: "vakant", align: "left" },
         ];
 
-        const rows = mrs.map((mr) => {
-          const totalPlan = mr.plan.reduce((acc, item) => acc + item.plan_amount, 0);
-          const totalFact = mr.plan.reduce((acc, item) => acc + item.fact, 0);
-          const factPostupleniya = mr.plan.reduce((acc, item) => acc + item.fact_postupleniya, 0);
-          const factPercent = totalPlan > 0 ? (factPostupleniya / totalPlan) * 100 : 0;
-          const rowBackgroundColor = getRowBackgroundColor(factPercent);
+        const rows = await Promise.all(
+          mrs.map(async (mr) => {
+            const totalPlan = mr.plan.reduce((acc, item) => acc + item.plan_amount, 0);
+            const totalFact = mr.plan.reduce((acc, item) => acc + item.fact, 0);
+            const factPostupleniya = mr.plan.reduce((acc, item) => acc + item.fact_postupleniya, 0);
+            const factPercent = totalPlan > 0 ? (factPostupleniya / totalPlan) * 100 : 0;
+            const rowBackgroundColor = getRowBackgroundColor(factPercent);
 
-          const totalHotSale = mr.plan.reduce((sum, item) => sum + item.hot_sales_price, 0);
-          const totalVakant = mr.plan.reduce((sum, item) => sum + item.vakant, 0); // Sum of Vakant
+            const totalHotSale = mr.plan.reduce((sum, item) => sum + item.hot_sales_price, 0);
+            const totalVakant = mr.plan.reduce((sum, item) => sum + item.vakant, 0); // Sum of Vakant
 
-          return {
-            username: (
-              <MDTypography variant="caption" fontWeight="medium">
-                {mr.username}
-              </MDTypography>
-            ),
-            full_name: (
-              <MDTypography variant="caption" fontWeight="medium">
-                {mr.full_name}
-              </MDTypography>
-            ),
-            plan: (
-              <MDTypography variant="caption" fontWeight="medium">
-                {totalPlan}
-              </MDTypography>
-            ),
-            fact: (
-              <MDTypography variant="caption" fontWeight="medium">
-                {totalFact}
-              </MDTypography>
-            ),
-            fact_percent: (
-              <MDTypography variant="caption" fontWeight="medium">
-                {factPercent.toFixed(2)}%
-              </MDTypography>
-            ),
-            fact_postupleniya: (
-              <MDTypography variant="caption" fontWeight="medium">
-                {factPostupleniya}
-              </MDTypography>
-            ),
-            hot_sale: (
-              <MDTypography variant="caption" fontWeight="medium">
-                {totalHotSale.toLocaleString("ru-RU")} сум
-              </MDTypography>
-            ),
-            vakant: (
-              <MDTypography variant="caption" fontWeight="medium">
-                {totalVakant} {/* Displaying Vakant */}
-              </MDTypography>
-            ),
-            onClick: () => {
-              navigate("/dd/bonus-report", { state: mr });
-            },
-            rowBackgroundColor,
-          };
-        });
+            const hospitalFactPrice = await fetchHospitalFacts(mr.id);
+
+            return {
+              username: (
+                <MDTypography variant="caption" fontWeight="medium">
+                  {mr.username}
+                </MDTypography>
+              ),
+              full_name: (
+                <MDTypography variant="caption" fontWeight="medium">
+                  {mr.full_name}
+                </MDTypography>
+              ),
+              plan: (
+                <MDTypography variant="caption" fontWeight="medium">
+                  {totalPlan}
+                </MDTypography>
+              ),
+              fact: (
+                <MDTypography variant="caption" fontWeight="medium">
+                  {totalFact}
+                </MDTypography>
+              ),
+              fact_percent: (
+                <MDTypography variant="caption" fontWeight="medium">
+                  {factPercent.toFixed(2)}%
+                </MDTypography>
+              ),
+              fact_postupleniya: (
+                <MDTypography variant="caption" fontWeight="medium">
+                  {factPostupleniya}
+                </MDTypography>
+              ),
+              hot_sale: (
+                <MDTypography variant="caption" fontWeight="medium">
+                  {totalHotSale.toLocaleString("ru-RU")} сум
+                </MDTypography>
+              ),
+              vakant: (
+                <MDTypography variant="caption" fontWeight="medium">
+                  {totalVakant}
+                </MDTypography>
+              ),
+              hospital_fact_price: (
+                <MDTypography variant="caption" fontWeight="medium">
+                  {hospitalFactPrice.toLocaleString("ru-RU")}
+                </MDTypography>
+              ),
+              onClick: () => {
+                navigate("/dd/bonus-report", { state: mr });
+              },
+              rowBackgroundColor,
+            };
+          })
+        );
 
         // Sort rows based on fact_percent
         if (order) {
