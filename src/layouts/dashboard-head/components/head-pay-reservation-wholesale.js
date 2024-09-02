@@ -40,8 +40,6 @@ function HeadPayReservationWholesale() {
   const location = useLocation();
   const { reservationId, invoice_number, realized_debt } = location.state || {}; // Add a default value
 
-  console.log(location.state);
-
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
   const [medReps, setMedReps] = useState([]);
@@ -220,11 +218,6 @@ function HeadPayReservationWholesale() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Check if mandatory fields are provided
-    const isMedRepProvided = !!selectedMedRep;
-    const isPharmacyProvided = !!selectedPharmacy;
-    const isDescriptionProvided = !!description;
-
     // Check if either total or objects are provided
     const isTotalProvided = !!total;
 
@@ -248,37 +241,31 @@ function HeadPayReservationWholesale() {
       });
 
     const areObjectsProvided = objects.length > 0;
+    const isMedRepProvided = !!selectedMedRep;
+    const isPharmacyProvided = !!selectedPharmacy;
 
-    // Determine if form can be submitted
+    // Determine if form can be submitted based on the conditions
     const canSubmit =
-      isMedRepProvided &&
-      isPharmacyProvided &&
-      isDescriptionProvided &&
-      (isTotalProvided || areObjectsProvided);
+      isTotalProvided || (isMedRepProvided && isPharmacyProvided && areObjectsProvided);
 
     // Check which fields are missing and prepare error messages
     if (!canSubmit) {
       let errorMessage = "Пожалуйста, заполните все обязательные поля: ";
-      if (!isMedRepProvided) errorMessage += "Медицинский представитель, ";
-      if (!isPharmacyProvided) errorMessage += "Аптека, ";
-      if (!isDescriptionProvided) errorMessage += "Комментарий, ";
-      if (!isTotalProvided && !areObjectsProvided) errorMessage += "Сумма или объекты.";
-
+      if (!isTotalProvided && (!isMedRepProvided || !isPharmacyProvided || !areObjectsProvided)) {
+        errorMessage +=
+          "Либо введите сумму, либо заполните все поля (мед. представитель, аптека и препараты).";
+      }
       setMessage({ color: "error", content: errorMessage });
       return;
     }
 
-    if (parseInt(totalSum) > parseInt(total + remainderSum)) {
-      setMessage({ color: "error", content: "Общая сумма не может быть больше указанной суммы" });
-      return;
-    }
-
+    // Payload construction
     const payload = {
-      med_rep_id: selectedMedRep?.id || null,
-      pharmacy_id: selectedPharmacy?.id || null,
+      med_rep_id: isTotalProvided ? null : selectedMedRep?.id || null,
+      pharmacy_id: isTotalProvided ? null : selectedPharmacy?.id || null,
       total: total ? parseInt(total + remainderSum, 10) : 0,
-      objects,
-      description,
+      objects: isTotalProvided ? [] : objects,
+      description: description || "",
     };
 
     console.log(payload);
