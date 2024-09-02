@@ -218,11 +218,15 @@ function HeadPayReservationWholesale() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (parseInt(totalSum) > parseInt(total + remainderSum)) {
-      setMessage({ color: "error", content: "Общая сумма не может быть больше указанной суммы" });
-      return;
-    }
+    // Check if mandatory fields are provided
+    const isMedRepProvided = !!selectedMedRep;
+    const isPharmacyProvided = !!selectedPharmacy;
+    const isDescriptionProvided = !!description;
 
+    // Check if either total or objects are provided
+    const isTotalProvided = !!total;
+
+    // Initialize objects from unpayedProducts
     const objects = unpayedProducts
       .map((product, originalIndex) => ({
         ...product,
@@ -241,14 +245,35 @@ function HeadPayReservationWholesale() {
         };
       });
 
-    if (!selectedMedRep || !selectedPharmacy || (!total && objects.length === 0) || !description) {
-      setMessage({ color: "error", content: "Пожалуйста, заполните все поля" });
+    const areObjectsProvided = objects.length > 0;
+
+    // Determine if form can be submitted
+    const canSubmit =
+      isMedRepProvided &&
+      isPharmacyProvided &&
+      isDescriptionProvided &&
+      (isTotalProvided || areObjectsProvided);
+
+    // Check which fields are missing and prepare error messages
+    if (!canSubmit) {
+      let errorMessage = "Пожалуйста, заполните все обязательные поля: ";
+      if (!isMedRepProvided) errorMessage += "Медицинский представитель, ";
+      if (!isPharmacyProvided) errorMessage += "Аптека, ";
+      if (!isDescriptionProvided) errorMessage += "Комментарий, ";
+      if (!isTotalProvided && !areObjectsProvided) errorMessage += "Сумма или объекты.";
+
+      setMessage({ color: "error", content: errorMessage });
+      return;
+    }
+
+    if (parseInt(totalSum) > parseInt(total + remainderSum)) {
+      setMessage({ color: "error", content: "Общая сумма не может быть больше указанной суммы" });
       return;
     }
 
     const payload = {
-      med_rep_id: selectedMedRep.id,
-      pharmacy_id: selectedPharmacy.id,
+      med_rep_id: selectedMedRep?.id || null,
+      pharmacy_id: selectedPharmacy?.id || null,
       total: total ? parseInt(total + remainderSum, 10) : 0,
       objects,
       description,
