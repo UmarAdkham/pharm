@@ -38,7 +38,9 @@ function HeadPayReservationWholesale() {
   const navigate = useNavigate();
   const { accessToken } = useSelector((state) => state.auth);
   const location = useLocation();
-  const { reservationId, invoice_number, med_rep_id } = location.state || {}; // Add a default value
+  const { reservationId, invoice_number, realized_debt } = location.state || {}; // Add a default value
+
+  console.log(location.state);
 
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
@@ -350,6 +352,11 @@ function HeadPayReservationWholesale() {
                   ? (remainderSum + total).toLocaleString("ru-RU")
                   : remainderSum.toLocaleString("ru-RU")}{" "}
                 сум <br />
+              </MDTypography>
+            </MDBox>
+            <MDBox mb={2}>
+              <MDTypography variant="h6">
+                Реал. дебиторка: {realized_debt?.toLocaleString("ru-RU") || 0} сум <br />
               </MDTypography>
             </MDBox>
             <MDBox mb={2}>

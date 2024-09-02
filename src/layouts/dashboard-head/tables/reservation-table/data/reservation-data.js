@@ -359,6 +359,7 @@ export default function useReservationData(apiPath, month) {
                     reservationId: rsrv.id,
                     invoice_number: rsrv.invoice_number,
                     med_rep_id: rsrv.pharmacy?.med_rep?.id,
+                    realized_debt: rsrv.reailized_debt,
                   },
                 });
               }}
