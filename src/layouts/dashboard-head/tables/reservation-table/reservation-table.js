@@ -4,6 +4,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
+import CircularProgress from "@mui/material/CircularProgress";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
@@ -62,7 +63,8 @@ function ReservationTable() {
   const [filteredRows, setFilteredRows] = useState([]);
   const { accessToken, userRole } = useSelector((state) => state.auth);
 
-  const { columns, rows, expired_debt, ExpiryDateDialogComponent, SnackbarComponent } =
+  // Destructure loading, columns, and rows from useReservationData hook
+  const { columns, rows, expired_debt, loading, ExpiryDateDialogComponent, SnackbarComponent } =
     useReservationData(reservationApiPath);
 
   useEffect(() => {
@@ -77,7 +79,9 @@ function ReservationTable() {
   }, [hospitals, pharmacies, wholesales]);
 
   useEffect(() => {
-    filterRows();
+    // Ensure that rows are updated and not empty
+    console.log("Rows from useReservationData:", rows);
+    filterRows(); // Update filtered rows whenever rows change
   }, [rows, selectedMedRep, selectedEntity, selectedType]);
 
   const fetchMedicalReps = async () => {
@@ -101,7 +105,6 @@ function ReservationTable() {
         },
       });
 
-      // Remove duplicates based on 'company_name' while keeping unique objects
       const seen = new Set();
       const uniquePharmacies = response.data.filter((pharmacy) => {
         const duplicate = seen.has(pharmacy.company_name);
@@ -201,7 +204,7 @@ function ReservationTable() {
   };
 
   const filterRows = () => {
-    let filtered = rows;
+    let filtered = rows; // Use rows directly from hook
     if (selectedMedRep) {
       filtered = filtered.filter(
         (row) =>
@@ -228,6 +231,7 @@ function ReservationTable() {
         row.invoice_number_value.toString().includes(invoiceNumber)
       );
     }
+    console.log("Filtered Rows:", filtered); // Debugging log
     setFilteredRows(filtered);
   };
 
@@ -355,19 +359,27 @@ function ReservationTable() {
           )}
         </MDBox>
       </MDBox>
-      <OverallReservationValues overall={overall} filteredRows={filteredRows} />
-      <MDBox>
-        <DataTable
-          table={{
-            columns,
-            rows: filteredRows,
-          }}
-          showTotalEntries={false}
-          isSorted={false}
-          noEndBorder
-          entriesPerPage={{ defaultValue: 100 }}
-        />
-      </MDBox>
+      {loading ? (
+        <MDBox display="flex" justifyContent="center" alignItems="center" p={3}>
+          <CircularProgress />
+        </MDBox>
+      ) : (
+        <>
+          <OverallReservationValues overall={overall} filteredRows={filteredRows} />
+          <MDBox>
+            <DataTable
+              table={{
+                columns,
+                rows: filteredRows,
+              }}
+              showTotalEntries={false}
+              isSorted={false}
+              noEndBorder
+              entriesPerPage={{ defaultValue: 100 }}
+            />
+          </MDBox>
+        </>
+      )}
       {ExpiryDateDialogComponent}
       {SnackbarComponent}
     </Card>
