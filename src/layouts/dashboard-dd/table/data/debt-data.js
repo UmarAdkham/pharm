@@ -99,11 +99,14 @@ export default function useDebtData(apiPath, month) {
       // Sort the reservations by the 'date' property in descending order,
       // and then by 'id' in descending order if the dates are the same.
       const filteredReservations = response.data.sort((a, b) => {
-        const dateComparison = new Date(b.date) - new Date(a.date);
-        if (dateComparison !== 0) {
-          return dateComparison;
-        }
-        return b.id - a.id;
+        const debtComparison = b.debt - a.debt;
+        // if (debtComparison !== 0) {
+        return debtComparison; // If debts are not equal, sort by debt descending
+        // }
+
+        // If debts are equal, then compare by date in ascending order
+        // const dateComparison = new Date(a.date) - new Date(b.date);
+        // return dateComparison;
       });
 
       let columns = [
@@ -253,7 +256,7 @@ export default function useDebtData(apiPath, month) {
           ),
           debt: (
             <MDTypography variant="caption" fontWeight="medium">
-              {rsrv.checked ? rsrv.debt.toLocaleString("ru-RU") : 0}
+              {rsrv.debt.toLocaleString("ru-RU")}
             </MDTypography>
           ),
           discount: (
