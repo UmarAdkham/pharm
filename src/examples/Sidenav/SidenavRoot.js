@@ -28,6 +28,7 @@ export default styled(Drawer)(({ theme, ownerState, isVisible }) => {
       easing: transitions.easing.sharp,
       duration: transitions.duration.shorter,
     }),
+    display: isVisible ? "block" : "none", // Ensure display respects isVisible
 
     [breakpoints.up("xl")]: {
       boxShadow: transparentSidenav ? "none" : xxl,
@@ -45,11 +46,12 @@ export default styled(Drawer)(({ theme, ownerState, isVisible }) => {
   // styles for the sidenav when miniSidenav={true}
   const drawerCloseStyles = () => ({
     background: backgroundValue,
-    transform: `translateX(${pxToRem(-320)})`,
+    transform: isVisible ? "translateX(0)" : `translateX(${pxToRem(-320)})`, // Updated to respect isVisible
     transition: transitions.create("transform", {
       easing: transitions.easing.sharp,
       duration: transitions.duration.shorter,
     }),
+    display: isVisible ? "block" : "none", // Ensure display respects isVisible
 
     [breakpoints.up("xl")]: {
       boxShadow: transparentSidenav ? "none" : xxl,
@@ -70,11 +72,10 @@ export default styled(Drawer)(({ theme, ownerState, isVisible }) => {
       boxShadow: xxl,
       border: "none",
       ...(miniSidenav ? drawerCloseStyles() : drawerOpenStyles()),
-      display: isVisible ? "block" : "none", // Ensure the visibility is controlled here
-      overflowY: "auto", // Enable vertical scrolling
-      overflowX: "hidden", // Prevent horizontal scrolling
-      textOverflow: "ellipsis", // Truncate with ellipsis
-      whiteSpace: "nowrap", // Keep text in a single line
+      overflowY: "auto",
+      overflowX: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
       "&::-webkit-scrollbar": {
         width: "4px",
       },
@@ -82,7 +83,7 @@ export default styled(Drawer)(({ theme, ownerState, isVisible }) => {
         background: "#f1f1f1",
       },
       "&::-webkit-scrollbar-thumb": {
-        background: "#878787", // Blue color
+        background: "#878787",
         borderRadius: "10px",
       },
       "&::-webkit-scrollbar-thumb:hover": {

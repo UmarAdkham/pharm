@@ -1,15 +1,8 @@
 import { useEffect } from "react";
-
-// react-router-dom components
 import { useLocation } from "react-router-dom";
-
-// prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
-
-// Material Dashboard 2 React context
+import { useSelector } from "react-redux"; // Import useSelector
 import { useMaterialUIController, setLayout } from "context";
 
 function DashboardLayout({ children }) {
@@ -17,18 +10,39 @@ function DashboardLayout({ children }) {
   const { miniSidenav } = controller;
   const { pathname } = useLocation();
 
+  // Get isSidenavVisible from Redux
+  const isSidenavVisible = useSelector((state) => state.ui.isSidenavVisible);
+
   useEffect(() => {
     setLayout(dispatch, "dashboard");
-  }, [pathname]);
+  }, [pathname, dispatch]);
 
   return (
     <MDBox
       sx={({ breakpoints, transitions, functions: { pxToRem } }) => ({
         p: 3,
         position: "relative",
-
+        // Ensure no margin and full width on small screens
+        marginLeft: {
+          xs: 0,
+          xl: isSidenavVisible
+            ? miniSidenav
+              ? pxToRem(120) // Margin for mini sidenav
+              : pxToRem(274) // Margin for full sidenav
+            : 0, // No margin when sidenav is not visible
+        },
+        transition: transitions.create(["margin-left", "margin-right"], {
+          easing: transitions.easing.easeInOut,
+          duration: transitions.duration.standard,
+        }),
+        width: {
+          xs: "100%", // Full width on small screens
+          xl: isSidenavVisible
+            ? `calc(100% - ${miniSidenav ? pxToRem(120) : pxToRem(274)})` // Width adjusted for visible sidenav
+            : "100%", // Full width when sidenav is not visible
+        },
         [breakpoints.up("xl")]: {
-          marginLeft: miniSidenav ? pxToRem(120) : pxToRem(274),
+          marginLeft: isSidenavVisible ? (miniSidenav ? pxToRem(120) : pxToRem(274)) : 0,
           transition: transitions.create(["margin-left", "margin-right"], {
             easing: transitions.easing.easeInOut,
             duration: transitions.duration.standard,
@@ -41,7 +55,6 @@ function DashboardLayout({ children }) {
   );
 }
 
-// Typechecking props for the DashboardLayout
 DashboardLayout.propTypes = {
   children: PropTypes.node.isRequired,
 };
