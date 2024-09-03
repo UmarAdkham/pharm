@@ -48,16 +48,22 @@ function ReservationTable() {
   const [combinedEntities, setCombinedEntities] = useState([]);
   const [selectedPharmacy, setSelectedPharmacy] = useState("all");
   const [selectedMedRep, setSelectedMedRep] = useState(null);
-  const [selectedMonth, setSelectedMonth] = useState("");
+
+  // Initialize selectedMonth to the current month, adjusted to be 1-based
+  const currentMonth = new Date().getMonth() + 1; // Adjusting for 1-based month
+  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+
   const [selectedEntity, setSelectedEntity] = useState(null);
   const [selectedType, setSelectedType] = useState("all");
   const [invoiceNumber, setInvoiceNumber] = useState("");
-  const [reservationApiPath, setReservationApiPath] = useState("head/get-all-reservations");
+  const [reservationApiPath, setReservationApiPath] = useState(
+    `head/get-all-reservations?month_number=${currentMonth}`
+  );
   const [filteredRows, setFilteredRows] = useState([]);
   const { accessToken, userRole } = useSelector((state) => state.auth);
 
   const { columns, rows, expired_debt, ExpiryDateDialogComponent, SnackbarComponent } =
-    useReservationData(reservationApiPath, selectedMonth);
+    useReservationData(reservationApiPath);
 
   useEffect(() => {
     fetchMedicalReps();
@@ -72,7 +78,7 @@ function ReservationTable() {
 
   useEffect(() => {
     filterRows();
-  }, [rows, selectedMedRep, selectedMonth, selectedEntity, selectedType]);
+  }, [rows, selectedMedRep, selectedEntity, selectedType]);
 
   const fetchMedicalReps = async () => {
     try {
@@ -158,7 +164,9 @@ function ReservationTable() {
     const pharmacyId = event.target.value;
     setSelectedPharmacy(pharmacyId);
     setReservationApiPath(
-      pharmacyId === "all" ? "head/get-all-reservations" : `head/get-reservations/${pharmacyId}`
+      pharmacyId === "all"
+        ? `head/get-all-reservations?month_number=${selectedMonth}`
+        : `head/get-reservations/${pharmacyId}?month_number=${selectedMonth}`
     );
   };
 
@@ -167,7 +175,13 @@ function ReservationTable() {
   };
 
   const handleMonthChange = (event) => {
-    setSelectedMonth(event.target.value);
+    const newMonth = event.target.value;
+    setSelectedMonth(newMonth);
+    setReservationApiPath(
+      selectedPharmacy === "all"
+        ? `head/get-all-reservations?month_number=${newMonth}`
+        : `head/get-reservations/${selectedPharmacy}?month_number=${newMonth}`
+    );
   };
 
   const handleEntityChange = (event, newValue) => {
@@ -193,12 +207,6 @@ function ReservationTable() {
         (row) =>
           row.pharmacy?.med_rep?.full_name === selectedMedRep.full_name ||
           row.hospital?.med_rep?.full_name === selectedMedRep.full_name
-      );
-    }
-    if (selectedMonth !== "") {
-      filtered = filtered.filter(
-        (row) =>
-          parseDate(row.date_reservation.props.children).getMonth() === parseInt(selectedMonth)
       );
     }
     if (selectedEntity) {
@@ -256,9 +264,8 @@ function ReservationTable() {
               sx={{ height: "35px" }}
               label="Месяц"
             >
-              <MenuItem value="">Все</MenuItem>
               {monthNames.map((month, index) => (
-                <MenuItem key={index} value={index}>
+                <MenuItem key={index} value={index + 1}>
                   {month}
                 </MenuItem>
               ))}
