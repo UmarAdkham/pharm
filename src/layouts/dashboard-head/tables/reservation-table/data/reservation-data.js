@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import MDTypography from "components/MDTypography";
-import { format, differenceInDays } from "date-fns";
+import { format, differenceInDays } from "date-fns"; // Importing differenceInDays
 import { IconButton, Switch, Tooltip, Snackbar, Alert, Button } from "@mui/material";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import EditIcon from "@mui/icons-material/Edit";
@@ -25,7 +25,6 @@ export default function useReservationData(apiPath, month) {
   const [open, setOpen] = useState(false);
   const [reservation, setReservation] = useState({});
   const [productListDialogOpen, setProductListDialogOpen] = useState(false);
-  const [loading, setLoading] = useState(true); // Add loading state
 
   const handleProductListDialogOpen = () => {
     setProductListDialogOpen(true);
@@ -90,7 +89,6 @@ export default function useReservationData(apiPath, month) {
   };
 
   async function fetchReservations() {
-    setLoading(true); // Set loading to true when fetching data
     try {
       const response = await axiosInstance.get(apiPath, {
         headers: {
@@ -98,6 +96,8 @@ export default function useReservationData(apiPath, month) {
         },
       });
 
+      // Sort the reservations by the 'date' property in descending order,
+      // and then by 'id' in descending order if the dates are the same.
       const filteredReservations = response.data.sort((a, b) => {
         const dateComparison = new Date(b.date) - new Date(a.date);
         if (dateComparison !== 0) {
@@ -132,13 +132,14 @@ export default function useReservationData(apiPath, month) {
         columns.splice(
           -1,
           0,
-          { Header: "Возвратить", accessor: "return", align: "center" },
-          { Header: "Удалить", accessor: "delete", align: "center" }
+          { Header: "Возвратить", accessor: "return", align: "center" }, // Added delete column
+          { Header: "Удалить", accessor: "delete", align: "center" } // Added delete column
         );
         columns.splice(-8, 0, { Header: "Действие", accessor: "add", align: "left" });
       }
 
       let expired_debt = 0;
+      let expired_debt_value = 0;
       const rows = filteredReservations.map((rsrv) => {
         const entity = rsrv.pharmacy || rsrv.hospital || rsrv.wholesale;
         const checked = rsrv.checked;
@@ -146,7 +147,7 @@ export default function useReservationData(apiPath, month) {
           new Date(),
           new Date(rsrv.date_implementation)
         );
-
+        // Make the row red if the implementation date was 31/60 days before and there is debt
         const rowBackgroundColor =
           rsrv.checked &&
           daysSinceImplementation > (getRsrvType(rsrv) === "wholesale" ? 60 : 30) &&
@@ -157,15 +158,33 @@ export default function useReservationData(apiPath, month) {
             : "white";
 
         if (rowBackgroundColor === "#f77c48") {
-          expired_debt += rsrv.debt;
+          expired_debt += rsrv.debt; // calculating overall expired_debt
+          expired_debt_value = rsrv.debt; // needed for displaying company-based expired-debt
         }
 
         return {
           ...rsrv,
+          isChecked: checked,
+          debtValue: rsrv.debt,
+          profitValue: rsrv.profit,
+          promoValue: entity.promo,
+          expiredDebtValue: expired_debt_value,
+          invoice_number_value: rsrv.invoice_number,
           expiry_date: (
-            <MDTypography variant="caption" fontWeight="medium">
-              {format(new Date(rsrv.date_implementation), "dd/MM/yyyy")}
-            </MDTypography>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <MDTypography variant="caption" fontWeight="medium">
+                {format(new Date(rsrv.date_implementation), "dd/MM/yyyy")}
+              </MDTypography>
+              {userRole === userRoles.HEAD_OF_ORDERS && (
+                <IconButton
+                  size="small"
+                  onClick={() => handleOpenDialog(rsrv)}
+                  style={{ marginLeft: "8px" }}
+                >
+                  <EditIcon fontSize="small" />
+                </IconButton>
+              )}
+            </div>
           ),
           total_payable: (
             <MDTypography variant="caption" fontWeight="medium">
@@ -174,10 +193,30 @@ export default function useReservationData(apiPath, month) {
           ),
           invoice_number: (
             <MDTypography variant="caption" fontWeight="medium">
-              {rsrv.invoice_number}
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <MDTypography variant="caption" fontWeight="medium">
+                  {rsrv.invoice_number}
+                </MDTypography>
+                {userRole === userRoles.HEAD_OF_ORDERS && (
+                  <IconButton
+                    size="small"
+                    onClick={() =>
+                      navigate("/head/set-invoice-number", {
+                        state: { reservationId: rsrv.id, type: getRsrvType(rsrv) },
+                      })
+                    }
+                    style={{ marginLeft: "8px" }}
+                  >
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+                )}
+              </div>
             </MDTypography>
           ),
           company_name: (
+            // <MDTypography variant="caption" fontWeight="medium">
+            //   {entity.company_name}
+            // </MDTypography>
             <Tooltip title={entity.company_name} arrow>
               <MDTypography variant="caption" fontWeight="medium">
                 {entity.company_name.length > 20
@@ -217,9 +256,40 @@ export default function useReservationData(apiPath, month) {
             </MDTypography>
           ),
           discount: (
-            <MDTypography variant="caption" fontWeight="medium">
-              {rsrv.discount ? `${rsrv.discount} %` : "0"}
-            </MDTypography>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <MDTypography variant="caption" fontWeight="medium">
+                {rsrv.discount ? `${rsrv.discount} %` : "0"}
+              </MDTypography>
+              {userRole === userRoles.HEAD_OF_ORDERS &&
+                (rsrv.checked ? (
+                  <Tooltip title="Уже одобрено">
+                    <span>
+                      <IconButton
+                        size="small"
+                        onClick={() => {}}
+                        style={{ marginLeft: "8px" }}
+                        disabled
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+                ) : (
+                  <Tooltip title="Установить скидку">
+                    <IconButton
+                      size="small"
+                      onClick={() =>
+                        navigate("/head/set-discount", {
+                          state: { reservationId: rsrv.id, type: getRsrvType(rsrv) },
+                        })
+                      }
+                      style={{ marginLeft: "8px" }}
+                    >
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                ))}
+            </div>
           ),
           date_reservation: (
             <MDTypography variant="caption" fontWeight="medium">
@@ -248,20 +318,187 @@ export default function useReservationData(apiPath, month) {
               {rsrv.returned_price?.toLocaleString("ru-RU")}
             </MDTypography>
           ),
-          // Add other row fields as necessary
+          add: !rsrv.checked ? (
+            <Tooltip title="Сначала необходимо одобрить бронь">
+              <span>
+                <Button
+                  variant="contained"
+                  color="success"
+                  sx={{ color: "white" }}
+                  style={{ cursor: "not-allowed" }}
+                  disabled
+                >
+                  Поступление
+                </Button>
+              </span>
+            </Tooltip>
+          ) : (
+            <Button
+              variant="contained"
+              color="success"
+              sx={{ color: "white" }}
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                const type = getRsrvType(rsrv);
+                let path = "/head/pay-reservation-";
+
+                switch (type) {
+                  case "pharmacy":
+                    path += "pharmacy";
+                    break;
+                  case "wholesale":
+                    path += "wholesale";
+                    break;
+                  case "hospital":
+                    path += "hospital";
+                    break;
+                }
+
+                navigate(path, {
+                  state: {
+                    reservationId: rsrv.id,
+                    invoice_number: rsrv.invoice_number,
+                    med_rep_id: rsrv.pharmacy?.med_rep?.id,
+                    realized_debt: rsrv.reailized_debt,
+                  },
+                });
+              }}
+            >
+              Поступление
+            </Button>
+          ),
+          view: (
+            <Tooltip title="История поступлений">
+              <IconButton
+                onClick={() => {
+                  handleClickOpen();
+                  setReservation({ id: rsrv.id, type: getRsrvType(rsrv) });
+                }}
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#e0f2f1",
+                  },
+                }}
+              >
+                <RemoveRedEyeIcon />
+              </IconButton>
+            </Tooltip>
+          ),
+          download: (
+            <Tooltip title="Загрузить отчет">
+              <IconButton
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#e0f2f1",
+                  },
+                }}
+                onClick={() => downloadReport(rsrv)}
+              >
+                <CloudDownloadIcon />
+              </IconButton>
+            </Tooltip>
+          ),
+          product_list: (
+            <Tooltip title="Просмотр списка продуктов">
+              <IconButton
+                onClick={() => {
+                  setReservation({ id: rsrv.id, type: getRsrvType(rsrv) });
+                  handleProductListDialogOpen(rsrv);
+                }}
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#e0f2f1",
+                  },
+                }}
+              >
+                <RemoveRedEyeIcon />
+              </IconButton>
+            </Tooltip>
+          ),
+          return:
+            getRsrvType(rsrv) !== "wholesale" ? (
+              <Tooltip title="Возврат">
+                <span>
+                  <IconButton
+                    onClick={() =>
+                      navigate("/head/return-product", {
+                        state: { reservationId: rsrv.id, reservationType: getRsrvType(rsrv) },
+                      })
+                    }
+                  >
+                    <AssignmentReturnIcon />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            ) : (
+              <Tooltip title="Возврат не осуществим оптовикам">
+                <span>
+                  <IconButton disabled>
+                    <AssignmentReturnIcon />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            ),
+          delete: rsrv.checked ? (
+            <Tooltip title="Уже одобрено">
+              <span>
+                <IconButton sx={{ color: "red" }} disabled>
+                  <DeleteIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
+          ) : (
+            <Tooltip title="Удалить">
+              <IconButton sx={{ color: "red" }} onClick={() => handleDelete(rsrv)}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          ),
+          rowBackgroundColor,
         };
       });
-
       setData({ columns, rows, expired_debt });
     } catch (error) {
       console.error("Error fetching reservations", error);
-    } finally {
-      setLoading(false); // Set loading to false after fetching data
     }
   }
 
   const handleDelete = async (rsrv) => {
-    // Handle delete functionality...
+    if (window.confirm("Вы уверены что хотите выполнить это действие?")) {
+      const type = getRsrvType(rsrv);
+      let url = "";
+
+      switch (type) {
+        case "pharmacy":
+          url = `https://it-club.uz/head/delete-reservation/${rsrv.id}`;
+          break;
+        case "wholesale":
+          url = `https://it-club.uz/head/delete-wholesale-reservation/${rsrv.id}`;
+          break;
+        case "hospital":
+          url = `https://it-club.uz/head/delete-hospital-reservation/${rsrv.id}`;
+          break;
+      }
+
+      try {
+        await axiosInstance.delete(url, null, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        // Remove deleted reservation from the table
+        setData((prevState) => ({
+          ...prevState,
+          rows: prevState.rows.filter((row) => row.id !== rsrv.id),
+        }));
+
+        setSnackbar({ open: true, message: "Бронирование удалено", severity: "success" });
+      } catch (error) {
+        console.log("Failed to delete reservation", error);
+        setSnackbar({ open: true, message: "Не удалось удалить бронирование", severity: "error" });
+      }
+    }
   };
 
   function getRsrvType(rsrv) {
@@ -321,16 +558,70 @@ export default function useReservationData(apiPath, month) {
   }
 
   async function toggleChecked(rsrv) {
-    // Handle toggle functionality...
+    const newChecked = !rsrv.checked;
+    const type = getRsrvType(rsrv);
+    try {
+      await axiosInstance.post(
+        `https://it-club.uz/head/check-${type === "pharmacy" ? "" : `${type}-`}reservation/${
+          rsrv.id
+        }`,
+        {
+          checked: newChecked,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      rsrv.checked = newChecked;
+      rsrv.status = getStatusIndicator(newChecked);
+      fetchReservations(); // Refresh the data
+      setSnackbar({
+        open: true,
+        message: "Одобрено",
+        severity: "success",
+      });
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: error.response?.data?.detail,
+        severity: "error",
+      });
+    }
   }
 
   function downloadReport(rsrv) {
-    // Handle report download functionality...
+    const type = getRsrvType(rsrv);
+    const entity = rsrv.pharmacy || rsrv.hospital || rsrv.wholesale;
+    const url =
+      type === "wholesale"
+        ? `https://it-club.uz/ws/get-wholesale-report/${rsrv.id}`
+        : `https://it-club.uz/mr/get-${type === "pharmacy" ? "" : `${type}-`}report/${rsrv.id}`;
+    axios({
+      url: url,
+      method: "GET",
+      responseType: "blob", // Important
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+      .then((response) => {
+        let filename = `${entity.company_name}_${format(new Date(rsrv.date), "dd/MM/yyyy")}`;
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `${filename}.xlsx` || `report-${rsrv.id}.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      })
+      .catch((error) => console.error("Download error", error));
   }
 
   return {
     ...data,
-    loading, // Return loading state
     ExpiryDateDialogComponent: (
       <>
         <ExpiryDateDialog
