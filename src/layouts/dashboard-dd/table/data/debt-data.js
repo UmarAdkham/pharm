@@ -9,14 +9,14 @@ import EditIcon from "@mui/icons-material/Edit";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AssignmentReturnIcon from "@mui/icons-material/AssignmentReturn";
-import ViewProductListDialog from "../../../dialogs/reservation-product-list-dialog";
 import axiosInstance from "services/axiosInstance";
-import ExpiryDateDialog from "layouts/dashboard-head/dialogs/edit-expiry-date-dialog";
 import { useNavigate } from "react-router-dom";
 import userRoles from "constants/userRoles";
+import ExpiryDateDialog from "layouts/dashboard-head/dialogs/edit-expiry-date-dialog";
+import ViewProductListDialog from "layouts/dashboard-head/dialogs/reservation-product-list-dialog";
 import ViewReservationHistory from "layouts/dashboard-head/dialogs/view-reservation-history";
 
-export default function useReservationData(apiPath, month) {
+export default function useDebtData(apiPath, month) {
   const navigate = useNavigate();
   const [data, setData] = useState({ columns: [], rows: [] });
   const [openDialog, setOpenDialog] = useState(false);
@@ -111,6 +111,10 @@ export default function useReservationData(apiPath, month) {
         { Header: "Сумма с/ф", accessor: "total_payable", align: "left" },
         { Header: "Номер с/ф", accessor: "invoice_number", align: "left" },
         { Header: "Контрагент", accessor: "company_name", align: "left" },
+        { Header: "Регион", accessor: "region", align: "left" },
+        { Header: "МП", accessor: "med_rep", align: "left" },
+        { Header: "Тип К/А", accessor: "type", align: "center" },
+        { Header: "ИНН", accessor: "ibt", align: "center" },
         { Header: "Поступление", accessor: "profit", align: "center" },
         { Header: "Дебитор", accessor: "debt", align: "center" },
         { Header: "Скидка %", accessor: "discount", align: "center" },
@@ -118,13 +122,9 @@ export default function useReservationData(apiPath, month) {
         { Header: "Одобрено", accessor: "check", align: "left" },
         { Header: "Производитель", accessor: "man_company", align: "left" },
         { Header: "Промо", accessor: "promo", align: "left" },
-        { Header: "Возврат цена", accessor: "returned_price", align: "left" },
-        { Header: "Регион", accessor: "region", align: "left" },
+        // { Header: "Возврат цена", accessor: "returned_price", align: "left" },
         { Header: "История Поступлений", accessor: "view", align: "left" },
-        { Header: "Список продуктов", accessor: "product_list", align: "center" },
-        { Header: "МП", accessor: "med_rep", align: "left" },
-        { Header: "Тип К/А", accessor: "type", align: "center" },
-        { Header: "ИНН", accessor: "ibt", align: "center" },
+        // { Header: "Список продуктов", accessor: "product_list", align: "center" },
         { Header: "Скачать", accessor: "download", align: "center" },
       ];
 

@@ -17,6 +17,7 @@ const ExpiredDebitorDropdown = ({ filteredRows }) => {
           item.hospital?.manufactured_company ||
           item.wholesale?.manufactured_company;
 
+        console.log(item.invoice_number_value, item.expiredDebtValue);
         const expiredDebt = parseFloat(item.expiredDebtValue || 0);
 
         if (company) {

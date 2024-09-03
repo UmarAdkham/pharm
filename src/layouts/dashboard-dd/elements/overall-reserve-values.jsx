@@ -67,10 +67,6 @@ const OverallReservationValues = ({ overall, filteredRows }) => {
           <UncheckedDebitorDropdown filteredRows={filteredRows} />
         </Grid>
         <Grid item>
-          {/* <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#a0d8eb", p: 1 }}>
-            Прос Дебиторка: {overall.expired_debt?.toLocaleString("ru-RU")}{" "}
-            <span style={{ textTransform: "lowercase" }}>сум</span>{" "}
-          </Typography> */}
           <ExpiredDebitorDropdown filteredRows={filteredRows} />
         </Grid>
       </Grid>

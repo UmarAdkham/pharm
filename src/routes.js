@@ -74,6 +74,7 @@ import DeputyDirectorUpdateDoctor from "layouts/dashboard-dd/components/dd-updat
 import DeputyDirectorDoctorDatabase from "./layouts/dashboard-dd/components/dd-doctor-database";
 import HeadReturnProduct from "layouts/dashboard-head/components/head-return-product";
 import DeputyDirectorUpdateProduct from "layouts/dashboard-dd/components/dd-update-product";
+import DeputyDirectorDebts from "layouts/dashboard-dd/components/dd-debts";
 
 const roleBasedRoutes = [
   {
@@ -176,6 +177,7 @@ const roleBasedRoutes = [
       { path: "doctors", component: <DeputyDirectorDoctors /> },
       { path: "reservations", component: <HeadReservations /> },
       { path: "doctors-data", component: <DeputyDirectorDoctorDatabase /> },
+      { path: "debts", component: <DeputyDirectorDebts /> },
     ],
     sideNav: [
       {
@@ -261,6 +263,13 @@ const roleBasedRoutes = [
         key: "dd-reservations",
         icon: <Icon fontSize="small">book_online_icon</Icon>,
         route: "reservations",
+      },
+      {
+        type: "collapse",
+        name: "Дебитор",
+        key: "dd-debts",
+        icon: <Icon fontSize="small">money</Icon>,
+        route: "debts",
       },
       {
         type: "collapse",
