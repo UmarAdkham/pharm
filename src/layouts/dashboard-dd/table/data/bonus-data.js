@@ -80,7 +80,7 @@ export default function useBonusData(
           ),
           fact_percent: (
             <MDTypography variant="caption" fontWeight="medium">
-              {(report.fact * 100) / report.monthly_plan}%
+              {(report.fact_postupleniya * 100) / report.monthly_plan}%
             </MDTypography>
           ),
           fact_postupleniya: (
