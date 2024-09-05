@@ -22,7 +22,6 @@ function DashboardLayout({ children }) {
       sx={({ breakpoints, transitions, functions: { pxToRem } }) => ({
         p: 3,
         position: "relative",
-        // Ensure no margin and full width on small screens
         marginLeft: {
           xs: 0,
           xl: isSidenavVisible
@@ -31,7 +30,7 @@ function DashboardLayout({ children }) {
               : pxToRem(274) // Margin for full sidenav
             : 0, // No margin when sidenav is not visible
         },
-        transition: transitions.create(["margin-left", "margin-right"], {
+        transition: transitions.create(["margin-left", "margin-right", "width"], {
           easing: transitions.easing.easeInOut,
           duration: transitions.duration.standard,
         }),
@@ -41,12 +40,12 @@ function DashboardLayout({ children }) {
             ? `calc(100% - ${miniSidenav ? pxToRem(120) : pxToRem(274)})` // Width adjusted for visible sidenav
             : "100%", // Full width when sidenav is not visible
         },
+        overflowX: "hidden", // Prevent horizontal scroll
         [breakpoints.up("xl")]: {
           marginLeft: isSidenavVisible ? (miniSidenav ? pxToRem(120) : pxToRem(274)) : 0,
-          transition: transitions.create(["margin-left", "margin-right"], {
-            easing: transitions.easing.easeInOut,
-            duration: transitions.duration.standard,
-          }),
+          width: isSidenavVisible
+            ? `calc(100% - ${miniSidenav ? pxToRem(120) : pxToRem(274)})`
+            : "100%",
         },
       })}
     >
