@@ -39,9 +39,6 @@ const OverallDebtValues = ({ overall, filteredRows }) => {
           <DebitorDropdown filteredRows={filteredRows} />
         </Grid>
         <Grid item>
-          <UncheckedDebitorDropdown filteredRows={filteredRows} />
-        </Grid>
-        <Grid item>
           <ExpiredDebitorDropdown filteredRows={filteredRows} />
         </Grid>
       </Grid>
