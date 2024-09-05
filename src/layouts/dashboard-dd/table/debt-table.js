@@ -11,7 +11,6 @@ import axiosInstance from "services/axiosInstance";
 import { useSelector } from "react-redux";
 import { Autocomplete, Button, TextField, Tooltip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import OverallReservationValues from "layouts/dashboard-dd/elements/overall-reserve-values";
 
 const monthNames = [
   "Январь",
@@ -30,6 +29,7 @@ const monthNames = [
 
 import userRoles from "constants/userRoles";
 import useDebtData from "./data/debt-data";
+import OverallDebtValues from "../elements/overall-debt-values";
 
 const entityTypes = [
   { label: "Все", value: "all" },
@@ -355,7 +355,7 @@ function DebtTable() {
         </MDBox>
       </MDBox>
 
-      <OverallReservationValues overall={overall} filteredRows={filteredRows} />
+      <OverallDebtValues overall={overall} filteredRows={filteredRows} />
       <MDBox>
         <DataTable
           table={{
