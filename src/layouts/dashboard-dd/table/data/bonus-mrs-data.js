@@ -87,7 +87,6 @@ export default function useBonusMrsData(month, order) {
         };
 
         const columns = [
-          { Header: "Имя пользователя", accessor: "username", align: "left" },
           { Header: "Полное имя", accessor: "full_name", align: "left" },
           { Header: "План", accessor: "plan", align: "left" },
           { Header: "Факт", accessor: "fact", align: "left" },
@@ -112,11 +111,6 @@ export default function useBonusMrsData(month, order) {
             const hospitalFactPrice = await fetchHospitalFacts(mr.id);
 
             return {
-              username: (
-                <MDTypography variant="caption" fontWeight="medium">
-                  {mr.username}
-                </MDTypography>
-              ),
               full_name: (
                 <MDTypography variant="caption" fontWeight="medium">
                   {mr.full_name}

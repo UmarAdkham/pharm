@@ -39,15 +39,13 @@ function DeputyDirectorAddBonus() {
     }
     try {
       const response = await axios.post(
-        `https://it-club.uz/mr/paying-bonus/${bonusId}?amount=${amount}`,
-        { amount, comment },
+        `https://it-club.uz/mr/paying-bonus/${bonusId}?amount=${amount}&description=${comment}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         }
       );
-
       setMessage({ color: "success", content: "Бонус добавлен" });
 
       setTimeout(() => {
