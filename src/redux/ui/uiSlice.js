@@ -2,7 +2,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  isSidenavVisible: false, // Initialize with sidenav visible
+  isSidenavVisible: true, // Initialize with sidenav visible
 };
 
 export const uiSlice = createSlice({
