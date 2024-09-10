@@ -421,7 +421,7 @@ function HeadPayReservationWholesale() {
                     options={[{ name: productNames[product.product_id] || product.product_id }]}
                     getOptionLabel={(option) => option.name}
                     value={{ name: productNames[product.product_id] || product.product_id }}
-                    renderInput={(params) => <TextField {...params} variant="outlined" disabled />}
+                    renderInput={(params) => <TextField {...params} variant="outlined" />}
                     fullWidth
                   />
                 </MDBox>
