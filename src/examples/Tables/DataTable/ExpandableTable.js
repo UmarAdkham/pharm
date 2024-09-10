@@ -22,7 +22,6 @@ import DataTableHeadCell from "examples/Tables/DataTable/DataTableHeadCell";
 import DataTableBodyCell from "examples/Tables/DataTable/DataTableBodyCell";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import Tooltip from "@mui/material/Tooltip"; // Import Tooltip from Material-UI
 import { TableCell } from "@mui/material";
 import "./style.css"; // Import your CSS file
 
@@ -50,7 +49,20 @@ function ExpandableDataTable({
     ? entriesPerPage.entries.map((el) => el.toString())
     : ["5", "10", "15", "20", "25", "100"];
 
-  const columns = useMemo(() => table.columns, [table]);
+  const columns = useMemo(
+    () => [
+      {
+        Header: "No.",
+        accessor: "rowNumber", // This is the new column for row numbers
+        Cell: ({ row }) => row.index + 1, // Display the row index (starting from 1)
+        align: "center",
+        width: "50px",
+      },
+      ...table.columns, // Add the rest of your columns here
+    ],
+    [table]
+  );
+
   const data = useMemo(() => table.rows, [table]);
 
   const tableInstance = useTable(
@@ -338,6 +350,14 @@ ExpandableDataTable.propTypes = {
   }),
   isSorted: PropTypes.bool,
   noEndBorder: PropTypes.bool,
+  table: PropTypes.shape({
+    columns: PropTypes.array.isRequired,
+    rows: PropTypes.arrayOf(
+      PropTypes.shape({
+        index: PropTypes.number.isRequired, // Validating that `row.index` is a number
+      })
+    ).isRequired,
+  }).isRequired,
 };
 
 export default ExpandableDataTable;
