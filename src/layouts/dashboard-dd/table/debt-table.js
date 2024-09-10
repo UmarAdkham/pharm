@@ -46,17 +46,17 @@ function DebtTable() {
   const [wholesales, setWholesales] = useState([]);
   const [combinedEntities, setCombinedEntities] = useState([]);
   const [selectedMedRep, setSelectedMedRep] = useState(null);
-  const [debtFilter, setDebtFilter] = useState("all"); // New state for debt filter
+  const [debtFilter, setDebtFilter] = useState("all");
 
-  const currentMonth = new Date().getMonth() + 1;
-  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+  const currentMonth = new Date().getMonth() + 1; // To track the default selected month
+  const [selectedMonth, setSelectedMonth] = useState(""); // Initially no month is selected
 
   const [selectedEntity, setSelectedEntity] = useState(null);
   const [selectedType, setSelectedType] = useState("all");
   const [invoiceNumber, setInvoiceNumber] = useState("");
-  const [reservationApiPath, setReservationApiPath] = useState(
-    `head/get-reservations-debt?month_number=${currentMonth}`
-  );
+
+  // Initially, no month filter
+  const [reservationApiPath, setReservationApiPath] = useState("head/get-reservations-debt");
   const [filteredRows, setFilteredRows] = useState([]);
   const { accessToken, userRole } = useSelector((state) => state.auth);
 
@@ -161,6 +161,7 @@ function DebtTable() {
     setSelectedMedRep(newValue);
   };
 
+  // Update the reservation API path when a month is selected
   const handleMonthChange = (event) => {
     const newMonth = event.target.value;
     setSelectedMonth(newMonth);
