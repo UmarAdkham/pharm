@@ -25,10 +25,10 @@ const PharmacyDoctorsListTable = ({ pharmacyId }) => {
   }, [pharmacyId]);
 
   const columns = [
-    { Header: "Full Name", accessor: "full_name", align: "center" },
-    { Header: "Specialty", accessor: "speciality.name", align: "center" },
-    { Header: "Medical Organization", accessor: "medical_organization.name", align: "center" },
-    { Header: "Category", accessor: "category.name", align: "center" },
+    { Header: "Полное имя", accessor: "full_name", align: "center" },
+    { Header: "Специальность", accessor: "speciality.name", align: "center" },
+    { Header: "Медицинская организация", accessor: "medical_organization.name", align: "center" },
+    { Header: "Категория", accessor: "category.name", align: "center" },
   ];
 
   const data = doctors.map((doctor) => ({

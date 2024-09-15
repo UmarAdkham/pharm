@@ -158,41 +158,37 @@ const PharmacyInfoDialog = ({ open, onClose, pharmacyId }) => {
                     onClick={() =>
                       handleTooltipOpen(
                         <Box>
-                          <Typography display="inline">Company name: </Typography>
+                          <Typography display="inline">Компания: </Typography>
                           <Typography display="inline" fontWeight="bold">
-                            {pharmacy.company_name}
+                            {pharmacy.id}
                           </Typography>
                           <br />
-                          <Typography display="inline">Address: </Typography>
+                          <Typography display="inline">Адрес: </Typography>
                           <Typography display="inline" fontWeight="bold">
                             {pharmacy.address}
                           </Typography>
                           <br />
-                          <Typography display="inline">Bank Account number: </Typography>
+                          <Typography display="inline">Банковский счет: </Typography>
                           <Typography display="inline" fontWeight="bold">
                             {pharmacy.bank_account_number}
                           </Typography>
                           <br />
-                          <Typography display="inline">Inter-branch turnover (МФО): </Typography>
+                          <Typography display="inline">ИНН: </Typography>
                           <Typography display="inline" fontWeight="bold">
                             {pharmacy.inter_branch_turnover}
                           </Typography>
                           <br />
-                          <Typography display="inline">
-                            Classification of economic activities (ОКЭД):{" "}
-                          </Typography>
+                          <Typography display="inline">ОКЭД: </Typography>
                           <Typography display="inline" fontWeight="bold">
                             {pharmacy.classification_of_economic_activities}
                           </Typography>
                           <br />
-                          <Typography display="inline">
-                            VAT payer code (код плательщика НДС):{" "}
-                          </Typography>
+                          <Typography display="inline">Код плательщика НДС: </Typography>
                           <Typography display="inline" fontWeight="bold">
                             {pharmacy.VAT_payer_code}
                           </Typography>
                           <br />
-                          <Typography display="inline">Director: </Typography>
+                          <Typography display="inline">Директор: </Typography>
                           <Typography display="inline" fontWeight="bold">
                             {pharmacy.pharmacy_director}
                           </Typography>
@@ -201,7 +197,7 @@ const PharmacyInfoDialog = ({ open, onClose, pharmacyId }) => {
                     }
                     sx={{ textDecoration: "underline", cursor: "pointer" }}
                   >
-                    Requisites (Bank details)
+                    Реквизиты (банковские данные)
                   </Typography>
                   <CustomTooltip
                     open={tooltipOpen}
@@ -212,9 +208,9 @@ const PharmacyInfoDialog = ({ open, onClose, pharmacyId }) => {
               </Grid>
             </Grid>
             <Tabs value={tabValue} onChange={handleTabChange} aria-label="tabs">
-              <Tab label="Attached Products List" />
-              <Tab label="Attached Doctors List" />
-              <Tab label="Balance in Stock" />
+              <Tab label="Продукты" />
+              <Tab label="Врачи" />
+              <Tab label="Остаток на складе" />
             </Tabs>
             <TabPanel value={tabValue} index={0}>
               <Typography variant="body1">В разработке.</Typography>
