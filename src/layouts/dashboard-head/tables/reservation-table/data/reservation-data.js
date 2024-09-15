@@ -403,7 +403,7 @@ export default function useReservationData(apiPath, month) {
             <Tooltip title="Просмотр списка продуктов">
               <IconButton
                 onClick={() => {
-                  setReservation({ id: rsrv.id, type: getRsrvType(rsrv) });
+                  setReservation({ id: rsrv.id, type: getRsrvType(rsrv), checked: rsrv.checked });
                   handleProductListDialogOpen(rsrv);
                 }}
                 sx={{
