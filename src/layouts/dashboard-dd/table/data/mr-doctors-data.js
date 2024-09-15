@@ -13,40 +13,6 @@ export default function useDoctorData(apiPath, onRowClick) {
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
-  // const [doctorToUpdate, setDoctorToUpdate] = useState({
-  //   id: null,
-  //   full_name: "",
-  //   contact1: "",
-  //   contact2: "",
-  //   email: "",
-  //   category_id: null,
-  //   speciality_id: null,
-  //   medical_organization_id: null,
-  // });
-
-  // const handleOpen = () => {
-  //   setOpen(true);
-  // };
-
-  // const handleClose = () => {
-  //   setOpen(false);
-  // };
-
-  // const handleSubmit = async (updatedDoctor) => {
-  //   try {
-  //     const response = await axiosInstance.patch(
-  //       `https://it-club.uz/mr/update-doctor/${updatedDoctor.id}`,
-  //       { updatedDoctor },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${accessToken}`,
-  //         },
-  //       }
-  //     );
-  //   } catch (error) {
-  //     console.error("Error updating medical organization:", error);
-  //   }
-  // };
 
   useEffect(() => {
     async function fetchDoctors() {
@@ -92,11 +58,7 @@ export default function useDoctorData(apiPath, onRowClick) {
             </MDTypography>
           ),
           category: (
-            <MDTypography
-              variant="caption"
-              fontWeight="medium"
-              onClick={() => onRowClick(doctor.id)}
-            >
+            <MDTypography variant="caption" fontWeight="medium">
               {doctor.category.name}
             </MDTypography>
           ),
@@ -119,6 +81,9 @@ export default function useDoctorData(apiPath, onRowClick) {
               /> */}
             </div>
           ),
+          onClick: () => {
+            onRowClick(doctor.id);
+          },
         }));
 
         setData({ columns, rows });
