@@ -160,7 +160,7 @@ const PharmacyInfoDialog = ({ open, onClose, pharmacyId }) => {
                         <Box>
                           <Typography display="inline">Компания: </Typography>
                           <Typography display="inline" fontWeight="bold">
-                            {pharmacy.id}
+                            {pharmacy.company_name}
                           </Typography>
                           <br />
                           <Typography display="inline">Адрес: </Typography>
