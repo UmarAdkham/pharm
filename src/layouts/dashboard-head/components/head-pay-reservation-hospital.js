@@ -1,15 +1,13 @@
-/* eslint-disable prettier/prettier */
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // @mui material components
 import Card from "@mui/material/Card";
 import Alert from "@mui/material/Alert";
 import TextField from "@mui/material/TextField";
-import IconButton from "@mui/material/IconButton";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { MenuItem, FormControl, InputLabel, Select, Autocomplete } from "@mui/material";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -24,35 +22,73 @@ function HeadPayReservationHospital() {
   const navigate = useNavigate();
   const { accessToken } = useSelector((state) => state.auth);
   const location = useLocation();
-  const { reservationId } = location.state || {}; // Add a default value
+  const { reservationId } = location.state || {};
 
   const [description, setDescription] = useState("");
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState(""); // Remove default 0
+  const [doctorId, setDoctorId] = useState(""); // No default 0
+  const [monthNumber, setMonthNumber] = useState(""); // Month state without default
+  const [bonusDiscount, setBonusDiscount] = useState(""); // Remove default 0
+  const [doctors, setDoctors] = useState([]); // State to store doctors list
   const [message, setMessage] = useState({ color: "", content: "" });
+
+  // Russian months for selection
+  const monthsInRussian = [
+    { value: 1, label: "Январь" },
+    { value: 2, label: "Февраль" },
+    { value: 3, label: "Март" },
+    { value: 4, label: "Апрель" },
+    { value: 5, label: "Май" },
+    { value: 6, label: "Июнь" },
+    { value: 7, label: "Июль" },
+    { value: 8, label: "Август" },
+    { value: 9, label: "Сентябрь" },
+    { value: 10, label: "Октябрь" },
+    { value: 11, label: "Ноябрь" },
+    { value: 12, label: "Декабрь" },
+  ];
+
+  // Fetch doctors from the API
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await axios.get("https://it-club.uz/mr/get-doctors", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setDoctors(response.data); // Store the fetched doctors
+      } catch (error) {
+        console.error("Failed to fetch doctors:", error);
+      }
+    };
+
+    fetchDoctors();
+  }, [accessToken]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!amount || !description) {
+    // Ensure all fields are filled
+    if (!amount || !description || !doctorId || !monthNumber || !bonusDiscount) {
       setMessage({ color: "error", content: "Пожалуйста, заполните все поля" });
       return;
     }
 
     const payload = {
-      amount,
+      doctor_id: doctorId,
+      month_number: parseInt(monthNumber, 10),
+      bonus_discount: parseFloat(bonusDiscount),
+      amount: parseFloat(amount),
       description,
     };
 
     try {
-      await axiosInstance.post(
-        `head/pay-hospital-reservation/${reservationId}`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      await axiosInstance.post(`head/pay-hospital-reservation/${reservationId}`, payload, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
       setMessage({ color: "success", content: "Поступление добавлено" });
 
@@ -93,6 +129,34 @@ function HeadPayReservationHospital() {
           {message.content && <Alert severity={message.color}>{message.content}</Alert>}
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <MDBox mb={2}>
+              <Autocomplete
+                options={doctors}
+                getOptionLabel={(option) => option.full_name} // Display doctor full_name
+                onChange={(event, value) => setDoctorId(value ? value.id : "")} // Set doctorId when selected
+                renderInput={(params) => (
+                  <TextField {...params} label="Доктор" variant="outlined" required fullWidth />
+                )}
+              />
+            </MDBox>
+            <MDBox mb={2}>
+              <FormControl fullWidth required>
+                <InputLabel id="month-select-label">Месяц</InputLabel>
+                <Select
+                  labelId="month-select-label"
+                  value={monthNumber}
+                  onChange={(e) => setMonthNumber(e.target.value)}
+                  label="Месяц"
+                  sx={{ height: 45 }}
+                >
+                  {monthsInRussian.map((month) => (
+                    <MenuItem key={month.value} value={month.value}>
+                      {month.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </MDBox>
+            <MDBox mb={2}>
               <TextField
                 label="Сумма"
                 type="number"
@@ -100,6 +164,19 @@ function HeadPayReservationHospital() {
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 InputProps={{ inputProps: { min: 0 } }}
+                required
+                fullWidth
+              />
+            </MDBox>
+            <MDBox mb={2}>
+              <TextField
+                label="Скидка"
+                type="number"
+                variant="outlined"
+                value={bonusDiscount}
+                onChange={(e) => setBonusDiscount(e.target.value)}
+                InputProps={{ inputProps: { min: 0 } }}
+                required
                 fullWidth
               />
             </MDBox>
@@ -111,6 +188,7 @@ function HeadPayReservationHospital() {
                 fullWidth
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                required
               />
             </MDBox>
             <MDBox mt={4} mb={1}>
