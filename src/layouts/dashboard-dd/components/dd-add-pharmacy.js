@@ -76,6 +76,14 @@ function DeputyDirectorAddPharmacy() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    if (latitude === 0 || longitude === 0) {
+      setMessage({
+        color: "error",
+        content: "Пожалуйста, выберите местоположение на карте.",
+      });
+      return; // Stop form submission if latitude or longitude is zero
+    }
+
     try {
       const response = await axios.post(
         `https://it-club.uz/mr/add-pharmacy?user_id=${id}`,
