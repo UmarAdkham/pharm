@@ -133,10 +133,10 @@ const ProductPlanTable = ({ medRepId }) => {
               {data.plan && data.plan.length > 0 ? (
                 <>
                   <TableRow style={{ backgroundColor: "#000" }}>
-                    <TableCell colSpan={3} style={{ color: "#fff" }}>
+                    <TableCell colSpan={1} style={{ color: "#fff" }}>
                       Общ план: {totalPlanAmount}
                     </TableCell>
-                    <TableCell style={{ color: "#fff" }}>
+                    <TableCell colSpan={3} style={{ color: "#fff" }}>
                       План продажа: <br /> {totalPlanPrice} сум
                     </TableCell>
                     <TableCell style={{ color: "#fff" }}></TableCell>
@@ -145,11 +145,21 @@ const ProductPlanTable = ({ medRepId }) => {
                     <TableCell colSpan={1} style={{ color: "#fff" }}>
                       Общ факт: {data.fact}
                     </TableCell>
-                    <TableCell colSpan={2} style={{ color: "#fff" }}>
+                    <TableCell colSpan={1} style={{ color: "#fff" }}>
                       Общ Больн. факт: {totalHospitalFact}
                     </TableCell>
-                    <TableCell style={{ color: "#fff" }}>
+                    <TableCell colSpan={2} style={{ color: "#fff" }}>
                       Факт продажа: <br /> {data.fact_price.toLocaleString("ru-RU")} сум
+                    </TableCell>
+                    <TableCell style={{ color: "#fff" }}></TableCell>
+                  </TableRow>
+                  <TableRow style={{ backgroundColor: "#000" }}>
+                    <TableCell colSpan={1} style={{ color: "#fff" }}>
+                      Общ факт поступ: {data.fact_postupleniya}
+                    </TableCell>
+                    <TableCell colSpan={3} style={{ color: "#fff" }}>
+                      Факт поступ. продажа: <br />{" "}
+                      {data.fact_postupleniya_price.toLocaleString("ru-RU")} сум
                     </TableCell>
                     <TableCell style={{ color: "#fff" }}></TableCell>
                   </TableRow>
