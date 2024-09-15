@@ -84,6 +84,18 @@ function DeputyDirectorAddMedOrganization() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Validate required fields
+    if (!name || !address || !medRepId || !regionId || latitude === 0 || longitude === 0) {
+      setMessage({
+        color: "error",
+        content:
+          latitude === 0 || longitude === 0
+            ? "Пожалуйста, выберите местоположение на карте."
+            : "Все поля должны быть заполнены.",
+      });
+      return; // Stop form submission if validation fails
+    }
+
     try {
       const response = await axios.post(
         "https://it-club.uz/common/add-medical-organization",

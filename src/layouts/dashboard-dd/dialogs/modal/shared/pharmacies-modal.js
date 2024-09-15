@@ -36,8 +36,6 @@ const PharmaciesModal = ({ open, handleClose, handleSubmit, pharmaciesToUpdate }
   const [interBranchTurnover, setInterBranchTurnover] = useState("");
   const [pharmacyDirector, setPharmacyDirector] = useState("");
 
-  console.log(pharmaciesToUpdate);
-
   useEffect(() => {
     if (open) {
       if (pharmaciesToUpdate) {

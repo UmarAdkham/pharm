@@ -50,6 +50,7 @@ const DoctorInfoDialog = ({ open, onClose, doctorId }) => {
       axios
         .get(`https://it-club.uz/mr/get-doctor/${doctorId}`)
         .then((response) => {
+          console.log(response.data);
           setDoctor(response.data);
           setLoading(false);
         })
@@ -122,7 +123,10 @@ const DoctorInfoDialog = ({ open, onClose, doctorId }) => {
                             Location
                           </Typography>
                           <MapContainer
-                            center={[doctor.latitude, doctor.longitude]}
+                            center={[
+                              doctor.medical_organization?.latitude,
+                              doctor.medical_organization?.longitude,
+                            ]}
                             zoom={13}
                             style={{ height: "300px", width: "100%" }}
                           >
@@ -130,7 +134,12 @@ const DoctorInfoDialog = ({ open, onClose, doctorId }) => {
                               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             />
-                            <Marker position={[doctor.latitude, doctor.longitude]}>
+                            <Marker
+                              position={[
+                                doctor.medical_organization?.latitude,
+                                doctor.medical_organization?.longitude,
+                              ]}
+                            >
                               <Popup>{doctor.full_name}</Popup>
                             </Marker>
                           </MapContainer>

@@ -31,7 +31,6 @@ L.Icon.Default.mergeOptions({
 });
 
 function DeputyDirectorAddDoctor() {
-  const navigate = useNavigate();
   const location = useLocation();
 
   const { accessToken } = useSelector((state) => state.auth);
@@ -104,7 +103,7 @@ function DeputyDirectorAddDoctor() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Validate all fields are filled
+    // Validate all fields are filled, including latitude and longitude
     if (
       !doctorData.full_name ||
       !doctorData.contact1 ||
@@ -113,9 +112,18 @@ function DeputyDirectorAddDoctor() {
       !doctorData.birth_date ||
       !categoryId ||
       !specialityId ||
-      !medicalOrganizationId
+      !medicalOrganizationId ||
+      latitude === 0 ||
+      longitude === 0
     ) {
-      setSnackbar({ open: true, message: "Все поля должны быть заполнены", severity: "error" });
+      setSnackbar({
+        open: true,
+        message:
+          latitude === 0 || longitude === 0
+            ? "Пожалуйста, выберите местоположение на карте."
+            : "Все поля должны быть заполнены",
+        severity: "error",
+      });
       return;
     }
 
