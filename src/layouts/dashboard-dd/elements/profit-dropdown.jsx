@@ -17,7 +17,7 @@ const ProfitDropdown = ({ filteredRows }) => {
           item.hospital?.manufactured_company ||
           item.wholesale?.manufactured_company;
 
-        const profit = parseFloat(item.profitValue || 0);
+        const profit = parseFloat(item.profit || 0);
 
         if (company) {
           // Assuming "Проверено" means checked

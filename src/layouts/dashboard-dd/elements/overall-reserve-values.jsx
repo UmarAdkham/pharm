@@ -1,13 +1,24 @@
 import React from "react";
-import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
 import { Grid, Box, Typography } from "@mui/material";
 import DebitorDropdown from "./debitor-dropdown";
 import ProfitDropdown from "./profit-dropdown";
 import PromoDropdown from "./promo-dropdown";
 import UncheckedDebitorDropdown from "./unchecked-debitor-dropdown";
 import ExpiredDebitorDropdown from "./expired-debitor-dropdown";
+import { selectFilteredReservations } from "../../../redux/reservation/reservationSlice"; // Import the selector
 
-const OverallReservationValues = ({ overall, filteredRows }) => {
+const OverallReservationValues = () => {
+  // Get filtered rows from the Redux store
+  const filteredRows = useSelector(selectFilteredReservations);
+
+  // Calculate number of invoices and total invoice amount
+  const numberOfInvoices = filteredRows.length;
+  const invoiceAmount = filteredRows.reduce(
+    (sum, row) => sum + (row.total_payable_with_nds || 0),
+    0
+  );
+
   return (
     <Box
       p={2}
@@ -32,38 +43,25 @@ const OverallReservationValues = ({ overall, filteredRows }) => {
       <Grid container spacing={4} wrap="nowrap" sx={{ whiteSpace: "nowrap" }}>
         <Grid item>
           <Typography variant="button" fontWeight="medium">
-            Кол-во с/ф: {overall.numberOfInvoices}
+            Кол-во с/ф: {numberOfInvoices}
           </Typography>
         </Grid>
         <Grid item>
           <Typography variant="button" fontWeight="medium">
-            Обшая сумма с/ф: {overall.invoiceAmount?.toLocaleString("ru-RU")}{" "}
+            Обшая сумма с/ф: {invoiceAmount?.toLocaleString("ru-RU")}{" "}
             <span style={{ textTransform: "lowercase" }}>сум</span>
           </Typography>
         </Grid>
         <Grid item>
-          {/* <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#81c784", p: 1 }}>
-            Поступление: {overall.profit?.toLocaleString("ru-RU")}{" "}
-            <span style={{ textTransform: "lowercase" }}>сум</span>{" "}
-          </Typography> */}
           <ProfitDropdown filteredRows={filteredRows} />
         </Grid>
         <Grid item>
-          {/* Replace the Typography with DebitorDropdown */}
           <DebitorDropdown filteredRows={filteredRows} />
         </Grid>
         <Grid item>
-          {/* <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#f2cc45", p: 1 }}>
-            Промо: {overall.promo?.toLocaleString("ru-RU")}{" "}
-            <span style={{ textTransform: "lowercase" }}>сум</span>{" "}
-          </Typography> */}
           <PromoDropdown filteredRows={filteredRows} />
         </Grid>
         <Grid item>
-          {/* <Typography variant="button" fontWeight="medium" sx={{ bgcolor: "#a0d8eb", p: 1 }}>
-            Сумма брони: {overall.debt?.toLocaleString("ru-RU")}{" "}
-            <span style={{ textTransform: "lowercase" }}>сум</span>{" "}
-          </Typography> */}
           <UncheckedDebitorDropdown filteredRows={filteredRows} />
         </Grid>
         <Grid item>
@@ -72,18 +70,6 @@ const OverallReservationValues = ({ overall, filteredRows }) => {
       </Grid>
     </Box>
   );
-};
-
-OverallReservationValues.propTypes = {
-  overall: PropTypes.shape({
-    numberOfInvoices: PropTypes.number.isRequired,
-    invoiceAmount: PropTypes.number.isRequired,
-    profit: PropTypes.number.isRequired,
-    debt: PropTypes.number.isRequired,
-    promo: PropTypes.number,
-    expired_debt: PropTypes.number,
-  }).isRequired,
-  filteredRows: PropTypes.array,
 };
 
 export default OverallReservationValues;

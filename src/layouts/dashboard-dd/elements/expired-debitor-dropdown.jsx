@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MenuItem, Select, FormControl, Box } from "@mui/material";
+import { differenceInDays } from "date-fns"; // Importing differenceInDays
+
 import PropTypes from "prop-types";
 
 const ExpiredDebitorDropdown = ({ filteredRows }) => {
@@ -17,9 +19,19 @@ const ExpiredDebitorDropdown = ({ filteredRows }) => {
           item.hospital?.manufactured_company ||
           item.wholesale?.manufactured_company;
 
-        const expiredDebt = parseFloat(item.expiredDebtValue || 0);
+        const daysSinceImplementation = differenceInDays(
+          new Date(),
+          new Date(item.date_implementation)
+        );
 
-        if (company) {
+        const expiredDebt = parseFloat(item.debt || 0);
+
+        if (
+          company &&
+          item.checked &&
+          daysSinceImplementation > (getRsrvType(item) === "wholesale" ? 60 : 30) &&
+          item.debt > 5000
+        ) {
           // Assuming "Проверено" means checked
           if (!acc[company]) {
             acc[company] = 0;
@@ -84,3 +96,13 @@ ExpiredDebitorDropdown.propTypes = {
 };
 
 export default ExpiredDebitorDropdown;
+
+function getRsrvType(rsrv) {
+  if (rsrv.pharmacy) {
+    return "pharmacy";
+  } else if (rsrv.hospital) {
+    return "hospital";
+  } else if (rsrv.wholesale) {
+    return "wholesale";
+  }
+}

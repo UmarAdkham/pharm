@@ -12,15 +12,12 @@ const PromoDropdown = ({ filteredRows }) => {
 
       // Calculate total debt per manufactured company based on filteredRows
       const companyPromo = filteredRows.reduce((acc, item) => {
-        const company =
-          item.pharmacy?.manufactured_company ||
-          item.hospital?.manufactured_company ||
-          item.wholesale?.manufactured_company;
+        const entity = item.pharmacy || item.hospital || item.wholesale;
+        const company = entity?.manufactured_company;
 
-        const promo = parseFloat(item.promoValue || 0);
+        const promo = parseFloat(entity.promo || 0);
 
         if (company) {
-          // Assuming "Проверено" means checked
           if (!acc[company]) {
             acc[company] = 0;
           }
