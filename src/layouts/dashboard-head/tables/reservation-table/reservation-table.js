@@ -52,6 +52,8 @@ function ReservationTable() {
   const { filters, medReps, pharmacies, hospitals, wholesales } = useSelector(
     (state) => state.reservation
   );
+  const [combinedEntities, setCombinedEntities] = useState([]);
+
   const { selectedMonth, selectedMedRep, selectedEntity, selectedType } = filters;
   const { accessToken, userRole } = useSelector((state) => state.auth);
 
@@ -66,6 +68,10 @@ function ReservationTable() {
     fetchHospitals();
     fetchWholesales();
   }, []);
+
+  useEffect(() => {
+    combineEntities();
+  }, [hospitals, pharmacies, wholesales]);
 
   const fetchMedicalReps = async () => {
     try {
@@ -83,7 +89,20 @@ function ReservationTable() {
       const response = await axiosInstance.get("mr/get-all-pharmacy", {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
-      dispatch(setPharmacies(response.data));
+      console.log(response.data);
+      // Use reduce to remove duplicate pharmacies by name
+      const uniquePharmacies = response.data.reduce((acc, currentPharmacy) => {
+        const duplicate = acc.find(
+          (pharmacy) => pharmacy.company_name === currentPharmacy.company_name
+        );
+        if (!duplicate) {
+          acc.push(currentPharmacy);
+        }
+        return acc;
+      }, []);
+
+      // Dispatch the unique pharmacies to Redux
+      dispatch(setPharmacies(uniquePharmacies));
     } catch (error) {
       console.error("Failed to fetch pharmacies", error);
     }
@@ -109,6 +128,25 @@ function ReservationTable() {
     } catch (error) {
       console.error("Failed to fetch wholesales", error);
     }
+  };
+
+  const combineEntities = () => {
+    const combined = [
+      ...hospitals.map((hospital) => ({
+        ...hospital,
+        type: "Больница",
+      })),
+      ...pharmacies.map((pharmacy) => ({
+        ...pharmacy,
+        type: "Аптека",
+      })),
+      ...wholesales.map((wholesale) => ({
+        ...wholesale,
+        type: "Оптовик",
+      })),
+    ];
+
+    setCombinedEntities(combined);
   };
 
   const handleMonthChange = (event) => {
@@ -180,7 +218,7 @@ function ReservationTable() {
 
           {/* Entity Selector */}
           <Autocomplete
-            options={hospitals.concat(pharmacies, wholesales)}
+            options={combinedEntities}
             getOptionLabel={(option) =>
               `${option.type === "Оптовик" ? option.name : option.company_name} (${option.type})`
             }
