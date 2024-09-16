@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
@@ -7,7 +7,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
-import { Autocomplete, Button, TextField, Tooltip } from "@mui/material";
+import { Autocomplete, Button, TextField } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setFilters,
@@ -21,6 +21,7 @@ import axiosInstance from "services/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import OverallReservationValues from "layouts/dashboard-dd/elements/overall-reserve-values";
 import userRoles from "constants/userRoles";
+import SearchIcon from "@mui/icons-material/Search"; // Icon for the search button
 
 const monthNames = [
   "Январь",
@@ -48,21 +49,16 @@ function ReservationTable() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { reservations, filters, medReps, pharmacies, hospitals, wholesales } = useSelector(
+  const { filters, medReps, pharmacies, hospitals, wholesales } = useSelector(
     (state) => state.reservation
   );
-  const {
-    selectedMonth,
-    selectedPharmacy,
-    selectedMedRep,
-    selectedEntity,
-    selectedType,
-    invoiceNumber,
-  } = filters;
+  const { selectedMonth, selectedMedRep, selectedEntity, selectedType } = filters;
   const { accessToken, userRole } = useSelector((state) => state.auth);
 
   const { columns, rows, expired_debt, ExpiryDateDialogComponent, SnackbarComponent } =
     useReservationData();
+
+  const [invoiceNumberInput, setInvoiceNumberInput] = useState(""); // Local state for input value
 
   useEffect(() => {
     fetchMedicalReps();
@@ -116,8 +112,7 @@ function ReservationTable() {
   };
 
   const handleMonthChange = (event) => {
-    const newMonth = event.target.value;
-    dispatch(setFilters({ selectedMonth: newMonth }));
+    dispatch(setFilters({ selectedMonth: event.target.value }));
   };
 
   const handleMedRepChange = (event, newValue) => {
@@ -132,8 +127,14 @@ function ReservationTable() {
     dispatch(setFilters({ selectedType: event.target.value }));
   };
 
+  // Update local state for invoice number input
   const handleInvoiceNumberChange = (event) => {
-    dispatch(setFilters({ invoiceNumber: event.target.value }));
+    setInvoiceNumberInput(event.target.value); // Update the local state immediately
+  };
+
+  // Trigger filter dispatch when the user clicks the search button
+  const handleSearchClick = () => {
+    dispatch(setFilters({ invoiceNumber: invoiceNumberInput }));
   };
 
   return (
@@ -208,15 +209,25 @@ function ReservationTable() {
             </Select>
           </FormControl>
 
-          {/* Invoice Number Input */}
-          <TextField
-            label="Номер счета"
-            type="number"
-            value={invoiceNumber}
-            onChange={handleInvoiceNumberChange}
-            size="small"
-            sx={{ minWidth: 150 }}
-          />
+          {/* Invoice Number Input and Search Button
+          <MDBox display="flex" alignItems="center">
+            <TextField
+              label="Номер счета"
+              type="number"
+              value={invoiceNumberInput}
+              onChange={handleInvoiceNumberChange}
+              size="small"
+              sx={{ minWidth: 150 }}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSearchClick}
+              sx={{ marginLeft: 1 }}
+            >
+              <SearchIcon />
+            </Button>
+          </MDBox> */}
 
           {/* Create Reservation Button */}
           {userRole === userRoles.HEAD_OF_ORDERS && (
