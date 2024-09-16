@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Card from "@mui/material/Card";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
@@ -7,12 +7,20 @@ import InputLabel from "@mui/material/InputLabel";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
+import { Autocomplete, Button, TextField, Tooltip } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setFilters,
+  setMedReps,
+  setPharmacies,
+  setHospitals,
+  setWholesales,
+} from "../../../../redux/reservation/reservationSlice";
 import useReservationData from "./data/reservation-data";
 import axiosInstance from "services/axiosInstance";
-import { useSelector } from "react-redux";
-import { Autocomplete, Button, TextField, Tooltip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import OverallReservationValues from "layouts/dashboard-dd/elements/overall-reserve-values";
+import userRoles from "constants/userRoles";
 
 const monthNames = [
   "Январь",
@@ -29,9 +37,6 @@ const monthNames = [
   "Декабрь",
 ];
 
-import userRoles from "constants/userRoles";
-import parseDate from "services/parseDate";
-
 const entityTypes = [
   { label: "Все", value: "all" },
   { label: "Аптеки", value: "pharmacy" },
@@ -40,30 +45,24 @@ const entityTypes = [
 ];
 
 function ReservationTable() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [medReps, setMedReps] = useState([]);
-  const [pharmacies, setPharmacies] = useState([]);
-  const [hospitals, setHospitals] = useState([]);
-  const [wholesales, setWholesales] = useState([]);
-  const [combinedEntities, setCombinedEntities] = useState([]);
-  const [selectedPharmacy, setSelectedPharmacy] = useState("all");
-  const [selectedMedRep, setSelectedMedRep] = useState(null);
 
-  // Initialize selectedMonth to the current month, adjusted to be 1-based
-  const currentMonth = new Date().getMonth() + 1; // Adjusting for 1-based month
-  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
-
-  const [selectedEntity, setSelectedEntity] = useState(null);
-  const [selectedType, setSelectedType] = useState("all");
-  const [invoiceNumber, setInvoiceNumber] = useState("");
-  const [reservationApiPath, setReservationApiPath] = useState(
-    `head/get-all-reservations?month_number=${currentMonth}`
+  const { reservations, filters, medReps, pharmacies, hospitals, wholesales } = useSelector(
+    (state) => state.reservation
   );
-  const [filteredRows, setFilteredRows] = useState([]);
+  const {
+    selectedMonth,
+    selectedPharmacy,
+    selectedMedRep,
+    selectedEntity,
+    selectedType,
+    invoiceNumber,
+  } = filters;
   const { accessToken, userRole } = useSelector((state) => state.auth);
 
   const { columns, rows, expired_debt, ExpiryDateDialogComponent, SnackbarComponent } =
-    useReservationData(reservationApiPath);
+    useReservationData();
 
   useEffect(() => {
     fetchMedicalReps();
@@ -72,22 +71,12 @@ function ReservationTable() {
     fetchWholesales();
   }, []);
 
-  useEffect(() => {
-    combineEntities();
-  }, [hospitals, pharmacies, wholesales]);
-
-  useEffect(() => {
-    filterRows();
-  }, [rows, selectedMedRep, selectedEntity, selectedType]);
-
   const fetchMedicalReps = async () => {
     try {
       const response = await axiosInstance.get("common/get-med-reps", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
-      setMedReps(response.data);
+      dispatch(setMedReps(response.data));
     } catch (error) {
       console.error("Failed to fetch medical representatives", error);
     }
@@ -96,20 +85,9 @@ function ReservationTable() {
   const fetchPharmacies = async () => {
     try {
       const response = await axiosInstance.get("mr/get-all-pharmacy", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
-
-      // Remove duplicates based on 'company_name' while keeping unique objects
-      const seen = new Set();
-      const uniquePharmacies = response.data.filter((pharmacy) => {
-        const duplicate = seen.has(pharmacy.company_name);
-        seen.add(pharmacy.company_name);
-        return !duplicate;
-      });
-
-      setPharmacies(uniquePharmacies);
+      dispatch(setPharmacies(response.data));
     } catch (error) {
       console.error("Failed to fetch pharmacies", error);
     }
@@ -118,11 +96,9 @@ function ReservationTable() {
   const fetchHospitals = async () => {
     try {
       const response = await axiosInstance.get(`mr/get-hospitals`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
-      setHospitals(response.data);
+      dispatch(setHospitals(response.data));
     } catch (error) {
       console.error("Failed to fetch hospitals", error);
     }
@@ -131,131 +107,43 @@ function ReservationTable() {
   const fetchWholesales = async () => {
     try {
       const response = await axiosInstance.get(`ws/get-wholesales`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
-      setWholesales(response.data);
+      dispatch(setWholesales(response.data));
     } catch (error) {
       console.error("Failed to fetch wholesales", error);
     }
   };
 
-  const combineEntities = () => {
-    const combined = [
-      ...hospitals.map((hospital) => ({
-        ...hospital,
-        type: "Больница",
-      })),
-      ...pharmacies.map((pharmacy) => ({
-        ...pharmacy,
-        type: "Аптека",
-      })),
-      ...wholesales.map((wholesale) => ({
-        ...wholesale,
-        type: "Оптовик",
-      })),
-    ];
-
-    setCombinedEntities(combined);
-  };
-
-  const handlePharmacyChange = (event) => {
-    const pharmacyId = event.target.value;
-    setSelectedPharmacy(pharmacyId);
-    setReservationApiPath(
-      pharmacyId === "all"
-        ? `head/get-all-reservations?month_number=${selectedMonth}`
-        : `head/get-reservations/${pharmacyId}?month_number=${selectedMonth}`
-    );
+  const handleMonthChange = (event) => {
+    const newMonth = event.target.value;
+    dispatch(setFilters({ selectedMonth: newMonth }));
   };
 
   const handleMedRepChange = (event, newValue) => {
-    setSelectedMedRep(newValue);
-  };
-
-  const handleMonthChange = (event) => {
-    const newMonth = event.target.value;
-    setSelectedMonth(newMonth);
-    setReservationApiPath(
-      selectedPharmacy === "all"
-        ? `head/get-all-reservations?month_number=${newMonth}`
-        : `head/get-reservations/${selectedPharmacy}?month_number=${newMonth}`
-    );
+    dispatch(setFilters({ selectedMedRep: newValue }));
   };
 
   const handleEntityChange = (event, newValue) => {
-    setSelectedEntity(newValue);
+    dispatch(setFilters({ selectedEntity: newValue }));
   };
 
   const handleTypeChange = (event) => {
-    setSelectedType(event.target.value);
+    dispatch(setFilters({ selectedType: event.target.value }));
   };
 
   const handleInvoiceNumberChange = (event) => {
-    setInvoiceNumber(event.target.value);
-  };
-
-  const handleSearchByInvoiceNumber = () => {
-    filterRows();
-  };
-
-  const filterRows = () => {
-    let filtered = rows;
-    if (selectedMedRep) {
-      filtered = filtered.filter(
-        (row) =>
-          row.pharmacy?.med_rep?.full_name === selectedMedRep.full_name ||
-          row.hospital?.med_rep?.full_name === selectedMedRep.full_name
-      );
-    }
-    if (selectedEntity) {
-      if (selectedEntity.type === "Оптовик") {
-        filtered = filtered.filter((row) => row.wholesale?.company_name === selectedEntity.name);
-      } else {
-        filtered = filtered.filter(
-          (row) =>
-            row.pharmacy?.company_name === selectedEntity.company_name ||
-            row.hospital?.company_name === selectedEntity.company_name
-        );
-      }
-    }
-    if (selectedType !== "all") {
-      filtered = filtered.filter((row) => row[selectedType.toLowerCase()] !== undefined);
-    }
-    if (invoiceNumber) {
-      filtered = filtered.filter((row) =>
-        row.invoice_number_value.toString().includes(invoiceNumber)
-      );
-    }
-    setFilteredRows(filtered);
-  };
-
-  // Calculate overall values based on the filtered rows
-  const overall = {
-    numberOfInvoices: filteredRows.length,
-    invoiceAmount: filteredRows.reduce((sum, r) => sum + parseFloat(r.total_payable_with_nds), 0),
-    profit: filteredRows.reduce(
-      (sum, r) => sum + parseFloat(r.profit.props.children.replace(/\D/g, "")),
-      0
-    ),
-    debt: filteredRows.reduce((sum, r) => sum + parseFloat(r.isChecked ? 0 : r.debtValue), 0),
-    promo: filteredRows.reduce(
-      (sum, r) => sum + parseFloat(r.promo?.props?.children.replace(/\D/g, "") || 0),
-      0
-    ),
-    expired_debt,
+    dispatch(setFilters({ invoiceNumber: event.target.value }));
   };
 
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-        <MDBox>
-          <MDTypography variant="h6" gutterBottom>
-            Брони
-          </MDTypography>
-        </MDBox>
+        <MDTypography variant="h6" gutterBottom>
+          Брони
+        </MDTypography>
         <MDBox display="flex" alignItems="center" gap={2}>
+          {/* Month Selector */}
           <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
             <InputLabel>Месяц</InputLabel>
             <Select
@@ -271,6 +159,8 @@ function ReservationTable() {
               ))}
             </Select>
           </FormControl>
+
+          {/* MedRep Selector */}
           <Autocomplete
             options={medReps}
             getOptionLabel={(option) => option.full_name}
@@ -286,8 +176,10 @@ function ReservationTable() {
             )}
             sx={{ minWidth: 200 }}
           />
+
+          {/* Entity Selector */}
           <Autocomplete
-            options={combinedEntities}
+            options={hospitals.concat(pharmacies, wholesales)}
             getOptionLabel={(option) =>
               `${option.type === "Оптовик" ? option.name : option.company_name} (${option.type})`
             }
@@ -298,6 +190,8 @@ function ReservationTable() {
             )}
             sx={{ minWidth: 200 }}
           />
+
+          {/* Entity Type Selector */}
           <FormControl variant="outlined" size="small" sx={{ minWidth: 150 }}>
             <InputLabel>Тип</InputLabel>
             <Select
@@ -313,34 +207,18 @@ function ReservationTable() {
               ))}
             </Select>
           </FormControl>
-          <MDBox display="flex" alignItems="center" gap={1}>
-            <TextField
-              label="Номер счета"
-              type="number"
-              value={invoiceNumber}
-              onChange={handleInvoiceNumberChange}
-              onKeyPress={(event) => {
-                if (event.key === "Enter") {
-                  handleSearchByInvoiceNumber();
-                }
-              }}
-              size="small"
-              sx={{ minWidth: 150 }}
-            />
-            <Tooltip title={invoiceNumber ? "" : "Сперва введите номер счета"} arrow>
-              <span>
-                <Button
-                  variant="contained"
-                  color="success"
-                  onClick={handleSearchByInvoiceNumber}
-                  sx={{ height: "35px", color: "white" }}
-                  disabled={!invoiceNumber} // Disable if invoiceNumber is empty
-                >
-                  Поиск
-                </Button>
-              </span>
-            </Tooltip>
-          </MDBox>
+
+          {/* Invoice Number Input */}
+          <TextField
+            label="Номер счета"
+            type="number"
+            value={invoiceNumber}
+            onChange={handleInvoiceNumberChange}
+            size="small"
+            sx={{ minWidth: 150 }}
+          />
+
+          {/* Create Reservation Button */}
           {userRole === userRoles.HEAD_OF_ORDERS && (
             <Button
               variant="contained"
@@ -355,19 +233,18 @@ function ReservationTable() {
           )}
         </MDBox>
       </MDBox>
-      <OverallReservationValues overall={overall} filteredRows={filteredRows} />
+
+      <OverallReservationValues overall={{ expired_debt, rows }} />
       <MDBox>
         <DataTable
-          table={{
-            columns,
-            rows: filteredRows,
-          }}
+          table={{ columns, rows }}
           showTotalEntries={false}
           isSorted={false}
           noEndBorder
           entriesPerPage={{ defaultValue: 100 }}
         />
       </MDBox>
+
       {ExpiryDateDialogComponent}
       {SnackbarComponent}
     </Card>
