@@ -75,6 +75,8 @@ import DeputyDirectorDoctorDatabase from "./layouts/dashboard-dd/components/dd-d
 import HeadReturnProduct from "layouts/dashboard-head/components/head-return-product";
 import DeputyDirectorUpdateProduct from "layouts/dashboard-dd/components/dd-update-product";
 import DeputyDirectorDebts from "layouts/dashboard-dd/components/dd-debts";
+import DeputyDirectorMrsMonitoring from "layouts/dashboard-dd/components/dd-mr-monitoring";
+import DeputyDirectorLoginMonitoring from "layouts/dashboard-dd/components/dd-monitoring";
 
 const roleBasedRoutes = [
   {
@@ -178,6 +180,8 @@ const roleBasedRoutes = [
       { path: "reservations", component: <HeadReservations /> },
       { path: "doctors-data", component: <DeputyDirectorDoctorDatabase /> },
       { path: "debts", component: <DeputyDirectorDebts /> },
+      { path: "mrs-monitoring", component: <DeputyDirectorMrsMonitoring /> },
+      { path: "login-monitoring", component: <DeputyDirectorLoginMonitoring /> },
     ],
     sideNav: [
       {
@@ -284,6 +288,13 @@ const roleBasedRoutes = [
         key: "dd-process-reports",
         icon: <Icon fontSize="small">summarize_two_tone_icon</Icon>,
         route: "process-reports",
+      },
+      {
+        type: "collapse",
+        name: "Мониторинг",
+        key: "dd-mrs-monitoring",
+        icon: <Icon fontSize="small">calendar_month</Icon>,
+        route: "mrs-monitoring",
       },
     ],
   },

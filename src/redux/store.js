@@ -9,6 +9,6 @@ export const store = configureStore({
     auth: authReducer,
     ui: uiReducer,
     reservation: reservationReducer,
-    mrsSlice: mrsReducer,
+    mrs: mrsReducer,
   },
 });

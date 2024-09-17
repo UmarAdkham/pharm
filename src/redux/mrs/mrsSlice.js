@@ -1,35 +1,19 @@
-// filtersSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  region: "",
-  ff_manager: "",
-  product_manager: "",
+  medReps: [],
 };
 
-const mrsSlice = createSlice({
-  name: "filters",
+const monitoringSlice = createSlice({
+  name: "med-reps",
   initialState,
   reducers: {
-    setRegion: (state, action) => {
-      state.region = action.payload;
-    },
-    setFf_manager: (state, action) => {
-      state.ff_manager = action.payload;
-    },
-    setProduct_manager: (state, action) => {
-      state.product_manager = action.payload;
-    },
-    resetFilters: (state) => {
-      state.region = "";
-      state.ff_manager = "";
-      state.product_manager = "";
+    setMedRepsData(state, action) {
+      state.medReps = action.payload;
     },
   },
 });
 
-export const { setRegion, setFf_manager, setProduct_manager, resetFilters } = mrsSlice.actions;
+export const { setMedRepsData } = monitoringSlice.actions;
 
-export const selectFilters = (state) => state.filters;
-
-export default mrsSlice.reducer;
+export default monitoringSlice.reducer;
