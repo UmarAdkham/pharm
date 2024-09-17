@@ -213,9 +213,20 @@ export default function useReservationData() {
 
       return {
         expiry_date: (
-          <MDTypography variant="caption" fontWeight="medium">
-            {format(new Date(rsrv.date_implementation), "dd/MM/yyyy")}
-          </MDTypography>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <MDTypography variant="caption" fontWeight="medium">
+              {format(new Date(rsrv.date_implementation), "dd/MM/yyyy")}
+            </MDTypography>
+            {userRole === userRoles.HEAD_OF_ORDERS && (
+              <IconButton
+                size="small"
+                onClick={() => handleOpenDialog(rsrv)}
+                style={{ marginLeft: "8px" }}
+              >
+                <EditIcon fontSize="small" />
+              </IconButton>
+            )}
+          </div>
         ),
         total_payable: (
           <MDTypography variant="caption" fontWeight="medium">
@@ -224,7 +235,24 @@ export default function useReservationData() {
         ),
         invoice_number: (
           <MDTypography variant="caption" fontWeight="medium">
-            {rsrv.invoice_number}
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <MDTypography variant="caption" fontWeight="medium">
+                {rsrv.invoice_number}
+              </MDTypography>
+              {userRole === userRoles.HEAD_OF_ORDERS && (
+                <IconButton
+                  size="small"
+                  onClick={() =>
+                    navigate("/head/set-invoice-number", {
+                      state: { reservationId: rsrv.id, type: getRsrvType(rsrv) },
+                    })
+                  }
+                  style={{ marginLeft: "8px" }}
+                >
+                  <EditIcon fontSize="small" />
+                </IconButton>
+              )}
+            </div>
           </MDTypography>
         ),
         company_name: (
