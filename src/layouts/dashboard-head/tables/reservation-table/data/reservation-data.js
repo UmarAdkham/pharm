@@ -188,7 +188,12 @@ export default function useReservationData() {
     ];
 
     if (userRole === userRoles.HEAD_OF_ORDERS) {
-      columns.splice(-1, 0, { Header: "Возвратить", accessor: "return", align: "center" });
+      columns.splice(
+        -1,
+        0,
+        { Header: "Возвратить", accessor: "return", align: "center" },
+        { Header: "Удалить", accessor: "delete", align: "center" } // Added delete column
+      );
       columns.splice(-8, 0, { Header: "Действие", accessor: "add", align: "left" });
     }
 
