@@ -144,6 +144,7 @@ function HeadReturnProduct() {
 
       // Optional: Redirect or other actions after a successful submission
       setTimeout(() => {
+        navigate(-1);
         setMessage({ color: "", content: "" });
       }, 2000);
     } catch (error) {

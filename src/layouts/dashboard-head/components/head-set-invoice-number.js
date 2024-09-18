@@ -52,7 +52,7 @@ function HeadSetInvoiceNumber() {
       setMessage({ color: "success", content: "С/Ф установлен" });
 
       setTimeout(() => {
-        // navigate(-1);
+        navigate(-1);
       }, 2000);
     } catch (error) {
       console.log(error);
