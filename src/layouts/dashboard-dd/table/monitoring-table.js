@@ -6,9 +6,8 @@ import PropTypes from "prop-types";
 import useLoginMonitoringData from "./data/monitoring-data";
 
 // eslint-disable-next-line react/prop-types
-function DeputyDirectorLoginMonitoringTable({ medRepId }) {
-  console.log(medRepId);
-  const { columns, rows } = useLoginMonitoringData(medRepId);
+function DeputyDirectorLoginMonitoringTable({ loginData }) {
+  const { columns, rows } = useLoginMonitoringData(loginData);
 
   return (
     <Card>
@@ -28,7 +27,7 @@ function DeputyDirectorLoginMonitoringTable({ medRepId }) {
           showTotalEntries={false}
           isSorted={false}
           noEndBorder
-          entriesPerPage={false}
+          entriesPerPage={{ defaultValue: 1000 }}
         />
       </MDBox>
     </Card>

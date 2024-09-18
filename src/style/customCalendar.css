@@ -1,0 +1,17 @@
+/* Style for days when the user logged in */
+.green-day {
+  background-color: #90ee90 !important; /* Light green */
+  color: black !important;
+}
+
+/* Style for days when the user did not log in */
+.red-day {
+  background-color: #ffcccb !important; /* Light red */
+  color: black !important;
+}
+
+/* Style for future days */
+.gray-day {
+  background-color: #d3d3d3 !important; /* Light gray */
+  color: black !important;
+}
