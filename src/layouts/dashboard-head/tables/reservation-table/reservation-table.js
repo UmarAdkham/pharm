@@ -89,7 +89,6 @@ function ReservationTable() {
       const response = await axiosInstance.get("mr/get-all-pharmacy", {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
-      console.log(response.data);
       // Use reduce to remove duplicate pharmacies by name
       const uniquePharmacies = response.data.reduce((acc, currentPharmacy) => {
         const duplicate = acc.find(

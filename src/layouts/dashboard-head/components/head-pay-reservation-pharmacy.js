@@ -166,7 +166,7 @@ function HeadPayReservationPharmacy() {
     if (
       !total ||
       !description ||
-      doctorProducts.some(({ doctor, monthNumber }) => !doctor || !monthNumber)
+      !doctorProducts.some(({ doctor }, index) => doctor && unpayedProducts[index]?.newQuantity)
     ) {
       setMessage({ color: "error", content: "Пожалуйста, заполните все поля" });
       return;
