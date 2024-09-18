@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
 
@@ -20,6 +20,7 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 
 function HeadReturnProduct() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { accessToken } = useSelector((state) => state.auth);
   const { reservationId, reservationType } = location.state;
   const [products, setProducts] = useState([]);
@@ -218,7 +219,16 @@ function HeadReturnProduct() {
               </MDTypography>
             </MDBox>
 
-            <MDBox mt={4} mb={1}>
+            <MDBox mt={4} mb={1} display="flex" justifyContent="space-between">
+              <MDButton
+                variant="contained"
+                color="secondary"
+                fullWidth
+                onClick={() => navigate(-1)} // Navigate back to the previous page
+                style={{ marginRight: "10px" }} // Add spacing between the buttons
+              >
+                Назад
+              </MDButton>
               <MDButton
                 variant="gradient"
                 color="info"
