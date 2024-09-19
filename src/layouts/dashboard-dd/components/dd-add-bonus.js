@@ -96,7 +96,12 @@ function DeputyDirectorAddBonus() {
                 label="Сумма бонуса"
                 fullWidth
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (value >= 0 || e.target.value === "") {
+                    setAmount(e.target.value);
+                  }
+                }}
               />
             </MDBox>
             <MDBox mb={2}>

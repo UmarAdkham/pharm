@@ -252,7 +252,12 @@ function HeadPayReservationPharmacy() {
                 type="number"
                 variant="outlined"
                 value={total}
-                onChange={(e) => setTotal(parseFloat(e.target.value))}
+                onChange={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (value >= 0 || e.target.value === "") {
+                    setTotal(e.target.value);
+                  }
+                }}
                 InputProps={{ inputProps: { min: 0 } }}
                 fullWidth
               />

@@ -147,8 +147,12 @@ function DeputyDirectorAddProduct() {
                 label="Цена"
                 fullWidth
                 value={price}
-                onChange={(e) => setPrice(e.target.value)}
-              />
+                onChange={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (value >= 0 || e.target.value === "") {
+                    setPrice(e.target.value);
+                  }
+                }}              />
             </MDBox>
             <MDBox mb={2}>
               <MDInput
@@ -156,8 +160,12 @@ function DeputyDirectorAddProduct() {
                 label="Цена производителя"
                 fullWidth
                 value={discount_price}
-                onChange={(e) => setDiscountPrice(e.target.value)}
-              />
+                onChange={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (value >= 0 || e.target.value === "") {
+                    setDiscountPrice(e.target.value);
+                  }
+                }}              />
             </MDBox>
             <MDBox mb={2}>
               <FormControl fullWidth>

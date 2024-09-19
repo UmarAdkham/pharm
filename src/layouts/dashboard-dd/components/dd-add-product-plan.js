@@ -45,7 +45,7 @@ function DeputyDirectorAddProductPlan() {
     { id: 9, name: "Сентябрь" },
     { id: 10, name: "Октябрь" },
     { id: 11, name: "Ноябрь" },
-    { id: 12, name: "Декабрь" }
+    { id: 12, name: "Декабрь" },
   ];
 
   useEffect(() => {
@@ -81,15 +81,11 @@ function DeputyDirectorAddProductPlan() {
 
     try {
       // Call the API with authorization header
-      const response = await axiosInstance.post(
-        "dd/add-user-product-plan",
-        productPlanData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await axiosInstance.post("dd/add-user-product-plan", productPlanData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
       // Handle a successful response
       setMessage({ color: "success", content: "Продукт план успешно добавлен" });
@@ -137,7 +133,12 @@ function DeputyDirectorAddProductPlan() {
                 label="Количество"
                 fullWidth
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (value >= 0 || e.target.value === "") {
+                    setAmount(e.target.value);
+                  }
+                }}
               />
             </MDBox>
             <MDBox mb={2}>

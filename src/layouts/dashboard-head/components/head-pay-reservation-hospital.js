@@ -162,7 +162,12 @@ function HeadPayReservationHospital() {
                 type="number"
                 variant="outlined"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (value >= 0 || e.target.value === "") {
+                    setAmount(e.target.value);
+                  }
+                }}
                 InputProps={{ inputProps: { min: 0 } }}
                 required
                 fullWidth
@@ -174,7 +179,12 @@ function HeadPayReservationHospital() {
                 type="number"
                 variant="outlined"
                 value={bonusDiscount}
-                onChange={(e) => setBonusDiscount(e.target.value)}
+                onChange={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (value >= 0 || e.target.value === "") {
+                    setBonusDiscount(e.target.value);
+                  }
+                }}
                 InputProps={{ inputProps: { min: 0 } }}
                 required
                 fullWidth

@@ -87,8 +87,12 @@ function DeputyDirectorEditProductExpenses() {
                 label="Расходы на маркетинг"
                 fullWidth
                 value={marketingExpenses}
-                onChange={(e) => setMarketingExpenses(e.target.value)}
-              />
+                onChange={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (value >= 0 || e.target.value === "") {
+                    setMarketingExpenses(e.target.value);
+                  }
+                }}              />
             </MDBox>
             <MDBox mb={2}>
               <MDInput
@@ -96,8 +100,12 @@ function DeputyDirectorEditProductExpenses() {
                 label="Расходы на зарплату"
                 fullWidth
                 value={salaryExpenses}
-                onChange={(e) => setSalaryExpenses(e.target.value)}
-              />
+                onChange={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (value >= 0 || e.target.value === "") {
+                    setSalaryExpenses(e.target.value);
+                  }
+                }}              />
             </MDBox>
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" fullWidth type="submit">

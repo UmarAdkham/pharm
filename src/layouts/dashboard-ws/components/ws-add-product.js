@@ -165,7 +165,12 @@ function WholesaleManagerAddProduct() {
                 label="Количество"
                 fullWidth
                 value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
+                onChange={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (value >= 0 || e.target.value === "") {
+                    setQuantity(e.target.value);
+                  }
+                }}
               />
             </MDBox>
             <MDBox mb={2}>
@@ -174,7 +179,12 @@ function WholesaleManagerAddProduct() {
                 label="Цена"
                 fullWidth
                 value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                onChange={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (value >= 0 || e.target.value === "") {
+                    setPrice(e.target.value);
+                  }
+                }}
               />
             </MDBox>
 

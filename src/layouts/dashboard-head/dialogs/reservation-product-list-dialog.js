@@ -146,7 +146,12 @@ const ViewProductListDialog = ({ open, handleClose, reservation }) => {
                           label="Количество"
                           type="number"
                           value={newQuantity}
-                          onChange={(e) => setNewQuantity(e.target.value)}
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value);
+                            if (value >= 0 || e.target.value === "") {
+                              setNewQuantity(e.target.value);
+                            }
+                          }}
                           fullWidth // Make the input larger
                           style={{ marginTop: "10px" }} // Spacing to fit well with the layout
                         />
@@ -222,7 +227,12 @@ const ViewProductListDialog = ({ open, handleClose, reservation }) => {
                         label="Количество"
                         type="number"
                         value={newProductQuantity}
-                        onChange={(e) => setNewProductQuantity(e.target.value)}
+                        onChange={(e) => {
+                          const value = parseFloat(e.target.value);
+                          if (value >= 0 || e.target.value === "") {
+                            setNewProductQuantity(e.target.value);
+                          }
+                        }}
                         fullWidth
                         // style={{ marginTop: "10px" }}
                       />

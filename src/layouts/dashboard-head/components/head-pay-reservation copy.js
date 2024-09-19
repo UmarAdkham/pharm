@@ -23,7 +23,7 @@ function HeadPayReservation() {
   const { accessToken } = useSelector((state) => state.auth);
   const location = useLocation();
   const { reservation_id, isPharmacy } = location.state || {}; // Add a default value
-  const type = isPharmacy ? "" : "-hospital"
+  const type = isPharmacy ? "" : "-hospital";
 
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
@@ -87,7 +87,12 @@ function HeadPayReservation() {
                 label="Сумма"
                 fullWidth
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (value >= 0 || e.target.value === "") {
+                    setAmount(e.target.value);
+                  }
+                }}
               />
             </MDBox>
             <MDBox mb={2}>

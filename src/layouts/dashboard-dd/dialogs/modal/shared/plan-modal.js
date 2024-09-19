@@ -51,7 +51,12 @@ function PlanModal({ open, handleClose, planToUpdate }) {
                 type="number"
                 label="ПЛАН"
                 value={plan_amount}
-                onChange={(e) => setPlan_amount(e.target.value)}
+                onChange={(e) => {
+                  const value = parseFloat(e.target.value);
+                  if (value >= 0 || e.target.value === "") {
+                    setPlan_amount(e.target.value);
+                  }
+                }}
               />
             </MDBox>
           </Grid>
