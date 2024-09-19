@@ -13,9 +13,9 @@ const OverallReservationValues = () => {
   const filteredRows = useSelector(selectFilteredReservations);
 
   // Calculate number of invoices and total invoice amount
-  const numberOfInvoices = filteredRows.filter((row) => row.checked).length;
+  const numberOfInvoices = filteredRows.length;
   const invoiceAmount = filteredRows.reduce(
-    (sum, row) => sum + (row.total_payable_with_nds || 0),
+    (sum, row) => sum + (row.checked ? row.total_payable_with_nds || 0 : 0),
     0
   );
 
