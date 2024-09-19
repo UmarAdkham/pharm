@@ -11,13 +11,15 @@ export default function useBonusData(
   month,
   selectedProduct,
   selectedDoctor,
-  handleTotalBonus
+  handleTotalBonus,
+  handleTotalPaidBonus
 ) {
   const [data, setData] = useState({ columns: [], rows: [] });
   const accessToken = useSelector((state) => state.auth.accessToken);
   const navigate = useNavigate();
 
   const memoizedHandleTotalBonus = useCallback(handleTotalBonus, [handleTotalBonus]);
+  const memoizedHandleTotalPaidBonus = useCallback(handleTotalPaidBonus, [handleTotalPaidBonus]);
   const memoizedSelectedProduct = useMemo(() => selectedProduct, [selectedProduct]);
   const memoizedSelectedDoctor = useMemo(() => selectedDoctor, [selectedDoctor]);
 
@@ -42,6 +44,8 @@ export default function useBonusData(
 
         const totalBonus = reports.reduce((sum, item) => sum + item.bonus_amount, 0);
         memoizedHandleTotalBonus(totalBonus);
+        const totalPaidBonus = reports.reduce((sum, item) => sum + item.bonus_payed, 0);
+        memoizedHandleTotalPaidBonus(totalPaidBonus);
 
         const columns = [
           { Header: "Доктор", accessor: "doctor", align: "left" },
@@ -157,6 +161,7 @@ export default function useBonusData(
     memoizedSelectedProduct,
     memoizedSelectedDoctor,
     memoizedHandleTotalBonus,
+    memoizedHandleTotalPaidBonus,
   ]);
 
   return data;

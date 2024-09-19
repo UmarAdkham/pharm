@@ -39,9 +39,14 @@ function DeputyDirectorBonusTable({ med_rep_id, med_rep_name }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [totalBonus, setTotalBonus] = useState(0);
+  const [totalPaidBonus, setTotalPaidBonus] = useState(0);
 
   const handleTotalBonus = useCallback((value) => {
     setTotalBonus(value);
+  }, []);
+
+  const handleTotalPaidBonus = useCallback((value) => {
+    setTotalPaidBonus(value);
   }, []);
 
   const { columns, rows } = useBonusData(
@@ -49,7 +54,8 @@ function DeputyDirectorBonusTable({ med_rep_id, med_rep_name }) {
     month,
     selectedProduct,
     selectedDoctor,
-    handleTotalBonus
+    handleTotalBonus,
+    handleTotalPaidBonus
   );
 
   useEffect(() => {
@@ -80,6 +86,9 @@ function DeputyDirectorBonusTable({ med_rep_id, med_rep_name }) {
             {med_rep_name} <br />
             <MDTypography variant="subtitle2" gutterBottom>
               Общая сумма бонуса {totalBonus.toLocaleString("ru-RU")} сум
+            </MDTypography>
+            <MDTypography variant="subtitle2" gutterBottom>
+              Общая сумма выплаченного бонуса: {totalPaidBonus.toLocaleString("ru-RU")} сум
             </MDTypography>
           </MDTypography>
         </MDBox>
