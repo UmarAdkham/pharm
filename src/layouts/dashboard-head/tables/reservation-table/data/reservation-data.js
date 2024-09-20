@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   setReservations,
@@ -38,6 +38,14 @@ export default function useReservationData() {
   const [productListDialogOpen, setProductListDialogOpen] = useState(false);
   const filteredReservations = useSelector(selectFilteredReservations);
 
+  // Memoize the sorted reservations
+  const sortedReservations = useMemo(() => {
+    return [...filteredReservations].sort((a, b) => {
+      const dateComparison = new Date(b.date) - new Date(a.date);
+      return dateComparison !== 0 ? dateComparison : b.id - a.id;
+    });
+  }, [filteredReservations]);
+
   const handleProductListDialogOpen = () => {
     setProductListDialogOpen(true);
   };
@@ -59,7 +67,7 @@ export default function useReservationData() {
     if (!filteredReservations.length || selectedMonth) {
       fetchReservations(selectedMonth); // Pass selectedMonth to the fetch function
     }
-  }, [accessToken, reservations.length, selectedMonth]);
+  }, [accessToken, selectedMonth]);
 
   const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false });
@@ -113,16 +121,16 @@ export default function useReservationData() {
       });
 
       // Sort the reservations by the 'date' property in descending order
-      const filteredReservations = response.data.sort((a, b) => {
-        const dateComparison = new Date(b.date) - new Date(a.date);
-        if (dateComparison !== 0) {
-          return dateComparison;
-        }
-        return b.id - a.id;
-      });
+      // const filteredReservations = response.data.sort((a, b) => {
+      //   const dateComparison = new Date(b.date) - new Date(a.date);
+      //   if (dateComparison !== 0) {
+      //     return dateComparison;
+      //   }
+      //   return b.id - a.id;
+      // });
 
       // Store the fetched reservations in Redux
-      dispatch(setReservations(filteredReservations));
+      dispatch(setReservations(response.data));
     } catch (error) {
       console.error("Error fetching reservations", error);
     }
@@ -199,9 +207,8 @@ export default function useReservationData() {
 
     return columns;
   };
-
   const constructRows = () => {
-    return filteredReservations.map((rsrv) => {
+    return sortedReservations.map((rsrv) => {
       const entity = rsrv.pharmacy || rsrv.hospital || rsrv.wholesale;
       const daysSinceImplementation = differenceInDays(
         new Date(),
@@ -503,6 +510,12 @@ export default function useReservationData() {
     });
   };
 
+  // Memoize constructColumns to avoid re-running when userRole doesn't change
+  const columns = useMemo(() => constructColumns(), [userRole]);
+
+  // Memoize constructRows to avoid re-running when sortedReservations don't change
+  const rows = useMemo(() => constructRows(), [sortedReservations]);
+
   function getRsrvTypeRussian(rsrv) {
     if (rsrv.pharmacy) {
       return "Аптека";
@@ -613,8 +626,8 @@ export default function useReservationData() {
   }
 
   return {
-    columns: constructColumns(),
-    rows: constructRows(),
+    columns,
+    rows,
     expired_debt: filteredReservations.reduce((sum, r) => sum + parseFloat(r.debtValue), 0),
     ExpiryDateDialogComponent: (
       <>

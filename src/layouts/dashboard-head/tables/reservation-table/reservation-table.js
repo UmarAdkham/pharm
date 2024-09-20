@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState, useMemo } from "react";
 import Card from "@mui/material/Card";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
@@ -16,12 +16,15 @@ import {
   setHospitals,
   setWholesales,
 } from "../../../../redux/reservation/reservationSlice";
-import useReservationData from "./data/reservation-data";
+import useReservationData from "./data/reservation-data"; // Custom hook for fetching data
 import axiosInstance from "services/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import OverallReservationValues from "layouts/dashboard-dd/elements/overall-reserve-values";
 import userRoles from "constants/userRoles";
-import SearchIcon from "@mui/icons-material/Search"; // Icon for the search button
+import MDInput from "components/MDInput";
+
+// Memoized DataTable component
+const MemoizedDataTable = memo(DataTable);
 
 const monthNames = [
   "Январь",
@@ -53,14 +56,18 @@ function ReservationTable() {
     (state) => state.reservation
   );
   const [combinedEntities, setCombinedEntities] = useState([]);
-
   const { selectedMonth, selectedMedRep, selectedEntity, selectedType } = filters;
   const { accessToken, userRole } = useSelector((state) => state.auth);
 
+  // Call useReservationData at the top level of the component
   const { columns, rows, expired_debt, ExpiryDateDialogComponent, SnackbarComponent } =
     useReservationData();
 
   const [invoiceNumberInput, setInvoiceNumberInput] = useState(""); // Local state for input value
+
+  // Memoize the columns and rows (or any other data) to avoid unnecessary re-renders
+  const memoizedColumns = useMemo(() => columns, [columns]);
+  const memoizedRows = useMemo(() => rows, [rows]);
 
   useEffect(() => {
     fetchMedicalReps();
@@ -89,18 +96,13 @@ function ReservationTable() {
       const response = await axiosInstance.get("mr/get-all-pharmacy", {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
-      // Use reduce to remove duplicate pharmacies by name
       const uniquePharmacies = response.data.reduce((acc, currentPharmacy) => {
         const duplicate = acc.find(
           (pharmacy) => pharmacy.company_name === currentPharmacy.company_name
         );
-        if (!duplicate) {
-          acc.push(currentPharmacy);
-        }
+        if (!duplicate) acc.push(currentPharmacy);
         return acc;
       }, []);
-
-      // Dispatch the unique pharmacies to Redux
       dispatch(setPharmacies(uniquePharmacies));
     } catch (error) {
       console.error("Failed to fetch pharmacies", error);
@@ -131,20 +133,10 @@ function ReservationTable() {
 
   const combineEntities = () => {
     const combined = [
-      ...hospitals.map((hospital) => ({
-        ...hospital,
-        type: "Больница",
-      })),
-      ...pharmacies.map((pharmacy) => ({
-        ...pharmacy,
-        type: "Аптека",
-      })),
-      ...wholesales.map((wholesale) => ({
-        ...wholesale,
-        type: "Оптовик",
-      })),
+      ...hospitals.map((hospital) => ({ ...hospital, type: "Больница" })),
+      ...pharmacies.map((pharmacy) => ({ ...pharmacy, type: "Аптека" })),
+      ...wholesales.map((wholesale) => ({ ...wholesale, type: "Оптовик" })),
     ];
-
     setCombinedEntities(combined);
   };
 
@@ -164,12 +156,12 @@ function ReservationTable() {
     dispatch(setFilters({ selectedType: event.target.value }));
   };
 
-  // Update local state for invoice number input
-  const handleInvoiceNumberChange = (event) => {
-    setInvoiceNumberInput(event.target.value); // Update the local state immediately
+  // Immediate state update on input change without affecting the table
+  const handleInvoiceInputChange = (event) => {
+    setInvoiceNumberInput(event.target.value);
   };
 
-  // Trigger filter dispatch when the user clicks the search button
+  // Manual search dispatch (does not affect the table until search is clicked)
   const handleSearchClick = () => {
     dispatch(setFilters({ invoiceNumber: invoiceNumberInput }));
   };
@@ -246,25 +238,28 @@ function ReservationTable() {
             </Select>
           </FormControl>
 
-          {/* Invoice Number Input and Search Button
-          <MDBox display="flex" alignItems="center">
-            <TextField
-              label="Номер счета"
-              type="number"
-              value={invoiceNumberInput}
-              onChange={handleInvoiceNumberChange}
-              size="small"
-              sx={{ minWidth: 150 }}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSearchClick}
-              sx={{ marginLeft: 1 }}
-            >
-              <SearchIcon />
-            </Button>
-          </MDBox> */}
+          {/* <MDBox mb={2} display="flex" alignItems="center"> */}
+          {/* Input field */}
+          <MDInput
+            type="text"
+            label="Номер счета"
+            fullWidth
+            size="small"
+            sx={{ minWidth: 100 }}
+            value={invoiceNumberInput}
+            onChange={handleInvoiceInputChange}
+          />
+          {/* Small button for manual dispatch */}
+          <Button
+            variant="contained"
+            color="success"
+            sx={{ color: "white" }}
+            onClick={handleSearchClick}
+            disabled={invoiceNumberInput === ""}
+          >
+            Поиск
+          </Button>
+          {/* </MDBox> */}
 
           {/* Create Reservation Button */}
           {userRole === userRoles.HEAD_OF_ORDERS && (
@@ -282,10 +277,10 @@ function ReservationTable() {
         </MDBox>
       </MDBox>
 
-      <OverallReservationValues overall={{ expired_debt, rows }} />
+      <OverallReservationValues overall={{ expired_debt, rows: memoizedRows }} />
       <MDBox>
-        <DataTable
-          table={{ columns, rows }}
+        <MemoizedDataTable
+          table={{ columns: memoizedColumns, rows: memoizedRows }}
           showTotalEntries={false}
           isSorted={false}
           noEndBorder

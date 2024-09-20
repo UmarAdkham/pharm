@@ -25,6 +25,7 @@ const reservationSlice = createSlice({
       state.reservations = action.payload;
     },
     setFilters: (state, action) => {
+      console.log(action);
       state.filters = { ...state.filters, ...action.payload };
     },
     setMedReps: (state, action) => {
@@ -61,9 +62,9 @@ export const selectFilteredReservations = (state) => {
   let filtered = reservations;
 
   // Apply filters
-  if (filters.invoice_number) {
+  if (filters.invoiceNumber) {
     filtered = filtered.filter((row) =>
-      row.invoice_number.toString().includes(filters.invoice_number)
+      row.invoice_number.toString().includes(filters.invoiceNumber)
     );
   }
 
