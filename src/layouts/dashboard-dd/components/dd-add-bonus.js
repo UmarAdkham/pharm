@@ -26,6 +26,7 @@ function DeputyDirectorAddBonus() {
   const [amount, setAmount] = useState("");
   const [comment, setComment] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -47,9 +48,10 @@ function DeputyDirectorAddBonus() {
         }
       );
       setMessage({ color: "success", content: "Бонус добавлен" });
+      setIsSubmitting(true); // Disable the button after clicking
 
       setTimeout(() => {
-        // navigate(-1);
+        navigate(-1);
       }, 2000);
     } catch (error) {
       console.log(error);
@@ -113,8 +115,23 @@ function DeputyDirectorAddBonus() {
                 onChange={(e) => setComment(e.target.value)}
               />
             </MDBox>
-            <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+            <MDBox mt={4} mb={1} display="flex" justifyContent="space-between">
+              <MDButton
+                variant="contained"
+                color="secondary"
+                fullWidth
+                onClick={() => navigate(-1)} // Navigate back to the previous page
+                style={{ marginRight: "10px" }} // Add spacing between the buttons
+              >
+                Назад
+              </MDButton>
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>

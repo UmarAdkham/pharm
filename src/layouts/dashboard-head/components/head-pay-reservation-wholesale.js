@@ -53,6 +53,7 @@ function HeadPayReservationWholesale() {
   const [unpayedProducts, setUnpayedProducts] = useState([]);
   const [productNames, setProductNames] = useState({});
   const [totalSum, setTotalSum] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
 
   // Initialize bonus state with true for each product
   const [bonusState, setBonusState] = useState([]);
@@ -278,6 +279,7 @@ function HeadPayReservationWholesale() {
       });
 
       setMessage({ color: "success", content: "Поступление добавлено" });
+      setIsSubmitting(true); // Disable the button after clicking
 
       setTimeout(() => {
         navigate(-1);
@@ -491,7 +493,13 @@ function HeadPayReservationWholesale() {
               >
                 Назад
               </MDButton>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>

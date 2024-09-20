@@ -31,6 +31,7 @@ function HeadReturnProduct() {
   const [price, setPrice] = useState(0); // State for product price
   const [availableQuantity, setAvailableQuantity] = useState(0); // State for available quantity
   const [totalAmount, setTotalAmount] = useState(0); // State for total amount
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
 
   useEffect(() => {
     // Fetch all products to map product_id to product name
@@ -141,6 +142,7 @@ function HeadReturnProduct() {
       );
 
       setMessage({ color: "success", content: "Продукт успешно возвращен!" });
+      setIsSubmitting(true); // Disable the button after clicking
 
       // Optional: Redirect or other actions after a successful submission
       setTimeout(() => {
@@ -236,7 +238,7 @@ function HeadReturnProduct() {
                 fullWidth
                 type="submit"
                 disabled={
-                  !selectedProduct || !quantity || message.color === "error" // Disable button if there's an error message or required fields are empty
+                  setIsSubmitting || !selectedProduct || !quantity || message.color === "error" // Disable button if there's an error message or required fields are empty
                 }
               >
                 Вернуть продукт

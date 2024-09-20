@@ -32,6 +32,7 @@ L.Icon.Default.mergeOptions({
 
 function DeputyDirectorAddDoctor() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const { accessToken } = useSelector((state) => state.auth);
   const [latitude, setLatitude] = useState(0);
@@ -353,7 +354,16 @@ function DeputyDirectorAddDoctor() {
                 <MDTypography variant="h6">Адрес: {address}</MDTypography>{" "}
               </Grid>
             </Grid>
-            <MDBox mt={4} mb={1}>
+            <MDBox mt={4} mb={1} display="flex" justifyContent="space-between">
+              <MDButton
+                variant="contained"
+                color="secondary"
+                fullWidth
+                onClick={() => navigate(-1)} // Navigate back to the previous page
+                style={{ marginRight: "10px" }} // Add spacing between the buttons
+              >
+                Назад
+              </MDButton>
               <MDButton variant="gradient" color="info" fullWidth type="submit">
                 Добавить
               </MDButton>

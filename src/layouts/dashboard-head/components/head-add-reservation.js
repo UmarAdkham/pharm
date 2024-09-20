@@ -51,6 +51,7 @@ function ReservationAdd() {
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
   const [reservationType, setReservationType] = useState("pharmacy");
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
 
   useEffect(() => {
     async function fetchPharmacies() {
@@ -211,9 +212,10 @@ function ReservationAdd() {
       });
 
       setMessage({ color: "success", content: "Бронь успешно добавлена!" });
+      setIsSubmitting(true); // Disable the button after clicking
 
       setTimeout(() => {
-        // navigate(-1);
+        navigate(-1);
       }, 2000);
     } catch (error) {
       console.error("Failed to add reservation", error);
@@ -399,7 +401,13 @@ function ReservationAdd() {
               </IconButton>
             </MDBox>
             <MDBox mt={1} mb={1} display="flex" justifyContent="space-between">
-              <MDButton variant="gradient" color="info" type="submit" fullWidth>
+              <MDButton
+                variant="gradient"
+                color="info"
+                type="submit"
+                fullWidth
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>

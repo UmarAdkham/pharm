@@ -38,6 +38,7 @@ function WholesaleManagerAddReservation() {
   const [medicalReps, setMedicalReps] = useState([]);
   const [selectedMedRep, setSelectedMedRep] = useState(null);
   const [message, setMessage] = useState({ color: "", content: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
 
   useEffect(() => {
     async function fetchManufacturers() {
@@ -145,9 +146,10 @@ function WholesaleManagerAddReservation() {
       });
 
       setMessage({ color: "success", content: "Бронь успешно добавлена!" });
+      setIsSubmitting(true); // Disable the button after clicking
 
       setTimeout(() => {
-        // navigate(-1);
+        navigate(-1);
       }, 2000);
     } catch (error) {
       console.error("Failed to add reservation", error);
@@ -277,7 +279,13 @@ function WholesaleManagerAddReservation() {
               </IconButton>
             </MDBox>
             <MDBox mt={1} mb={1} display="flex" justifyContent="space-between">
-              <MDButton variant="gradient" color="info" type="submit" fullWidth>
+              <MDButton
+                variant="gradient"
+                color="info"
+                type="submit"
+                fullWidth
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>

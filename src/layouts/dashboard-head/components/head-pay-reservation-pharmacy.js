@@ -48,6 +48,7 @@ function HeadPayReservationPharmacy() {
   const [unpayedProducts, setUnpayedProducts] = useState([]);
   const [productNames, setProductNames] = useState({});
   const [totalSum, setTotalSum] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
 
   // Add a new state to track the bonus for each product
   const [bonusState, setBonusState] = useState(unpayedProducts.map(() => true));
@@ -204,6 +205,7 @@ function HeadPayReservationPharmacy() {
       });
 
       setMessage({ color: "success", content: "Поступление добавлено" });
+      setIsSubmitting(true); // Disable the button after clicking
 
       setTimeout(() => {
         navigate(-1);
@@ -375,7 +377,13 @@ function HeadPayReservationPharmacy() {
               >
                 Назад
               </MDButton>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>

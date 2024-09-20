@@ -22,6 +22,7 @@ function HeadSetDiscount() {
   const { accessToken } = useSelector((state) => state.auth);
   const location = useLocation();
   const { reservationId, type } = location.state || "";
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
 
   const [discountRate, setDiscountRate] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
@@ -53,6 +54,7 @@ function HeadSetDiscount() {
       );
 
       setMessage({ color: "success", content: "Скидка установлена" });
+      setIsSubmitting(true); // Disable the button after clicking
 
       setTimeout(() => {
         navigate(-1);
@@ -117,7 +119,13 @@ function HeadSetDiscount() {
               >
                 Назад
               </MDButton>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Установить скидку
               </MDButton>
             </MDBox>

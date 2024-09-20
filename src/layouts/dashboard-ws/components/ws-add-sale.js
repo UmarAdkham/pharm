@@ -36,7 +36,7 @@ function WholesaleAddSale() {
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
   const wholesale_id = location.state || "";
-  console.log(location.state);
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
 
   useEffect(() => {
     async function fetchPharmacies() {
@@ -131,19 +131,24 @@ function WholesaleAddSale() {
     try {
       console.log(requestData);
       // Call the API with authorization header
-      const response = await axiosInstance.post("https://it-club.uz/mr/add-balance-in-stock", requestData, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axiosInstance.post(
+        "https://it-club.uz/mr/add-balance-in-stock",
+        requestData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
 
       console.log(response);
       // Handle a successful response
       setMessage({ color: "success", content: "Баланс успешно добавлен!" });
+      setIsSubmitting(true); // Disable the button after clicking
 
       // Optional: Redirect after a delay
       setTimeout(() => {
-        // navigate(-1);
+        navigate(-1);
       }, 2000);
     } catch (error) {
       console.error("Failed to add balance", error);
@@ -246,7 +251,13 @@ function WholesaleAddSale() {
               />
             </MDBox>
             <MDBox mt={1} mb={1} display="flex" justifyContent="space-between">
-              <MDButton variant="gradient" color="info" type="submit" fullWidth>
+              <MDButton
+                variant="gradient"
+                color="info"
+                type="submit"
+                fullWidth
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>

@@ -31,6 +31,7 @@ function HeadPayReservationHospital() {
   const [bonusDiscount, setBonusDiscount] = useState(""); // Remove default 0
   const [doctors, setDoctors] = useState([]); // State to store doctors list
   const [message, setMessage] = useState({ color: "", content: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
 
   // Russian months for selection
   const monthsInRussian = [
@@ -91,6 +92,7 @@ function HeadPayReservationHospital() {
       });
 
       setMessage({ color: "success", content: "Поступление добавлено" });
+      setIsSubmitting(true); // Disable the button after clicking
 
       setTimeout(() => {
         navigate(-1);
@@ -211,7 +213,13 @@ function HeadPayReservationHospital() {
               >
                 Назад
               </MDButton>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>

@@ -38,6 +38,7 @@ function DeputyDirectorAddDoctorPlan() {
   const [date, setDate] = useState(null);
   const [doctors, setDoctors] = useState([]);
   const [message, setMessage] = useState({ color: "", content: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
   const { id } = location.state || {};
 
   useEffect(() => {
@@ -82,6 +83,8 @@ function DeputyDirectorAddDoctorPlan() {
 
       // Handle a successful response
       setMessage({ color: "success", content: "План врача добавлен" });
+      setIsSubmitting(true); // Disable the button after clicking
+
       // Optional: Redirect after a delay
       setTimeout(() => {
         // navigate(-1);
@@ -172,7 +175,13 @@ function DeputyDirectorAddDoctorPlan() {
               </LocalizationProvider>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>

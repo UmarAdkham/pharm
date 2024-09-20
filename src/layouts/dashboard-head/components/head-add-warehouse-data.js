@@ -31,15 +31,19 @@ function HeadofOrdersAddWarehouseData() {
   const [products, setProducts] = useState([]);
   const [message, setMessage] = useState({ color: "", content: "" });
   const { factoryId, factoryName } = location.state || {};
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
 
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const response = await axios.get(`https://it-club.uz/common/filter-product?man_company_id=${factoryId}`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await axios.get(
+          `https://it-club.uz/common/filter-product?man_company_id=${factoryId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
         const products = response.data;
         setProducts(products);
       } catch (error) {
@@ -74,10 +78,11 @@ function HeadofOrdersAddWarehouseData() {
 
       // Handle a successful response
       setMessage({ color: "success", content: "Данные успешно добавлены" });
+      setIsSubmitting(true); // Disable the button after clicking
 
       // Optional: Redirect after a delay
       setTimeout(() => {
-        // navigate(-1);
+        navigate(-1);
       }, 2000);
     } catch (error) {
       console.log(error);
@@ -140,7 +145,13 @@ function HeadofOrdersAddWarehouseData() {
               />
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>
