@@ -269,7 +269,7 @@ function HeadPayReservationPharmacy() {
                 Последний остаток {remainderSum.toLocaleString("ru-RU")} + сумма поступления{" "}
                 {total?.toLocaleString("ru-RU") || 0} ={" "}
                 {total
-                  ? (remainderSum + total).toLocaleString("ru-RU")
+                  ? (parseFloat(remainderSum) + parseFloat(total)).toLocaleString("ru-RU")
                   : remainderSum.toLocaleString("ru-RU")}{" "}
                 сум <br />
               </MDTypography>
