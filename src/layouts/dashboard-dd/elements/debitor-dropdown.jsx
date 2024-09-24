@@ -17,7 +17,7 @@ const DebitorDropdown = ({ filteredRows }) => {
           item.hospital?.manufactured_company ||
           item.wholesale?.manufactured_company;
 
-        const debt = parseFloat(item.debt || 0);
+        const debt = parseFloat(item.debtValue || 0);
 
         if (company && item.checked) {
           // Assuming "Проверено" means checked
