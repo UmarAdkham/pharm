@@ -179,14 +179,18 @@ function HeadPayReservationPharmacy() {
     }
 
     const objects = unpayedProducts
-      .filter((product) => product.newQuantity)
       .map((product, index) => ({
+        ...product,
+        originalIndex: index, // Add the original index directly in the map
+      }))
+      .filter((product) => product.newQuantity) // Filter based on newQuantity
+      .map((product) => ({
         product_id: product.product_id,
         quantity: parseInt(product.newQuantity, 10),
         amount: parseInt(product.price, 10),
-        bonus: bonusState[index], // Include the bonus state
-        month_number: doctorProducts[index].monthNumber,
-        doctor_id: doctorProducts[index].doctor?.doctor_id,
+        bonus: bonusState[product.originalIndex], // Access bonus state using the original index
+        month_number: doctorProducts[product.originalIndex].monthNumber, // Access doctorProducts using the original index
+        doctor_id: doctorProducts[product.originalIndex].doctor?.doctor_id, // Access doctor_id using the original index
       }));
 
     const payload = {
