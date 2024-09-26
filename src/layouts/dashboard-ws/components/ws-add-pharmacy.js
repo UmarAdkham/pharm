@@ -42,6 +42,7 @@ function WholesaleAddPharmacy() {
   const [regions, setRegions] = useState([]);
   const [medRepId, setMedRepId] = useState("");
   const [medReps, setMedReps] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
   console.log(location.state);
 
   const [pharmacyData, setPharmacyData] = useState({
@@ -116,7 +117,8 @@ function WholesaleAddPharmacy() {
       );
 
       setMessage({ color: "success", content: "Аптека успешно добавлена" });
-      // setTimeout(() => navigate(-1), 2000);
+      setIsSubmitting(true); // Disable the button after clicking
+      setTimeout(() => navigate(-1), 2000);
     } catch (error) {
       setMessage({
         color: "error",
@@ -358,7 +360,13 @@ function WholesaleAddPharmacy() {
               </Grid>
             </Grid>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>

@@ -34,6 +34,8 @@ function DeputyDirectorAddProduct() {
   const [categories, setCategories] = useState([]);
   const [manufacturerCompanies, setManufacturerCompanies] = useState([]);
   const [message, setMessage] = useState({ color: "", content: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
+
   const user = location.state || {};
 
   useEffect(() => {
@@ -94,10 +96,11 @@ function DeputyDirectorAddProduct() {
 
       // Handle a successful response
       setMessage({ color: "success", content: "Продукт успешно добавлен" });
+      setIsSubmitting(true); // Disable the button after clicking
 
       // Optional: Redirect after a delay
       setTimeout(() => {
-        // navigate(-1);
+        navigate(-1);
       }, 2000);
     } catch (error) {
       console.log(error);
@@ -152,7 +155,8 @@ function DeputyDirectorAddProduct() {
                   if (value >= 0 || e.target.value === "") {
                     setPrice(e.target.value);
                   }
-                }}              />
+                }}
+              />
             </MDBox>
             <MDBox mb={2}>
               <MDInput
@@ -165,7 +169,8 @@ function DeputyDirectorAddProduct() {
                   if (value >= 0 || e.target.value === "") {
                     setDiscountPrice(e.target.value);
                   }
-                }}              />
+                }}
+              />
             </MDBox>
             <MDBox mb={2}>
               <FormControl fullWidth>
@@ -205,7 +210,13 @@ function DeputyDirectorAddProduct() {
             </MDBox>
 
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>

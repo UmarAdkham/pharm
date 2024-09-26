@@ -34,6 +34,8 @@ function DeputyDirectorAddRegionalManager() {
   const [region_id, setRegionId] = useState("");
   const [regions, setRegions] = useState([]);
   const [message, setMessage] = useState({ color: "", content: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
+
   const user = location.state || {};
 
   const path = userRole === userRoles.DEPUTY_DIRECTOR ? "dd" : "pm"; // different api for register
@@ -108,10 +110,11 @@ function DeputyDirectorAddRegionalManager() {
 
       // Handle a successful response
       setMessage({ color: "success", content: "Пользователь успешно зарегистрирован!" });
+      setIsSubmitting(true); // Disable the button after clicking
 
       // Optional: Redirect after a delay
       setTimeout(() => {
-        // navigate(-1);
+        navigate(-1);
       }, 2000);
     } catch (error) {
       console.log(error);
@@ -211,7 +214,13 @@ function DeputyDirectorAddRegionalManager() {
               </FormControl>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>

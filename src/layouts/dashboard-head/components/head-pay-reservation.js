@@ -38,6 +38,7 @@ function HeadPayReservation() {
   ]);
   const [selectedPharmacy, setSelectedPharmacy] = useState(null);
   const [selectedMedRep, setSelectedMedRep] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
   const [forceRender, setForceRender] = useState(false); // State variable to force re-render
 
   useEffect(() => {
@@ -181,9 +182,10 @@ function HeadPayReservation() {
       );
 
       setMessage({ color: "success", content: "Поступление добавлено" });
+      setIsSubmitting(true); // Disable the button after clicking
 
       setTimeout(() => {
-        // navigate(-1);
+        navigate(-1);
       }, 2000);
     } catch (error) {
       console.log(error);
@@ -363,7 +365,13 @@ function HeadPayReservation() {
               />
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>

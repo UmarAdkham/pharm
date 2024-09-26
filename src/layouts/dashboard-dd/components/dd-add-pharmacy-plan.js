@@ -38,6 +38,8 @@ function DeputyDirectorAddPharmacyPlan() {
   const [date, setDate] = useState(null);
   const [pharmacies, setPharmacies] = useState([]);
   const [message, setMessage] = useState({ color: "", content: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
+
   const { id } = location.state || {};
 
   useEffect(() => {
@@ -82,9 +84,11 @@ function DeputyDirectorAddPharmacyPlan() {
 
       // Handle a successful response
       setMessage({ color: "success", content: "План аптеки добавлен" });
+      setIsSubmitting(true); // Disable the button after clicking
+
       // Optional: Redirect after a delay
       setTimeout(() => {
-        // navigate(-1);
+        navigate(-1);
       }, 2000);
     } catch (error) {
       console.log(error);
@@ -172,7 +176,13 @@ function DeputyDirectorAddPharmacyPlan() {
               </LocalizationProvider>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>

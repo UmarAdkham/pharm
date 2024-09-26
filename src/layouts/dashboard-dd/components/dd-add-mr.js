@@ -33,6 +33,7 @@ function DeputyDirectorAddMedicalRepresentative() {
   const [region_manager_id, setRegionalManagerId] = useState(""); // State to track the selected Regional Manager
   const [fieldForceManagers, setFieldForceManagers] = useState([]); // State to store the list of Field Force Managers
   const [regionalManagers, setRegionalManagers] = useState([]); // State to store the list of Regional Managers
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
   const [message, setMessage] = useState({ color: "", content: "" }); // State to store the message to be displayed
   const user = location.state || {}; // Retrieve user information from the location state
 
@@ -121,10 +122,11 @@ function DeputyDirectorAddMedicalRepresentative() {
 
       // Handle a successful response
       setMessage({ color: "success", content: "Пользователь успешно зарегистрирован!" });
+      setIsSubmitting(true); // Disable the button after clicking
 
       // Optional: Redirect after a delay
       setTimeout(() => {
-        // navigate(-1);
+        navigate(-1);
       }, 2000);
     } catch (error) {
       console.log(error);
@@ -226,7 +228,13 @@ function DeputyDirectorAddMedicalRepresentative() {
               </FormControl>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>

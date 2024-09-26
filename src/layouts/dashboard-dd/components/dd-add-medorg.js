@@ -40,6 +40,7 @@ function DeputyDirectorAddMedOrganization() {
   const [regionId, setRegionId] = useState("");
   const [medReps, setMedReps] = useState([]);
   const [regions, setRegions] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
 
   const [message, setMessage] = useState({ color: "", content: "" });
 
@@ -115,7 +116,9 @@ function DeputyDirectorAddMedOrganization() {
       );
 
       setMessage({ color: "success", content: "Медицинская организация успешно добавлена" });
-      // setTimeout(() => navigate(-1), 2000);
+      setIsSubmitting(true); // Disable the button after clicking
+
+      setTimeout(() => navigate(-1), 2000);
     } catch (error) {
       setMessage({
         color: "error",
@@ -254,7 +257,13 @@ function DeputyDirectorAddMedOrganization() {
               />
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>

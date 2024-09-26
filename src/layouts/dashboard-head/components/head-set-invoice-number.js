@@ -26,6 +26,7 @@ function HeadSetInvoiceNumber() {
 
   const [invoiceNumber, setInvoiceNumber] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -50,6 +51,7 @@ function HeadSetInvoiceNumber() {
       );
 
       setMessage({ color: "success", content: "С/Ф установлен" });
+      setIsSubmitting(true); // Disable the button after clicking
 
       setTimeout(() => {
         navigate(-1);
@@ -106,7 +108,13 @@ function HeadSetInvoiceNumber() {
               >
                 Назад
               </MDButton>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Отправить
               </MDButton>
             </MDBox>

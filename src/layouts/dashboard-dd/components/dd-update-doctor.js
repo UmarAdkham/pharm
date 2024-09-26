@@ -33,6 +33,7 @@ function DeputyDirectorUpdateDoctor() {
   const [specialities, setSpecialities] = useState([]);
   const [medicalOrganizations, setMedicalOrganizations] = useState([]);
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
 
   // Fetch existing doctor data
   useEffect(() => {
@@ -130,6 +131,11 @@ function DeputyDirectorUpdateDoctor() {
         message: "Информация о враче успешно обновлена",
         severity: "success",
       });
+
+      setIsSubmitting(true); // Disable the button after clicking
+      setTimeout(() => {
+        navigate(-1);
+      }, 2000);
     } catch (error) {
       setSnackbar({ open: true, message: "Ошибка при обновлении данных врача", severity: "error" });
       console.error("Ошибка при обновлении данных врача:", error);
@@ -254,7 +260,13 @@ function DeputyDirectorUpdateDoctor() {
               />
             </MDBox>
             <MDBox mt={3}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Обновить
               </MDButton>
             </MDBox>

@@ -45,6 +45,7 @@ function DeputyDirectorAddDoctor() {
   const [specialities, setSpecialities] = useState([]);
   const [medicalOrganizations, setMedicalOrganizations] = useState([]);
   const { id } = location.state || {};
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
 
   const [doctorData, setDoctorData] = useState({
     full_name: "",
@@ -151,6 +152,10 @@ function DeputyDirectorAddDoctor() {
         message: "Доктор успешно добавлен",
         severity: "success",
       });
+      setIsSubmitting(true); // Disable the button after clicking
+      setTimeout(() => {
+        navigate(-1);
+      }, 2000);
     } catch (error) {
       setSnackbar({ open: true, message: "Не удалось добавить доктора", severity: "error" });
       console.error("Ошибка при добавлении доктора:", error);
@@ -364,7 +369,13 @@ function DeputyDirectorAddDoctor() {
               >
                 Назад
               </MDButton>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>

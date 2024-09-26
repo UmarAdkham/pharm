@@ -25,6 +25,7 @@ function DirectorAdd() {
   const [full_name, setFullname] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
   const [message, setMessage] = useState({ color: "", content: "" });
 
   const handleSubmit = async (event) => {
@@ -36,23 +37,20 @@ function DirectorAdd() {
       username,
       password,
       region_id: 0,
-      status: userRoles.DEPUTY_DIRECTOR
+      status: userRoles.DEPUTY_DIRECTOR,
     };
 
     try {
       // Call the API with authorization header
-      const response = await axios.post(
-        "https://it-club.uz/d/register-for-d",
-        userData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await axios.post("https://it-club.uz/d/register-for-d", userData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
       // Handle a successful response
       setMessage({ color: "success", content: "User successfully registered!" });
+      setIsSubmitting(true); // Disable the button after clicking
 
       // Optional: Redirect after a delay
       setTimeout(() => {
@@ -119,7 +117,13 @@ function DirectorAdd() {
               />
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 add
               </MDButton>
             </MDBox>

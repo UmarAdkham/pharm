@@ -26,6 +26,7 @@ function WholesaleManagerAddProduct() {
   const [factory_id, setFactoryId] = useState("");
   const [factories, setFactories] = useState([]);
   const [message, setMessage] = useState({ color: "", content: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
   const user = location.state || {};
 
   useEffect(() => {
@@ -86,9 +87,10 @@ function WholesaleManagerAddProduct() {
       );
 
       setMessage({ color: "success", content: "Данные успешно добавлены" });
+      setIsSubmitting(true); // Disable the button after clicking
 
       setTimeout(() => {
-        // navigate(-1);
+        navigate(-1);
       }, 2000);
     } catch (error) {
       console.log(error);
@@ -189,7 +191,13 @@ function WholesaleManagerAddProduct() {
             </MDBox>
 
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>

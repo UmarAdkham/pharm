@@ -22,6 +22,7 @@ function DeputyDirectorAddProductCategory() {
   const { accessToken } = useSelector((state) => state.auth);
   const [name, setName] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission
@@ -39,10 +40,11 @@ function DeputyDirectorAddProductCategory() {
 
       // Handle a successful response
       setMessage({ color: "success", content: "Категория продукта добавлена" });
+      setIsSubmitting(true); // Disable the button after clicking
 
       // Optional: Redirect after a delay
       setTimeout(() => {
-        // navigate(-1);
+        navigate(-1);
       }, 2000);
     } catch (error) {
       console.log(error);
@@ -87,7 +89,13 @@ function DeputyDirectorAddProductCategory() {
               />
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>

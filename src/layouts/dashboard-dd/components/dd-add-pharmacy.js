@@ -41,6 +41,7 @@ function DeputyDirectorAddPharmacy() {
   const [longitude, setLongitude] = useState(0);
   const [regionId, setRegionId] = useState("");
   const [regions, setRegions] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
   const { id } = location.state || {};
 
   const [pharmacyData, setPharmacyData] = useState({
@@ -101,7 +102,9 @@ function DeputyDirectorAddPharmacy() {
       );
 
       setMessage({ color: "success", content: "Аптека успешно добавлена" });
-      // setTimeout(() => navigate(-1), 2000);
+      setIsSubmitting(true); // Disable the button after clicking
+
+      setTimeout(() => navigate(-1), 2000);
     } catch (error) {
       setMessage({
         color: "error",
@@ -292,7 +295,13 @@ function DeputyDirectorAddPharmacy() {
               </Grid>
             </Grid>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>

@@ -32,6 +32,7 @@ function WholesaleAddSale() {
   const [availableProducts, setAvailableProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([{ product: null, quantity: "" }]);
   const [description, setDescription] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
   const [message, setMessage] = useState({ color: "", content: "" });
   const { wholesale_id, pharmacy_id } = location.state;
 
@@ -59,7 +60,6 @@ function WholesaleAddSale() {
     fetchManufacturers();
     fetchProducts();
   }, [accessToken]);
-
 
   const handleProductChange = (index, value) => {
     const newSelectedProducts = [...selectedProducts];
@@ -120,10 +120,11 @@ function WholesaleAddSale() {
       console.log(response);
       // Handle a successful response
       setMessage({ color: "success", content: "Баланс успешно добавлен!" });
+      setIsSubmitting(true); // Disable the button after clicking
 
       // Optional: Redirect after a delay
       setTimeout(() => {
-        // navigate(-1);
+        navigate(-1);
       }, 2000);
     } catch (error) {
       console.error("Failed to add balance", error);
@@ -213,7 +214,13 @@ function WholesaleAddSale() {
               />
             </MDBox>
             <MDBox mt={1} mb={1} display="flex" justifyContent="space-between">
-              <MDButton variant="gradient" color="info" type="submit" fullWidth>
+              <MDButton
+                variant="gradient"
+                color="info"
+                type="submit"
+                disabled={isSubmitting}
+                fullWidth
+              >
                 Добавить
               </MDButton>
             </MDBox>

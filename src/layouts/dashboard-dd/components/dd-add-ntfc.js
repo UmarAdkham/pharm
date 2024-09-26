@@ -33,6 +33,7 @@ function DeputyDirectorAddNotification() {
   const [pharmacies, setPharmacies] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [wholesales, setWholesales] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
   const [notificationData, setNotificationData] = useState({
     author: "",
     theme: "",
@@ -115,7 +116,9 @@ function DeputyDirectorAddNotification() {
       });
 
       setMessage({ color: "success", content: "Уведомление успешно добавлено" });
-      // setTimeout(() => navigate(-1), 2000);
+      setIsSubmitting(true); // Disable the button after clicking
+
+      setTimeout(() => navigate(-1), 2000);
     } catch (error) {
       setMessage({
         color: "error",
@@ -269,7 +272,13 @@ function DeputyDirectorAddNotification() {
               )}
             </Grid>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>

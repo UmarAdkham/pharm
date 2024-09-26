@@ -251,7 +251,13 @@ function ReservationAdd() {
               </IconButton>
             </MDBox>
             <MDBox mt={1} mb={1} display="flex" justifyContent="space-between">
-              <MDButton variant="gradient" color="info" type="submit" fullWidth  disabled={isSubmitting}>
+              <MDButton
+                variant="gradient"
+                color="info"
+                type="submit"
+                fullWidth
+                disabled={isSubmitting}
+              >
                 Добавить
               </MDButton>
             </MDBox>
