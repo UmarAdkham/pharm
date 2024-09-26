@@ -9,8 +9,7 @@ import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 
 // Dashboard components
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import DeputyDirectorMrsMonitoringTable from "../table/mr-monitoring-table";
+import { useLocation } from "react-router-dom";
 import DeputyDirectorLoginMonitoringTable from "../table/monitoring-table";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
