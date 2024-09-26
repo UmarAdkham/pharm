@@ -264,7 +264,7 @@ function HeadPayReservationWholesale() {
     const payload = {
       med_rep_id: isTotalProvided ? null : selectedMedRep?.id || null,
       pharmacy_id: isTotalProvided ? null : selectedPharmacy?.id || null,
-      total: total ? parseInt(total + remainderSum, 10) : 0,
+      total: total ? parseFloat(total) + parseFloat(remainderSum) : 0,
       objects: isTotalProvided ? [] : objects,
       description: description || "",
     };

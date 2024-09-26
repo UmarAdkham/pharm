@@ -194,7 +194,7 @@ function HeadPayReservationPharmacy() {
       }));
 
     const payload = {
-      total: parseInt(total + remainderSum, 10),
+      total: parseFloat(total) + parseFloat(remainderSum),
       objects,
       description,
     };
