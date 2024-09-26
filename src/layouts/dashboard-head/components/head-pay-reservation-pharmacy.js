@@ -266,6 +266,7 @@ function HeadPayReservationPharmacy() {
                 }}
                 InputProps={{ inputProps: { min: 0 } }}
                 fullWidth
+                onWheel={(e) => e.target.blur()} // This prevents scroll from changing the value
               />
             </MDBox>
             <MDBox mb={2}>
@@ -330,6 +331,7 @@ function HeadPayReservationPharmacy() {
                       fullWidth
                       onChange={(e) => handleProductQuantityChange(index, e.target.value)}
                       InputProps={{ inputProps: { min: 0 } }}
+                      onWheel={(e) => e.target.blur()} // This prevents scroll from changing the value
                     />
                   </MDBox>
                 </MDBox>

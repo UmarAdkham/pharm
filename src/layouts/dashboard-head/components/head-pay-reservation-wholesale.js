@@ -92,20 +92,28 @@ function HeadPayReservationWholesale() {
       const fetchDoctorsForAllProducts = async () => {
         const initialDoctorProducts = await Promise.all(
           unpayedProducts.map(async (product) => {
+            // Find the existing product in doctorProducts if it exists
+            const existingProduct = doctorProducts.find(
+              (dp) => dp.product_id === product.product_id
+            );
+
             const doctors = await fetchDoctors(
-              new Date().getMonth() + 1,
+              existingProduct?.monthNumber || new Date().getMonth() + 1, // Use existing monthNumber or default to current month
               product.product_id,
               selectedMedRep.id
             );
+
             return {
               product_id: product.product_id,
-              doctor:
-                doctorProducts.find((dp) => dp.product_id === product.product_id)?.doctor || null,
-              monthNumber: new Date().getMonth() + 1,
-              doctors: doctors,
+              doctor: existingProduct?.doctor || null, // Keep the existing doctor selection if available
+              monthNumber: existingProduct?.monthNumber || new Date().getMonth() + 1, // Keep the existing monthNumber
+              doctors: doctors, // Update the doctors list
             };
           })
         );
+
+        console.log("Initial Set Doctor products", initialDoctorProducts);
+
         setDoctorProducts(initialDoctorProducts);
       };
 
@@ -252,7 +260,7 @@ function HeadPayReservationWholesale() {
     // Check which fields are missing and prepare error messages
     if (!canSubmit) {
       let errorMessage = "Пожалуйста, заполните все обязательные поля: ";
-      if (!isTotalProvided && (!isMedRepProvided || !isPharmacyProvided || !areObjectsProvided)) {
+      if (!isTotalProvided || (!isMedRepProvided && !isPharmacyProvided && !areObjectsProvided)) {
         errorMessage +=
           "Либо введите сумму, либо заполните все поля (мед. представитель, аптека и препараты).";
       }
@@ -262,10 +270,10 @@ function HeadPayReservationWholesale() {
 
     // Payload construction
     const payload = {
-      med_rep_id: isTotalProvided ? null : selectedMedRep?.id || null,
-      pharmacy_id: isTotalProvided ? null : selectedPharmacy?.id || null,
+      med_rep_id: selectedMedRep?.id || null,
+      pharmacy_id: selectedPharmacy?.id || null,
       total: total ? parseFloat(total) + parseFloat(remainderSum) : 0,
-      objects: isTotalProvided ? [] : objects,
+      objects: objects,
       description: description || "",
     };
 
@@ -336,6 +344,7 @@ function HeadPayReservationWholesale() {
                 }}
                 InputProps={{ inputProps: { min: 0 } }}
                 fullWidth
+                onWheel={(e) => e.target.blur()} // This prevents scroll from changing the value
               />
             </MDBox>
             <MDBox mb={2}>
@@ -442,6 +451,7 @@ function HeadPayReservationWholesale() {
                       fullWidth
                       onChange={(e) => handleProductQuantityChange(index, e.target.value)}
                       InputProps={{ inputProps: { min: 0 } }}
+                      onWheel={(e) => e.target.blur()} // This prevents scroll from changing the value
                     />
                   </MDBox>
                 </MDBox>

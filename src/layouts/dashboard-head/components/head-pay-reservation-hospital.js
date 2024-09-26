@@ -173,6 +173,7 @@ function HeadPayReservationHospital() {
                 InputProps={{ inputProps: { min: 0 } }}
                 required
                 fullWidth
+                onWheel={(e) => e.target.blur()} // This prevents scroll from changing the value
               />
             </MDBox>
             <MDBox mb={2}>
@@ -190,6 +191,7 @@ function HeadPayReservationHospital() {
                 InputProps={{ inputProps: { min: 0 } }}
                 required
                 fullWidth
+                onWheel={(e) => e.target.blur()} // This prevents scroll from changing the value
               />
             </MDBox>
             <MDBox mb={2}>
