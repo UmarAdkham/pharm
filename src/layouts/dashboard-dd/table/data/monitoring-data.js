@@ -44,7 +44,7 @@ export default function useLoginMonitoringData(loginData) {
             style={{ cursor: "pointer", color: "blue" }}
             onClick={() => handleRowClick(session.latitude, session.longitude)}
           >
-            {session.location ? session.location : "н/д"}
+            {session.location ? session.location : " н/д "}
           </MDTypography>
         ),
         duration: (
