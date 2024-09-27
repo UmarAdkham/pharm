@@ -43,6 +43,13 @@ const reservationSlice = createSlice({
     setMonth: (state, action) => {
       state.filters.month = action.payload;
     },
+    updateReservationDiscount: (state, action) => {
+      const { id, discount } = action.payload;
+      const reservationIndex = state.reservations.findIndex((res) => res.id === id);
+      if (reservationIndex !== -1) {
+        state.reservations[reservationIndex].discount = discount;
+      }
+    },
   },
 });
 
@@ -54,6 +61,7 @@ export const {
   setHospitals,
   setWholesales,
   setMonth,
+  updateReservationDiscount,
 } = reservationSlice.actions;
 
 // Selector to apply filters and return filtered data

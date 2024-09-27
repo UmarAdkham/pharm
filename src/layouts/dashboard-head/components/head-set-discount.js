@@ -16,13 +16,16 @@ import MDButton from "components/MDButton";
 // Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 import axiosInstance from "services/axiosInstance";
+import { useDispatch } from "react-redux";
+import { updateReservationDiscount } from "../../../redux/reservation/reservationSlice"; // Update with the actual path
 
 function HeadSetDiscount() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { accessToken } = useSelector((state) => state.auth);
   const location = useLocation();
   const { reservationId, type } = location.state || "";
-  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [discountRate, setDiscountRate] = useState("");
   const [message, setMessage] = useState({ color: "", content: "" });
@@ -39,8 +42,6 @@ function HeadSetDiscount() {
     }
 
     try {
-      console.log(discountRate);
-
       const response = await axiosInstance.post(
         `https://it-club.uz/head/update-${
           type === "pharmacy" ? "" : `${type}-`
@@ -53,14 +54,17 @@ function HeadSetDiscount() {
         }
       );
 
-      setMessage({ color: "success", content: "Скидка установлена" });
-      setIsSubmitting(true); // Disable the button after clicking
+      if (response.status === 200) {
+        // Dispatch the action to update the reservation in Redux
+        dispatch(updateReservationDiscount({ id: reservationId, discount: discountRate }));
+        setMessage({ color: "success", content: "Скидка установлена" });
+        setIsSubmitting(true);
 
-      setTimeout(() => {
-        navigate(-1);
-      }, 2000);
+        setTimeout(() => {
+          navigate(-1);
+        }, 2000);
+      }
     } catch (error) {
-      console.log(error);
       setMessage({
         color: "error",
         content:
@@ -100,7 +104,6 @@ function HeadSetDiscount() {
                 value={discountRate}
                 onChange={(e) => {
                   const value = e.target.value;
-                  // Allow only numbers and a single dot
                   if (/^\d*\.?\d*$/.test(value)) {
                     setDiscountRate(value);
                   }
@@ -114,8 +117,8 @@ function HeadSetDiscount() {
                 variant="contained"
                 color="secondary"
                 fullWidth
-                onClick={() => navigate(-1)} // Navigate back to the previous page
-                style={{ marginRight: "10px" }} // Add spacing between the buttons
+                onClick={() => navigate(-1)}
+                style={{ marginRight: "10px" }}
               >
                 Назад
               </MDButton>
