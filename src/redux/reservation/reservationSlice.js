@@ -50,6 +50,21 @@ const reservationSlice = createSlice({
         state.reservations[reservationIndex].discount = discount;
       }
     },
+    updateReservationInvoiceNumber: (state, action) => {
+      const { id, invoiceNumber } = action.payload;
+      const reservationIndex = state.reservations.findIndex((res) => res.id === id);
+      if (reservationIndex !== -1) {
+        state.reservations[reservationIndex].invoice_number = invoiceNumber;
+      }
+    },
+    updateReservationExpiryDate: (state, action) => {
+      const { id, expireDate } = action.payload;
+      const reservationIndex = state.reservations.findIndex((res) => res.id === id);
+
+      if (reservationIndex !== -1) {
+        state.reservations[reservationIndex].expire_date = expireDate;
+      }
+    },
   },
 });
 
@@ -62,6 +77,8 @@ export const {
   setWholesales,
   setMonth,
   updateReservationDiscount,
+  updateReservationInvoiceNumber,
+  updateReservationExpiryDate,
 } = reservationSlice.actions;
 
 // Selector to apply filters and return filtered data

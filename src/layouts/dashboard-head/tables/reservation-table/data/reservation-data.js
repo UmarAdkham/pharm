@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import userRoles from "constants/userRoles";
 import ViewReservationHistory from "layouts/dashboard-head/dialogs/view-reservation-history";
 import axios from "axios";
+import { updateReservationExpiryDate } from "../../../../../redux/reservation/reservationSlice"; // Update with the actual path
 
 export default function useReservationData() {
   const navigate = useNavigate();
@@ -85,7 +86,7 @@ export default function useReservationData() {
   const handleUpdateExpiryDate = async (newDate) => {
     const type = getRsrvType(selectedReservation);
     try {
-      await axiosInstance.post(
+      const response = await axiosInstance.post(
         `https://it-club.uz/head/update-${
           type === "pharmacy" ? "" : `${type}-`
         }reservation-expire-date/${selectedReservation.id}`,
@@ -96,15 +97,24 @@ export default function useReservationData() {
           },
         }
       );
-      fetchReservations(); // Refresh the data
-      setSnackbar({
-        open: true,
-        message: "Срок истечения изменен!",
-        severity: "success",
-      });
+
+      if (response.status === 200) {
+        fetchReservations();
+        dispatch(updateReservationExpiryDate({ id: selectedReservation.id, expireDate: newDate }));
+
+        setSnackbar({
+          open: true,
+          message: "Срок истечения изменен!",
+          severity: "success",
+        });
+      }
     } catch (error) {
       console.error("Failed to update expiry date", error);
-      setSnackbar({ open: true, message: "Не удалось изменить срок истечения", severity: "error" });
+      setSnackbar({
+        open: true,
+        message: "Не удалось изменить срок истечения",
+        severity: "error",
+      });
     }
     handleCloseDialog();
   };

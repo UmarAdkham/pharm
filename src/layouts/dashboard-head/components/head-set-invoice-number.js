@@ -17,8 +17,11 @@ import MDButton from "components/MDButton";
 // Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 import axiosInstance from "services/axiosInstance";
+import { useDispatch } from "react-redux";
+import { updateReservationInvoiceNumber } from "../../../redux/reservation/reservationSlice"; // Update with the actual path
 
 function HeadSetInvoiceNumber() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { accessToken } = useSelector((state) => state.auth);
   const location = useLocation();
@@ -50,12 +53,16 @@ function HeadSetInvoiceNumber() {
         }
       );
 
-      setMessage({ color: "success", content: "С/Ф установлен" });
-      setIsSubmitting(true); // Disable the button after clicking
+      if (response.status === 200) {
+        // Dispatch the action to update the invoice number in Redux
+        dispatch(updateReservationInvoiceNumber({ id: reservationId, invoiceNumber }));
+        setMessage({ color: "success", content: "С/Ф установлен" });
+        setIsSubmitting(true); // Disable the button after clicking
 
-      setTimeout(() => {
-        navigate(-1);
-      }, 2000);
+        setTimeout(() => {
+          navigate(-1);
+        }, 2000);
+      }
     } catch (error) {
       console.log(error);
       setMessage({
