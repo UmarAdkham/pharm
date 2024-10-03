@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import "style/customCalendar.css";
-import PropTypes from "prop-types"; // Import PropTypes
+import "style/customCalendar.css"; // Adjust this file for styling
+import PropTypes from "prop-types";
 
 const CustomCalendar = ({ loginData, onMonthChange }) => {
   const [loginDates, setLoginDates] = useState([]);
@@ -46,7 +46,11 @@ const CustomCalendar = ({ loginData, onMonthChange }) => {
 
   return (
     <div>
-      <Calendar tileClassName={tileClassName} onActiveStartDateChange={handleMonthChange} />
+      <Calendar
+        locale="ru-RU" // Set calendar locale to Russian
+        tileClassName={tileClassName}
+        onActiveStartDateChange={handleMonthChange}
+      />
     </div>
   );
 };

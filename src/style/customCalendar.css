@@ -15,3 +15,17 @@
   background-color: #d3d3d3 !important; /* Light gray */
   color: black !important;
 }
+
+.react-calendar__navigation button {
+  font-size: 1.1rem; /* Adjust this value to make the month name bigger */
+  font-weight: bold;
+}
+
+.react-calendar__navigation button:disabled {
+  background-color: transparent; /* Optional: keep the background transparent for disabled buttons */
+}
+
+/* Optional: Change the font size of the day labels */
+.react-calendar__month-view__weekdays__weekday {
+  font-size: 1rem;
+}
