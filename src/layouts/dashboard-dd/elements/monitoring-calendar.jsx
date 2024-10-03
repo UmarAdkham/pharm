@@ -11,7 +11,6 @@ const CustomCalendar = ({ loginData }) => {
     // Fetch the login data from the API
     const constructDates = () => {
       // Extract the login dates
-      console.log(loginData);
       const dates = loginData
         .filter((entry) => entry.login_date)
         .map((entry) => new Date(entry.login_date).toDateString());

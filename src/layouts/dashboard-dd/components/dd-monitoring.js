@@ -28,11 +28,16 @@ function DeputyDirectorLoginMonitoring() {
 
   async function fetchLoginMonitoringData() {
     try {
-      const response = await axiosInstance.get(`get-login-monitoring?user_id=${medRepId}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const currentMonth = new Date().getMonth() + 1; // Get the current month (1-12)
+
+      const response = await axiosInstance.get(
+        `get-login-monitoring?user_id=${medRepId}&month_number=${currentMonth}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
 
       setLoginData(response.data);
     } catch (error) {
