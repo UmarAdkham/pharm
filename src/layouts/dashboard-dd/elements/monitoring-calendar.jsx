@@ -4,13 +4,11 @@ import "react-calendar/dist/Calendar.css";
 import "style/customCalendar.css";
 import PropTypes from "prop-types"; // Import PropTypes
 
-const CustomCalendar = ({ loginData }) => {
+const CustomCalendar = ({ loginData, onMonthChange }) => {
   const [loginDates, setLoginDates] = useState([]);
 
   useEffect(() => {
-    // Fetch the login data from the API
     const constructDates = () => {
-      // Extract the login dates
       const dates = loginData
         .filter((entry) => entry.login_date)
         .map((entry) => new Date(entry.login_date).toDateString());
@@ -22,33 +20,33 @@ const CustomCalendar = ({ loginData }) => {
     }
   }, [loginData]);
 
-  // Function to determine the color of a day
   const tileClassName = ({ date, view }) => {
     if (view === "month") {
       const today = new Date();
       const dayString = date.toDateString();
 
-      // If it's a future date, return gray
       if (date > today) {
         return "gray-day";
       }
 
-      // If the user logged in on this day, return green
-      // console.log(loginDates);
-      // console.log(dayString);
       if (loginDates.includes(dayString)) {
         return "green-day";
       }
 
-      // Otherwise, it's a day they didn't log in, so return red
       return "red-day";
     }
     return null;
   };
 
+  // Detect when the active month changes
+  const handleMonthChange = ({ activeStartDate }) => {
+    const newMonth = activeStartDate.getMonth() + 1; // Get the new month (1-12)
+    onMonthChange(newMonth); // Trigger the parent component's callback
+  };
+
   return (
     <div>
-      <Calendar tileClassName={tileClassName} />
+      <Calendar tileClassName={tileClassName} onActiveStartDateChange={handleMonthChange} />
     </div>
   );
 };
@@ -67,6 +65,7 @@ CustomCalendar.propTypes = {
       user_status: PropTypes.string,
     })
   ).isRequired,
+  onMonthChange: PropTypes.func.isRequired, // Add PropType for the onMonthChange function
 };
 
 export default CustomCalendar;

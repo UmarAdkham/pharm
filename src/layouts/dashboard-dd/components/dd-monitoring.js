@@ -21,17 +21,16 @@ function DeputyDirectorLoginMonitoring() {
   const medRepId = location.state;
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [loginData, setLoginData] = useState([]);
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // Initialize with the current month
 
   useEffect(() => {
     fetchLoginMonitoringData();
-  }, [accessToken]);
+  }, [accessToken, selectedMonth]); // Fetch data whenever accessToken or selectedMonth changes
 
   async function fetchLoginMonitoringData() {
     try {
-      const currentMonth = new Date().getMonth() + 1; // Get the current month (1-12)
-
       const response = await axiosInstance.get(
-        `get-login-monitoring?user_id=${medRepId}&month_number=${currentMonth}`,
+        `get-login-monitoring?user_id=${medRepId}&month_number=${selectedMonth}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -45,6 +44,10 @@ function DeputyDirectorLoginMonitoring() {
     }
   }
 
+  const handleMonthChange = (newMonth) => {
+    setSelectedMonth(newMonth);
+  };
+
   return (
     <DashboardLayout>
       <MDBox py={3}>
@@ -54,7 +57,7 @@ function DeputyDirectorLoginMonitoring() {
               <DeputyDirectorLoginMonitoringTable loginData={loginData} />
             </Grid>
             <Grid item xs={12} lg={4}>
-              <CustomCalendar loginData={loginData} />
+              <CustomCalendar loginData={loginData} onMonthChange={handleMonthChange} />
             </Grid>
           </Grid>
         </MDBox>
